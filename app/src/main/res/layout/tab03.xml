@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="vertical"
+    android:fadingEdge="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical" >
+
+        <ImageView
+            android:id="@+id/game1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/game1" />
+        <View style="@style/bg_line2"/>
+        <ImageView
+            android:id="@+id/game2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/game2" />
+        <View style="@style/bg_line2"/>
+        <ImageView
+            android:id="@+id/game3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/game3" />
+        <TextView
+            style="@style/usertext"
+            android:id="@+id/deletecache"
+            android:clickable="true"
+            android:text="游戏来源4399小游戏" />
+
+        <com.tencent.smtt.sdk.WebView
+            android:id="@+id/tbsContent"
+           android:layout_width="match_parent"
+          android:layout_height="match_parent"/>
+
+    </LinearLayout>
+</ScrollView>
