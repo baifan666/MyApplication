@@ -10,11 +10,13 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
 import com.example.baifan.myapplication.utils.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -27,6 +29,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
+
 public class MainActivity extends AppCompatActivity {
 
     private boolean isback;
@@ -35,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private  CheckBox iv;
     private TextView reg;
     String act, pasd;
+    private final int GETTOKEN = 2;
+    private String usertoken,result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,6 +94,7 @@ public class MainActivity extends AppCompatActivity {
                     dialog.show();
                 } else
                     whetherRegister(act, pasd);
+
             }
         });
     }
@@ -99,14 +107,34 @@ public class MainActivity extends AppCompatActivity {
                 switch (msg.what) {
                     case 1:
                         String response = (String) msg.obj;
-                        if (parserXml(response)) {
-                            Toast.makeText(getApplicationContext(), "尊敬的用户，欢迎您常来!", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                            act = username.getText().toString();
-                            intent.putExtra("account", act);
-                            startActivity(intent);
-                            finish();
-                        } else {
+                        parserXml(response);
+                        if(result.equals("succeessful")) {
+                           // Toast.makeText(MainActivity.this, usertoken, Toast.LENGTH_SHORT).show();
+                            RongIM.connect(usertoken, new RongIMClient.ConnectCallback() {
+                                @Override
+                                public void onTokenIncorrect() {
+                                    Log.e("MainActivity", "--onTokenIncorrect");
+                                }
+
+                                @Override
+                                public void onSuccess(String userid) {
+                                    Log.d("MainActivity", "--onSuccess--" + userid);
+                                    Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
+                                    //服务器连接成功，跳转
+                                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                                    act = username.getText().toString();
+                                    intent.putExtra("account", act);
+                                    startActivity(intent);
+                                }
+
+                                @Override
+                                public void onError(RongIMClient.ErrorCode errorCode) {
+                                    Toast.makeText(MainActivity.this, errorCode.toString(), Toast.LENGTH_SHORT).show();
+                                    Log.e("MainActivity", "--onError");
+                                }
+                            });
+                        }
+                        else {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                             dialog.setTitle("This is a warnining!");
                             dialog.setMessage("对不起，您的账户或密码有错!");
@@ -119,48 +147,16 @@ public class MainActivity extends AppCompatActivity {
                             dialog.show();
                         }
                         break;
+                    case 3:
+                        Toast.makeText(MainActivity.this,usertoken , Toast.LENGTH_SHORT).show();
+
+                        break;
                     default:
                         break;
                 }
             }
         };
     }
-
-
-
-    private boolean parserXml(String xmlData) {
-        try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser parse = factory.newPullParser(); // 生成解析器
-            parse.setInput(new StringReader(xmlData)); // 添加xml数据
-            int eventType = parse.getEventType();
-
-            String result = "";
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-
-                String nodeName = parse.getName();
-
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
-
-                        if ("result".equals(nodeName)) {
-                            result = parse.nextText();
-                        }
-                        if (result.equals("succeessful"))
-                            return true;
-                        else if (result.equals("failed"))
-                            return false;
-                        break;
-                }
-                eventType = parse.next();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return false;
-        }
-        return false;
-    }
-
 
     private void whetherRegister(String account2, String password2) {
         final String account = account2; // 进程中不能传入变量 一定要为常量final
@@ -169,47 +165,12 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-
-                HttpURLConnection connection = null;
-                try {
-                    // 打开链接
-                //    ip iip = new ip();
-
-                    String account2 = URLEncoder.encode(account, "UTF-8"); // 中文转译！
-                    URL url = new URL("http://111.231.101.251:8080/kehuduan/denglu.jsp?account=" + account2+ "&password=" + password);
-
-                    connection = (HttpURLConnection) url.openConnection();
-
-                    // 设置属性
-                    connection.setRequestMethod("GET");
-                    // Post 1)容量没有限制 2） 安全
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-                    // 读取数据
-                    // 1)获取位流
-                    InputStream in = connection.getInputStream();
-                    // 二进制-->BufferedReader
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    // 2) 读取
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-
-                    // 发送消息
-                    Message msg = new Message();
-                    msg.what = 1;
-                    msg.obj = response.toString();
-                    handler.sendMessage(msg);
-                    // Handler
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开链接
-                    }
-                }
+                String url = "http://111.231.101.251:8080/fuwuduan/denglu.jsp?account=" + account+ "&password=" + password;
+                Message msg = new Message();
+                msg.what = 1;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
             }
         }).start();
     }
@@ -225,4 +186,47 @@ public class MainActivity extends AppCompatActivity {
             isback=true;
         }
     }
+
+    private void parserXml(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("token".equals(nodeName)) {
+                            String tokenStr = parse.nextText();
+                            usertoken = tokenStr;
+                            Log.d("token", usertoken);
+                        }
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        if ("token".equals(nodeName)) {
+                            String tokenStr = parse.nextText();
+                            usertoken = tokenStr;
+                            Log.d("token", usertoken);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
 }

@@ -37,13 +37,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -61,6 +58,7 @@ import com.example.baifan.myapplication.utils.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.model.UpdataInfo;
+import com.example.baifan.myapplication.utils.HttpUtils;
 import com.example.baifan.myapplication.utils.UpdataInfoParser;
 import com.example.baifan.myapplication.utils.UploadUtil;
 import com.example.baifan.myapplication.adapter.Adapter;
@@ -68,6 +66,7 @@ import com.example.baifan.myapplication.adapter.GoodsAdapter;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
+
 
 
 public class SearchActivity extends Activity implements
@@ -102,12 +101,13 @@ public class SearchActivity extends Activity implements
     private final int ADD_SUCCEESS = 5;
     private final int DISMISS = 6;
     private final int READALL = 7;
+    private final int GETTOKEN = 8;
 
     private UpdataInfo info;
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about;
-    private ImageView game1,game2,game3,search;
+    private ImageView game1,game2,game3,search,shuaxin;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -119,8 +119,8 @@ public class SearchActivity extends Activity implements
     private EditText title,content,price,location,mobile;
     String account,path1,path2,tit,con,pri,loc,mob;
     private List <String> s = new ArrayList<String>();//创建了s来保存本地图片的地址
-    private List <String> ss = new ArrayList<String>();//创建了s来保存服务器图片的地址
-    private static String requestURL = "http://111.231.101.251:8080/kehuduan/UploadShipServlet";
+    private List <String> ss = new ArrayList<String>();//创建了ss来保存服务器图片的地址
+    private static String requestURL = "http://111.231.101.251:8080/fuwuduan/UploadShipServlet";
 
     private Dialog mDialog;
 
@@ -135,7 +135,6 @@ public class SearchActivity extends Activity implements
         setContentView(R.layout.activity_search);
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
-
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
 
@@ -150,13 +149,10 @@ public class SearchActivity extends Activity implements
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
                 GoodsInfo goodsInfo = goodsdata.get(position);
-               // flight_num = goodsInfo.getId(); // 获取当前点击子项的航班号
-               // condition = flightInfo.getCondition();
-
+                //Toast.makeText(SearchActivity.this,usertoken+"2222", Toast.LENGTH_SHORT).show();
+                String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
                 Intent intent = new Intent(SearchActivity.this, SpecificActivity.class);
-
-               // intent.putExtra("account", account); // 向下一个界面传递信息
-                //intent.putExtra("flight_num", flight_num); // 传递余额、用户名、航班号。航班号是主键
+                intent.putExtra("username",n); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });
@@ -195,12 +191,16 @@ public class SearchActivity extends Activity implements
                         HashSet h = new HashSet(ss);
                         ss.clear();
                         ss.addAll(h);
-                        if (ss.size()>1) {
+                        if (ss.size()==1) {
+                            path1 = ss.get(0);
+                            path2 = "";
+                        }
+                        else if(ss.size()==2){
                             path1 = ss.get(0);
                             path2 = ss.get(1);
                         }
-                        else{
-                            path1 = ss.get(0);
+                        else {
+                            path1 = "";
                             path2 = "";
                         }
                         runOnUiThread(new Runnable() {
@@ -220,6 +220,16 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(SearchActivity.this, Search2Activity.class);
+                startActivity(i);
+            }
+        });
+
+        shuaxin = (ImageView) findViewById(R.id.top_shuaxin);
+        shuaxin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                i.setClass(SearchActivity.this, ConversationListActivity.class);
                 startActivity(i);
             }
         });
@@ -413,13 +423,13 @@ public class SearchActivity extends Activity implements
                     String response = (String) msg.obj;
                     if (parserXml(response)) {
                         AlertDialog.Builder dialog = new AlertDialog.Builder(SearchActivity.this);
-                        dialog.setTitle("This is a warnining!");
+                        dialog.setTitle("success");
                         dialog.setMessage("物品发布成功!");
                         dialog.setCancelable(false);
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // 物品新增成功后 跳转至查询航线界面
+                                // 物品新增成功后 跳转至界面
                                 Intent intent = new Intent(SearchActivity.this, SearchActivity.class);
                                 startActivity(intent);
                                 finish();
@@ -490,6 +500,7 @@ public class SearchActivity extends Activity implements
         final ProgressDialog pd;    //进度条对话框
         pd = new  ProgressDialog(this);
         pd.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        pd.setCanceledOnTouchOutside(false);
         pd.setMessage("正在下载更新");
         pd.show();
         new Thread(){
@@ -840,54 +851,16 @@ public class SearchActivity extends Activity implements
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-
-                HttpURLConnection connection = null;
-                try {
-                    String account = URLEncoder.encode(acc, "UTF-8");
-                    String title = URLEncoder.encode(tit, "UTF-8");
-                    String content = URLEncoder.encode(con, "UTF-8");
-                    String price = URLEncoder.encode(pri, "UTF-8");
-                    String mobile = URLEncoder.encode(mob, "UTF-8");
-                    String location = URLEncoder.encode(loc, "UTF-8");
-                    String path1 = URLEncoder.encode(p1, "UTF-8");
-                    String path2 = URLEncoder.encode(p2, "UTF-8");
-
-                    // 打开链接
-                    URL url = new URL("http://111.231.101.251:8080/kehuduan/addGoods.jsp?account=" + account
-                            + "&title=" + title + "&content=" + content + "&price=" + price + "&mobile=" + mobile
-                            + "&location=" + location + "&path1=" + path1 + "&path2=" + path2);
-
-                    connection = (HttpURLConnection) url.openConnection();
-                    // 设置属性
-                    connection.setRequestMethod("GET");
-                    // Post 1)容量没有限制 2） 安全
-                    connection.setReadTimeout(80000);
-                    connection.setConnectTimeout(80000);
-                    // 读取数据
-                    // 1)获取位流
-                    InputStream in = connection.getInputStream();
-                    // 二进制-->BufferedReader
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    // 2) 读取
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    // 发送消息
-                    handler.sendEmptyMessage(DISMISS);
-                    Message msg = new Message();
-                    msg.what = ADD_SUCCEESS;
-                    msg.obj = response.toString();
-                    handler.sendMessage(msg);
-                    // Handler
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开链接
-                    }
-                }
+                // 打开链接
+                String url = "http://111.231.101.251:8080/fuwuduan/addGoods.jsp?account=" + acc
+                            + "&title=" + tit + "&content=" + con + "&price=" + pri + "&mobile=" + mob
+                            + "&location=" + loc + "&path1=" + p1 + "&path2=" + p2;
+                // 发送消息
+                handler.sendEmptyMessage(DISMISS);
+                Message msg = new Message();
+                msg.what = ADD_SUCCEESS;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
             }
         }).start();
     }
@@ -896,43 +869,15 @@ public class SearchActivity extends Activity implements
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
-                // Http链接
-                HttpURLConnection connection = null;
-                try {
-                    // 打开链接
-                    URL url = new URL("http://111.231.101.251:8080/kehuduan/goods.jsp");
-                    connection = (HttpURLConnection) url.openConnection();
-                    // 设置属性
-                    connection.setRequestMethod("GET");
-                    // Post 1)容量没有限制 2） 安全
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-                    // 读取数据
-                    // 1)获取位流
-                    InputStream in = connection.getInputStream();
-                    // 二进制-->BufferedReader
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    // 2) 读取
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-                    // 发送消息
-                    Message msg = new Message();
-                    msg.what = READALL;
-                    msg.obj = response.toString();
-                    handler.sendMessage(msg);
-                    // Handler
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开链接
-                    }
+                // 打开链接
+                String url = "http://111.231.101.251:8080/fuwuduan/goods.jsp";
+                // 发送消息
+                Message msg = new Message();
+                msg.what = READALL;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
                 }
-            }
         }).start();
         // 2）解析数据：xml-->ArrayList
     }
@@ -990,4 +935,5 @@ public class SearchActivity extends Activity implements
         }
         Log.d("resultStr", result);
     }
+
 }

@@ -1,4 +1,4 @@
 <resources>
     <string name="app_name">校园二手交易平台</string>
-    <string name="url_server">http://111.231.101.251:8080/kehuduan/version.xml</string>
+    <string name="url_server">http://111.231.101.251:8080/fuwuduan/version.xml</string>
 </resources>
