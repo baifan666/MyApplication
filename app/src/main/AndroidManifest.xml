@@ -72,12 +72,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.SpecificActivity" />
-        <!--会话列表-->
+        <!-- 会话列表 -->
         <activity
             android:name=".activity.ConversationListActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize">
-
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -89,6 +88,7 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
+        <activity android:name=".MyGoodsActivity"></activity>
     </application>
 
 </manifest>

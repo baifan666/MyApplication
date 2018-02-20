@@ -39,8 +39,10 @@ import android.widget.Toast;
 
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -50,6 +52,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 
+import com.example.baifan.myapplication.MyGoodsActivity;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -107,7 +110,7 @@ public class SearchActivity extends Activity implements
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about;
-    private ImageView game1,game2,game3,search,shuaxin;
+    private ImageView game1,game2,game3,search,huihua,fabujilu;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -224,12 +227,23 @@ public class SearchActivity extends Activity implements
             }
         });
 
-        shuaxin = (ImageView) findViewById(R.id.top_shuaxin);
-        shuaxin.setOnClickListener(new View.OnClickListener() {
+        huihua = (ImageView) findViewById(R.id.top_huihua);
+        huihua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(SearchActivity.this, ConversationListActivity.class);
+                startActivity(i);
+            }
+        });
+
+        fabujilu = (ImageView) findViewById(R.id.top_fabujilu);
+        fabujilu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent();
+                i.setClass(SearchActivity.this, MyGoodsActivity.class);
+                i.putExtra("username",account); // 向下一个界面传递信息
                 startActivity(i);
             }
         });
@@ -845,22 +859,35 @@ public class SearchActivity extends Activity implements
         final String pri = d;
         final String mob = e;
         final String loc = f;
-        final String p1 = g;
-        final String p2 = h;
+        final String p1 = g.replace("\\","/");
+        final String p2 = h.replace("\\","/");
 
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                // 打开链接
-                String url = "http://111.231.101.251:8080/fuwuduan/addGoods.jsp?account=" + acc
-                            + "&title=" + tit + "&content=" + con + "&price=" + pri + "&mobile=" + mob
-                            + "&location=" + loc + "&path1=" + p1 + "&path2=" + p2;
-                // 发送消息
-                handler.sendEmptyMessage(DISMISS);
-                Message msg = new Message();
-                msg.what = ADD_SUCCEESS;
-                msg.obj = HttpUtils.connection(url).toString();
-                handler.sendMessage(msg);
+                try {
+                    String acc1 = URLEncoder.encode(acc, "UTF-8");
+                    String tit1 = URLEncoder.encode(tit, "UTF-8");
+                    String con1 = URLEncoder.encode(con, "UTF-8");
+                    String pri1 = URLEncoder.encode(pri, "UTF-8");
+                    String mob1 = URLEncoder.encode(mob, "UTF-8");
+                    String loc1 = URLEncoder.encode(loc, "UTF-8");
+                    String p11 = URLEncoder.encode(p1, "UTF-8");
+                    String p21 = URLEncoder.encode(p2, "UTF-8");
+                    String url = "http://111.231.101.251:8080/fuwuduan/addGoods.jsp?account=" + acc1
+                            + "&title=" + tit1 + "&content=" + con1 + "&price=" + pri1 + "&mobile=" + mob1
+                            + "&location=" + loc1 + "&path1=" + p11 + "&path2=" + p21;
+                    // 发送消息
+                    handler.sendEmptyMessage(DISMISS);
+                    Message msg = new Message();
+                    msg.what = ADD_SUCCEESS;
+                    msg.obj = HttpUtils.connection(url).toString();
+                    handler.sendMessage(msg);
+                }
+                catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
             }
         }).start();
     }
@@ -892,10 +919,16 @@ public class SearchActivity extends Activity implements
             String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
             Log.d("xmlStr", str);
 
+            String id = "";
             String username = "";
             String publish_time = "";
             String title = "";
-
+            String content = "";
+            double price = 0.0;
+            String mobile = "";
+            String location = "";
+            String path1 = "";
+            String path2 = "";
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 result += nodeName;
@@ -907,7 +940,6 @@ public class SearchActivity extends Activity implements
                             String usernameStr = parse.nextText();
                             result += "发布用户为：" + usernameStr + ", ";
                             username = usernameStr;
-
                         } else if ("title".equals(nodeName)) {
                             String titleStr = parse.nextText();
                             result += "标题为" + titleStr + ", ";
@@ -916,13 +948,42 @@ public class SearchActivity extends Activity implements
                             String publish_timeStr = parse.nextText();
                             result += "发布时间为" + publish_timeStr + ", ";
                             publish_time = publish_timeStr.substring(0,publish_timeStr.length()-2);
+                        } else if ("id".equals(nodeName)) {
+                            String idStr = parse.nextText();
+                            result += "发布id为" + idStr + ", ";
+                            id = idStr;
+                        }else if ("content".equals(nodeName)) {
+                            String contentStr = parse.nextText();
+                            result += "内容为" + contentStr + ", ";
+                            content = contentStr;
+                        }else if ("price".equals(nodeName)) {
+                            String priceStr = parse.nextText();
+                            result += "价格为" + priceStr + ", ";
+                            price = Double.parseDouble(priceStr);
+                        }else if ("mobile".equals(nodeName)) {
+                            String mobileStr = parse.nextText();
+                            result += "联系方式为" + mobileStr + ", ";
+                            mobile = mobileStr;
+                        }else if ("location".equals(nodeName)) {
+                            String locationStr = parse.nextText();
+                            result += "地点为" + locationStr + ", ";
+                            location = locationStr;
+                        }else if ("path1".equals(nodeName)) {
+                            String path1Str = parse.nextText();
+                            result += "地址1" + path1Str + ", ";
+                            path1 = path1Str;
+                        }else if ("path2".equals(nodeName)) {
+                            String path2Str = parse.nextText();
+                            result += "地址2" + path2Str + ", ";
+                            path2 = path2Str;
                         }
+
                         break;
                     case XmlPullParser.END_TAG:
                         result += " \n ";
                         Log.d("end_tag", "节点结束");
                         // 添加数据
-                        GoodsInfo info = new GoodsInfo(username, title, publish_time);
+                        GoodsInfo info = new GoodsInfo(id, username, title, publish_time, content, price, mobile, location, path1, path2);
                         goodsdata.add(info);
                         break;
                     default:

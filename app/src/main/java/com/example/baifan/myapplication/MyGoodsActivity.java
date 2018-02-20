@@ -1,50 +1,39 @@
-package com.example.baifan.myapplication.activity;
+package com.example.baifan.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.activity.SearchActivity;
 import com.example.baifan.myapplication.utils.ExitApplication;
 
-import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
+public class MyGoodsActivity extends Activity {
 
-public class SpecificActivity extends Activity {
     private ImageView back;
-    private TextView conversation;
     private String username;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_specific);
+        setContentView(R.layout.activity_my_goods);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
-        Intent intent = getIntent();
-        username = intent.getStringExtra("username");
+
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SpecificActivity.this, SearchActivity.class);
+                Intent intent = new Intent(MyGoodsActivity.this, SearchActivity.class);
                 startActivity(intent);
                 finish();
             }
         });
-
-        conversation = (TextView)findViewById(R.id.conversation);
-        conversation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RongIM.getInstance().startPrivateChat(SpecificActivity.this, username, "聊天中");
-            }
-        });
+        Intent intent = getIntent();
+        username = intent.getStringExtra("username");
+        Toast.makeText(MyGoodsActivity.this, username, Toast.LENGTH_SHORT).show();
     }
 }
