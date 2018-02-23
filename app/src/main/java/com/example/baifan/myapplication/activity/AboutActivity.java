@@ -10,7 +10,7 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
 
 public class AboutActivity extends Activity {

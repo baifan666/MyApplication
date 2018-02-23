@@ -3,18 +3,15 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
 
 public class SpecificActivity extends Activity {
     private ImageView back;

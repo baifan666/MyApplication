@@ -49,6 +49,6 @@ public class GoodsAdapter extends ArrayAdapter<GoodsInfo> {
         title.setText(info.getTitle());
 
         return view;
-
     }
+
 }

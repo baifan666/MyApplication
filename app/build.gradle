@@ -6,8 +6,8 @@ android {
         applicationId "com.example.baifan.myapplication"
         minSdkVersion 19
         targetSdkVersion 23
-        versionCode 27
-        versionName "1.0.26"
+        versionCode 29
+        versionName "1.0.28"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
     }
@@ -26,6 +26,7 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     compile 'com.carson_ho:SearchLayout:1.0.1'
     compile project(':IMKit')
+    compile 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5.1'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation files('libs/tbs_sdk_thirdapp_v3.5.0.1004_43500_sharewithdownload_withoutGame_obfs_20170801_113025.jar')

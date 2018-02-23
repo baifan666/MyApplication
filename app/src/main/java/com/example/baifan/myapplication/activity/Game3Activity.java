@@ -10,7 +10,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
 import com.tencent.smtt.sdk.WebSettings;
 import com.tencent.smtt.sdk.WebView;

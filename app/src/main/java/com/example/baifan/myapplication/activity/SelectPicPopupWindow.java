@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
 
 /**

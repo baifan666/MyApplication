@@ -52,12 +52,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 
-import com.example.baifan.myapplication.MyGoodsActivity;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.DownLoadManager;
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.model.UpdataInfo;
@@ -66,6 +65,9 @@ import com.example.baifan.myapplication.utils.UpdataInfoParser;
 import com.example.baifan.myapplication.utils.UploadUtil;
 import com.example.baifan.myapplication.adapter.Adapter;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
+import com.scwang.smartrefresh.layout.api.OnLoadmoreListener;
+import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -104,7 +106,6 @@ public class SearchActivity extends Activity implements
     private final int ADD_SUCCEESS = 5;
     private final int DISMISS = 6;
     private final int READALL = 7;
-    private final int GETTOKEN = 8;
 
     private UpdataInfo info;
     private String localVersion;
@@ -117,6 +118,7 @@ public class SearchActivity extends Activity implements
     private GridView mGridView;
     private String photoPath;
     private Adapter adapter;
+    private GoodsAdapter goodsadapter;
 
     String result = null;
     private EditText title,content,price,location,mobile;
@@ -128,7 +130,7 @@ public class SearchActivity extends Activity implements
     private Dialog mDialog;
 
     // 物品显示列表
-    private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();;
+    private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();
     private ListView _listGoods;
 
     @Override
@@ -145,8 +147,28 @@ public class SearchActivity extends Activity implements
         initViewPage();
         initEvent();
 
+
+        RefreshLayout refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
+        refreshLayout.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh(RefreshLayout refreshlayout) {
+                readAll(); //从服务端读取所有物品
+             //   goodsadapter.refresh(goodsdata);
+                goodsadapter.notifyDataSetChanged();
+                refreshlayout.finishRefresh(2000);
+            }
+        });
+        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+            @Override
+            public void onLoadmore(RefreshLayout refreshlayout) {
+                refreshlayout.finishLoadmore(2000);
+            }
+        });
+
         _listGoods = (ListView)tab01.findViewById(R.id.listgoods);
-        readAll(); //显示所有物品
+        readAll(); //从服务端读取所有物品
+         goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
+        _listGoods.setAdapter(goodsadapter);
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -470,8 +492,8 @@ public class SearchActivity extends Activity implements
                     String response2 = (String) msg.obj;
                     goodsdata.clear();
                     parserXml2(response2);
-                    GoodsAdapter adapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
-                    _listGoods.setAdapter(adapter);
+//                    GoodsAdapter adapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
+//                    _listGoods.setAdapter(adapter);
                     break;
             }
         }

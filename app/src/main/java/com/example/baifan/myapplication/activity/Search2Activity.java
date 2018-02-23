@@ -3,7 +3,7 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.example.baifan.myapplication.utils.ExitApplication;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
 
 import scut.carson_ho.searchview.ICallBack;
@@ -28,6 +28,7 @@ public class Search2Activity extends Activity {
             @Override
             public void SearchAciton(String string) {
                 System.out.println("我收到了" + string);
+
             }
         });
 
