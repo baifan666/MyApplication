@@ -50,7 +50,6 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
         layout.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 Toast.makeText(getApplicationContext(), "提示：点击窗口外部关闭窗口！",
                         Toast.LENGTH_SHORT).show();
             }

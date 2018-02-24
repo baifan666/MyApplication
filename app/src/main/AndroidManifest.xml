@@ -88,7 +88,8 @@
                     android:scheme="rong" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MyGoodsActivity"></activity>
+        <activity android:name=".activity.MyGoodsActivity" />
+        <activity android:name=".activity.SearchResultActivity"></activity>
     </application>
 
 </manifest>

@@ -49,7 +49,6 @@ public class MainActivity extends AppCompatActivity {
         iv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                // TODO Auto-generated method stub
                 if(isChecked){
                     //如果选中，显示密码
                     userpassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());

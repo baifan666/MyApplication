@@ -61,9 +61,8 @@ public class MyGoodsActivity extends Activity {
         username = intent.getStringExtra("username");
 
         _listGoods = (ListView)findViewById(R.id.listgoods);
+        _listGoods.setEmptyView(findViewById(R.id.myText));
         myreadAll(username);//从服务端读取所有物品
-        mygoodsadapter = new MyGoodsAdapter(MyGoodsActivity.this, R.layout.mygoods_item, goodsdata);
-        _listGoods.setAdapter(mygoodsadapter);
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -98,7 +97,7 @@ public class MyGoodsActivity extends Activity {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/goods.jsp?account="+acc1;
+                    String url = "http://111.231.101.251:8080/fuwuduan/myGoods.jsp?account="+acc1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;
@@ -210,6 +209,8 @@ public class MyGoodsActivity extends Activity {
                     String response2 = (String) msg.obj;
                     goodsdata.clear();
                     parserXml1(response2);
+                    mygoodsadapter = new MyGoodsAdapter(MyGoodsActivity.this, R.layout.mygoods_item, goodsdata);
+                    _listGoods.setAdapter(mygoodsadapter);
                     break;
             }
         }

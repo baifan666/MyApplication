@@ -167,12 +167,9 @@ public class SearchActivity extends Activity implements
 
         _listGoods = (ListView)tab01.findViewById(R.id.listgoods);
         readAll(); //从服务端读取所有物品
-         goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
-        _listGoods.setAdapter(goodsadapter);
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                // TODO Auto-generated method stub
                 GoodsInfo goodsInfo = goodsdata.get(position);
                 //Toast.makeText(SearchActivity.this,usertoken+"2222", Toast.LENGTH_SHORT).show();
                 String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
@@ -356,7 +353,6 @@ public class SearchActivity extends Activity implements
                     CheckVersionTask cv = new CheckVersionTask();
                     new Thread(cv).start();
                 } catch (Exception e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -437,7 +433,6 @@ public class SearchActivity extends Activity implements
     Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            // TODO Auto-generated method stub
             super.handleMessage(msg);
             switch (msg.what) {
                 case UPDATA_NONEED:
@@ -492,8 +487,8 @@ public class SearchActivity extends Activity implements
                     String response2 = (String) msg.obj;
                     goodsdata.clear();
                     parserXml2(response2);
-//                    GoodsAdapter adapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
-//                    _listGoods.setAdapter(adapter);
+                    goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
+                    _listGoods.setAdapter(goodsadapter);
                     break;
             }
         }
@@ -522,7 +517,6 @@ public class SearchActivity extends Activity implements
         //当点取消按钮时进行登录
         builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                // TODO Auto-generated method stub
             }
         });
         AlertDialog dialog = builer.create();

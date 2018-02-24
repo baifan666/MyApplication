@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.baifan.myapplication.application.ExitApplication;
@@ -27,8 +28,10 @@ public class Search2Activity extends Activity {
         searchView.setOnClickSearch(new ICallBack() {
             @Override
             public void SearchAciton(String string) {
-                System.out.println("我收到了" + string);
-
+                //System.out.println("我收到了" + string);
+                Intent intent = new Intent(Search2Activity.this, SearchResultActivity.class);
+                intent.putExtra("guanjianzi",string); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
 

@@ -17,16 +17,14 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.net.URLEncoder;
 
 public class RegActivity extends Activity {
@@ -228,40 +226,16 @@ public class RegActivity extends Activity {
                     String a2 = URLEncoder.encode(a, "UTF-8"); // 中文转译！
                     String s2 = URLEncoder.encode(s, "UTF-8"); // 中文转译！
                     // 打开链接
-                    URL url = new URL("http://111.231.101.251:8080/kehuduan/adduser.jsp?account=" + a2 + "&password="
-                            + p + "&name=" + s2 + "&phone=" + cell);
-
-                    connection = (HttpURLConnection) url.openConnection();
-
-                    // 设置属性
-                    connection.setRequestMethod("GET");
-                    // Post 1)容量没有限制 2） 安全
-                    connection.setReadTimeout(8000);
-                    connection.setConnectTimeout(8000);
-                    // 读取数据
-                    // 1)获取位流
-                    InputStream in = connection.getInputStream();
-                    // 二进制-->BufferedReader
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    // 2) 读取
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
-                    }
-
+                    String url = "http://111.231.101.251:8080/fuwuduan/adduser.jsp?account=" + a2 + "&password="
+                            + p + "&name=" + s2 + "&phone=" + cell;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = 1;
-                    msg.obj = response.toString();
+                    msg.obj = HttpUtils.connection(url).toString();
                     _handler.sendMessage(msg);
                     // Handler
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                } finally {
-                    if (connection != null) {
-                        connection.disconnect(); // 断开链接
-                    }
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
