@@ -171,10 +171,8 @@ public class SearchActivity extends Activity implements
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GoodsInfo goodsInfo = goodsdata.get(position);
-                //Toast.makeText(SearchActivity.this,usertoken+"2222", Toast.LENGTH_SHORT).show();
-                String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
                 Intent intent = new Intent(SearchActivity.this, SpecificActivity.class);
-                intent.putExtra("username",n); // 向下一个界面传递信息
+                intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });

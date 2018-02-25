@@ -38,8 +38,6 @@ public class AboutActivity extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AboutActivity.this, SearchActivity.class);
-                startActivity(intent);
                 finish();
             }
         });

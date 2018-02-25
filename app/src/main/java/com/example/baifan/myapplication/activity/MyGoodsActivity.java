@@ -52,14 +52,12 @@ public class MyGoodsActivity extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MyGoodsActivity.this, SearchActivity.class);
-                startActivity(intent);
+                goodsdata.clear();
                 finish();
             }
         });
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
-
         _listGoods = (ListView)findViewById(R.id.listgoods);
         _listGoods.setEmptyView(findViewById(R.id.myText));
         myreadAll(username);//从服务端读取所有物品
@@ -67,7 +65,6 @@ public class MyGoodsActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GoodsInfo goodsInfo = goodsdata.get(position);
-                //Toast.makeText(SearchActivity.this,usertoken+"2222", Toast.LENGTH_SHORT).show();
                 String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
 //                Intent intent = new Intent(MyGoodsActivity.this, SpecificActivity.class);
 //                intent.putExtra("username",n); // 向下一个界面传递信息

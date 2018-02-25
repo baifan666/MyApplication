@@ -37,14 +37,14 @@ public class MyGoodsAdapter  extends ArrayAdapter<GoodsInfo> {
         else{
             view = convertView;
         }
-        // 发布用户
-        TextView username = ( TextView )view.findViewById(R.id.username);
+        // 内容
+        TextView content = ( TextView )view.findViewById(R.id.content);
         // 发布时间
         TextView publish_time =( TextView )view.findViewById(R.id.publish_time);
         // 标题
         TextView title = ( TextView )view.findViewById(R.id.title);
 
-        username.setText(info.getUsername());
+        content.setText(info.getContent());
         publish_time.setText(info.getPublish_time());
         title.setText(info.getTitle());
 

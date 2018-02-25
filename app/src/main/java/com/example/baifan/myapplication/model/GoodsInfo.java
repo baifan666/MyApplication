@@ -1,10 +1,12 @@
 package com.example.baifan.myapplication.model;
 
+import java.io.Serializable;
+
 /**
  * Created by baifan on 2018/1/12.
  */
 
-public class GoodsInfo {
+public class GoodsInfo implements Serializable {
     private String id;
     private String username;
     private String title;
@@ -88,7 +90,7 @@ public class GoodsInfo {
         this.deleted = deleted;
     }
 
-    public String getParh1() {
+    public String getPath1() {
         return path1;
     }
 
@@ -96,7 +98,7 @@ public class GoodsInfo {
         this.path1 = path1;
     }
 
-    public String getParh2() {
+    public String getPath2() {
         return path2;
     }
 

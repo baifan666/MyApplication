@@ -48,8 +48,6 @@ public class Game3Activity extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(Game3Activity.this, SearchActivity.class);
-                startActivity(intent);
                 finish();
             }
         });

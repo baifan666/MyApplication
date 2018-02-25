@@ -49,8 +49,6 @@ public class RegActivity extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(RegActivity.this, MainActivity.class);
-                startActivity(intent);
                 finish();
             }
         });

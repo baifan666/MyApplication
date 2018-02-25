@@ -50,19 +50,17 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
                 android:orientation="vertical">
                 <ListView
                     android:id="@+id/listgoods"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="top">
+                    android:layout_height="wrap_content">
                 </ListView>
                 <TextView
                     android:id="@+id/myText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:textSize="20dp"
                     android:text="没有发布记录"/>
             </LinearLayout>

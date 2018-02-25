@@ -11,6 +11,7 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
@@ -51,15 +52,12 @@ public class SearchResultActivity extends Activity {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SearchResultActivity.this, Search2Activity.class);
-                startActivity(intent);
                 finish();
             }
         });
 
         Intent intent = getIntent();
         guanjianzi = intent.getStringExtra("guanjianzi");
-
         _listGoods = (ListView)findViewById(R.id.listgoods);
         _listGoods.setEmptyView(findViewById(R.id.myText));
         search(guanjianzi);//查询
@@ -67,11 +65,9 @@ public class SearchResultActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GoodsInfo goodsInfo = goodsdata.get(position);
-                //Toast.makeText(SearchActivity.this,usertoken+"2222", Toast.LENGTH_SHORT).show();
-                String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
-//                Intent intent = new Intent(MyGoodsActivity.this, SpecificActivity.class);
-//                intent.putExtra("username",n); // 向下一个界面传递信息
-//                startActivity(intent);
+                Intent intent = new Intent(SearchResultActivity.this, SpecificActivity.class);
+                intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
         RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
@@ -100,7 +96,7 @@ public class SearchResultActivity extends Activity {
                 try {
                     String str1 = URLEncoder.encode(str, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/search.jsp?account="+str1;
+                    String url = "http://111.231.101.251:8080/fuwuduan/search.jsp?str="+str1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = SEARCH;
@@ -209,9 +205,9 @@ public class SearchResultActivity extends Activity {
             super.handleMessage(msg);
             switch (msg.what) {
                 case SEARCH:
-                    String response2 = (String) msg.obj;
+                    String response1 = (String) msg.obj;
                     goodsdata.clear();
-                    parserXml1(response2);
+                    parserXml1(response1);
                     goodsadapter = new GoodsAdapter(SearchResultActivity.this, R.layout.goods_item, goodsdata);
                     _listGoods.setAdapter(goodsadapter);
                     break;
