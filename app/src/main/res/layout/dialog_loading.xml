@@ -9,7 +9,6 @@
     <LinearLayout
         android:layout_width="150dp"
         android:layout_height="110dp"
-        android:background="#dedede"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingBottom="10dp"

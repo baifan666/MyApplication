@@ -6,14 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
@@ -25,9 +30,10 @@ import static com.tencent.smtt.sdk.TbsReaderView.TAG;
 public class SpecificActivity extends Activity {
     private ImageView back,imageView1,imageView2;
     TextView username,publishtime,title,content,price,location,mobile;
-    private String path1,path2;
+    private String path1,path2,url1,url2;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
+    private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +61,71 @@ public class SpecificActivity extends Activity {
         path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/")+1);
         imageView1 = (ImageView)findViewById(R.id.image_view1);
         imageView2 = (ImageView)findViewById(R.id.image_view2);
-        String url1 = "http://111.231.101.251:8080/fuwuduan/upload/"+path1;
-        String url2 = "http://111.231.101.251:8080/fuwuduan/upload/"+path2;
-        Glide.with(this).load(url1).into(imageView1);
-        Glide.with(this).load(url2).into(imageView2);
+        if(path1 != null) {
+            url1 = "http://111.231.101.251:8080/fuwuduan/upload/"+path1;
+        }
+        if(path2 != null) {
+            url2 = "http://111.231.101.251:8080/fuwuduan/upload/"+path2;
+        }
+        Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                .listener( requestListener1 )
+                .error(R.drawable.error)//图片加载失败后，显示的图片
+                .into(imageView1);
+        Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                .listener( requestListener2 )
+                .error(R.drawable.error)//图片加载失败后，显示的图片
+                .into(imageView2);
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (flag1 == 2) {
+                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                            .listener( requestListener1 )
+                            .error(R.drawable.error)//图片加载失败后，显示的图片
+                            .into(imageView1);
+                }else if (flag1 == 1) {
+                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
+                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
+                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
+                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
+                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                            .into(img);
+                    dialog.setView(imgEntryView); // 自定义dialog
+                    dialog.show();
+                    imgEntryView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View paramView) {
+                            dialog.cancel();
+                        }
+                    });
+                }
+            }
+        });
+
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (flag2 == 2) {
+                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                            .listener( requestListener2 )
+                            .error(R.drawable.error)//图片加载失败后，显示的图片
+                            .into(imageView2);
+                }else if (flag2 == 1) {
+                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
+                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
+                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
+                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
+                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                            .into(img);
+                    dialog.setView(imgEntryView); // 自定义dialog
+                    dialog.show();
+                    imgEntryView.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View paramView) {
+                            dialog.cancel();
+                        }
+                    });
+                }
+            }
+        });
 
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -105,7 +172,7 @@ public class SpecificActivity extends Activity {
             }
         });
 
-        //当点取消按钮时进行登录
+        //当点取消按钮时
         builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
             }
@@ -113,4 +180,40 @@ public class SpecificActivity extends Activity {
         AlertDialog dialog = builer.create();
         dialog.show();
     }
+
+    //设置错误监听
+    private RequestListener<String, GlideDrawable> requestListener1 = new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            if(e.toString().contains("java.net.SocketTimeoutException")) {
+                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
+                flag1= 2;
+            }
+            //Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+            // important to return false so the error placeholder can be placed
+            return false;
+        }
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            flag1 = 1;
+            return false;
+        }
+    };
+    private RequestListener<String, GlideDrawable> requestListener2 = new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            if(e.toString().contains("java.net.SocketTimeoutException")) {
+                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
+                flag2= 2;
+            }
+            //Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+            // important to return false so the error placeholder can be placed
+            return false;
+        }
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            flag2 = 1;
+            return false;
+        }
+    };
 }
