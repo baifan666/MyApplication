@@ -10,13 +10,19 @@
     <LinearLayout style="@style/wrap_layout" >
         <!-- 上圆角top_layout-->
         <LinearLayout style="@style/top_layout">
-            <TextView style="@style/usertext" android:text="账号管理" />
+            <TextView style="@style/usertext"
+                android:id="@+id/zhanghaoguanli"
+                android:clickable="true"
+                android:text="账号管理" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
         <View style="@style/bg_line"/>
         <!-- 无圆角-->
         <LinearLayout style="@style/mid_layout">
-            <TextView style="@style/usertext" android:text="金币商城" />
+            <TextView style="@style/usertext"
+                android:id="@+id/jinbishangcheng"
+                android:clickable="true"
+                android:text="金币商城" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
 
@@ -43,6 +49,8 @@
         <!-- 无圆角-->
         <LinearLayout style="@style/mid_layout">
             <TextView style="@style/usertext"
+                android:id="@+id/fankui"
+                android:clickable="true"
                 android:text="意见反馈" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>

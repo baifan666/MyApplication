@@ -65,10 +65,9 @@ public class MyGoodsActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 GoodsInfo goodsInfo = goodsdata.get(position);
-                String n = goodsInfo.getUsername(); // 获取当前点击子项的用户名
-//                Intent intent = new Intent(MyGoodsActivity.this, SpecificActivity.class);
-//                intent.putExtra("username",n); // 向下一个界面传递信息
-//                startActivity(intent);
+                Intent intent = new Intent(MyGoodsActivity.this, MyGoodsSpecificActivity.class);
+                intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
 

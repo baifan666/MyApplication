@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,21 +24,19 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 
-import io.rong.imkit.RongIM;
 
-
-public class SpecificActivity extends Activity {
+public class MyGoodsSpecificActivity extends Activity {
     private ImageView back,imageView1,imageView2;
     TextView username,publishtime,title,content,price,location,mobile;
     private String path1,path2,url1,url2;
-    private Button conversation,buy;
+    private Button shanchu,xiugai;
     private GoodsInfo goodsInfo;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_specific);
+        setContentView(R.layout.activity_my_goods_specific);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
@@ -82,16 +81,16 @@ public class SpecificActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (flag1 == 2) {
-                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                    Glide.with(MyGoodsSpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                             .listener( requestListener1 )
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView1);
                 }else if (flag1 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
+                    LayoutInflater inflater = LayoutInflater.from(MyGoodsSpecificActivity.this);
                     View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
+                    final AlertDialog dialog = new AlertDialog.Builder(MyGoodsSpecificActivity.this).create();
                     ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                    Glide.with(MyGoodsSpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                             .into(img);
                     dialog.show();
                     DisplayMetrics dm = new DisplayMetrics();
@@ -114,16 +113,16 @@ public class SpecificActivity extends Activity {
             @Override
             public void onClick(View view) {
                 if (flag2 == 2) {
-                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                    Glide.with(MyGoodsSpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                             .listener( requestListener2 )
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView2);
                 }else if (flag2 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
+                    LayoutInflater inflater = LayoutInflater.from(MyGoodsSpecificActivity.this);
                     View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
+                    final AlertDialog dialog = new AlertDialog.Builder(MyGoodsSpecificActivity.this).create();
                     ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                    Glide.with(MyGoodsSpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                             .into(img);
                     dialog.show();
                     DisplayMetrics dm = new DisplayMetrics();
@@ -149,40 +148,40 @@ public class SpecificActivity extends Activity {
                 finish();
             }
         });
-
-        conversation = (Button)findViewById(R.id.conversation);
-        conversation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                RongIM.getInstance().startPrivateChat(SpecificActivity.this, goodsInfo.getUsername(), "聊天中");
-            }
-        });
-        buy = (Button)findViewById(R.id.buy);
-        buy.setOnClickListener(new View.OnClickListener() {
+        shanchu = (Button)findViewById(R.id.shanchu);
+        shanchu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
             }
         });
+        xiugai = (Button)findViewById(R.id.xiugai);
+        xiugai.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
     }
 
     /*
-  *
-  * 弹出对话框
-  *
-  * 弹出对话框的步骤：
-  *  1.创建alertDialog的builder.
-  *  2.要给builder设置属性, 对话框的内容,样式,按钮
-  *  3.通过builder 创建一个对话框
-  *  4.对话框show()出来
-  */
+*
+* 弹出对话框
+*
+* 弹出对话框的步骤：
+*  1.创建alertDialog的builder.
+*  2.要给builder设置属性, 对话框的内容,样式,按钮
+*  3.通过builder 创建一个对话框
+*  4.对话框show()出来
+*/
     protected void showDialog() {
         AlertDialog.Builder builer = new AlertDialog.Builder(this) ;
         builer.setTitle("二次确认");
-        builer.setMessage("确定要购买吗？请务必和发布人确认清楚哦！");
+        builer.setMessage("确定要删除吗？删除后目前系统无法恢复哦！");
         //当点确定按钮时
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+
             }
         });
 
@@ -200,10 +199,10 @@ public class SpecificActivity extends Activity {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
+                Toast.makeText(MyGoodsSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
                 flag1= 2;
             } else if (e.toString() == "")
-            Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+                Toast.makeText(MyGoodsSpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
             // important to return false so the error placeholder can be placed
             return false;
         }
@@ -217,7 +216,7 @@ public class SpecificActivity extends Activity {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
+                Toast.makeText(MyGoodsSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
                 flag2= 2;
             }
             //Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();

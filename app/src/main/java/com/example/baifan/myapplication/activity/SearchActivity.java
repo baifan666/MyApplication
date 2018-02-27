@@ -110,7 +110,7 @@ public class SearchActivity extends Activity implements
     private UpdataInfo info;
     private String localVersion;
 
-    private TextView cache,gengxin,deletecache,about;
+    private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui;
     private ImageView game1,game2,game3,search,huihua,fabujilu;
     private Button send_btn;
 
@@ -368,12 +368,41 @@ public class SearchActivity extends Activity implements
                 }
             }
         });
-        about=(TextView)tab04.findViewById(R.id.about);
+        about = (TextView)tab04.findViewById(R.id.about);
         about.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, AboutActivity.class);
+                startActivity(intent);
+            }
+        });
+        zhanghaoguanli = (TextView)tab04.findViewById(R.id.zhanghaoguanli);
+        zhanghaoguanli.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, AccountManagementActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+        jinbishangcheng = (TextView)tab04.findViewById(R.id.jinbishangcheng);
+        jinbishangcheng.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, CoinMallActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+        fankui = (TextView)tab04.findViewById(R.id.fankui);
+        fankui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, OpinionActivity.class);
                 startActivity(intent);
             }
         });
