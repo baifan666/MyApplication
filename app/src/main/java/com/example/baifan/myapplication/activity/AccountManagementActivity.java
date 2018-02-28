@@ -1,14 +1,19 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
+import android.widget.TextView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 
 public class AccountManagementActivity extends Activity {
-
+    private TextView exitapp,updatepassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -16,5 +21,50 @@ public class AccountManagementActivity extends Activity {
         setContentView(R.layout.activity_account_management);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        exitapp = (TextView)findViewById(R.id.exitapp);
+        exitapp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showDialog();
+            }
+        });
+        updatepassword = (TextView)findViewById(R.id.updatepassword);
+        updatepassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+    }
+
+    /*
+*
+* 弹出对话框
+*
+* 弹出对话框的步骤：
+*  1.创建alertDialog的builder.
+*  2.要给builder设置属性, 对话框的内容,样式,按钮
+*  3.通过builder 创建一个对话框
+*  4.对话框show()出来
+*/
+    protected void showDialog() {
+        AlertDialog.Builder builer = new AlertDialog.Builder(this) ;
+        builer.setTitle("退出登陆");
+        builer.setMessage("确定要退出登陆吗？点击确定将返回登陆页面");
+        //当点确定按钮时
+        builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(AccountManagementActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+        //当点取消按钮时
+        builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        AlertDialog dialog = builer.create();
+        dialog.show();
     }
 }

@@ -7,8 +7,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/IV_back"
@@ -26,25 +25,31 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:text="账户管理"
+            android:text="账号管理"
             android:textColor="#00868B"
             android:textSize="20sp" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_weight="40"
-        android:gravity="center"
-        android:orientation="vertical">
-        <TextView
-            android:id="@+id/textview1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="页面开发中"
-            android:textColor="#ffb700"
-            android:textSize="32dp" />
+
+
+    <LinearLayout style="@style/wrap_layout" >
+        <!-- 上圆角top_layout-->
+        <LinearLayout style="@style/top_layout">
+            <TextView style="@style/usertext"
+                android:id="@+id/updatepassword"
+                android:clickable="true"
+                android:text="修改密码" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <View style="@style/bg_line"/>
+        <!-- 下圆角bottom_layout-->
+        <LinearLayout style="@style/bottom_layout">
+            <TextView style="@style/usertext"
+                android:id="@+id/exitapp"
+                android:clickable="true"
+                android:text="退出登陆" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
 
     </LinearLayout>
 

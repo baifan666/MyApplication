@@ -128,10 +128,8 @@ public class SpecificActivity extends Activity {
                     dialog.show();
                     DisplayMetrics dm = new DisplayMetrics();
                     getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    int width = dm.widthPixels;
-                    int height = dm.heightPixels;
                     // 设置dialog的宽高为屏幕的宽高
-                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(width, height);
+                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(dm.widthPixels, dm.heightPixels);
                     dialog.setContentView(imgEntryView, layoutParams);
                     imgEntryView.setOnClickListener(new View.OnClickListener() {
                         public void onClick(View paramView) {
