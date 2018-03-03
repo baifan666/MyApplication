@@ -30,6 +30,8 @@
         <!-- 下圆角bottom_layout-->
         <LinearLayout style="@style/bottom_layout">
             <TextView style="@style/usertext"
+                android:id="@+id/myorders"
+                android:clickable="true"
                 android:text="我的订单" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>

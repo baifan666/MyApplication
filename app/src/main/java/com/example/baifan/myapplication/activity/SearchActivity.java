@@ -173,11 +173,10 @@ public class SearchActivity extends Activity implements
                 GoodsInfo goodsInfo = goodsdata.get(position);
                 Intent intent = new Intent(SearchActivity.this, SpecificActivity.class);
                 intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
+                intent.putExtra("account",account);
                 startActivity(intent);
             }
         });
-
-
 
         title = (EditText)tab02.findViewById(R.id.title);
         content = (EditText)tab02.findViewById(R.id.content);

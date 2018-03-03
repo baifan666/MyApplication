@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +22,18 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.adapter.GoodsAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
+import com.example.baifan.myapplication.utils.HttpUtils;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 import io.rong.imkit.RongIM;
 
@@ -29,9 +41,10 @@ import io.rong.imkit.RongIM;
 public class SpecificActivity extends Activity {
     private ImageView back,imageView1,imageView2;
     TextView username,publishtime,title,content,price,location,mobile;
-    private String path1,path2,url1,url2;
+    private String account,path1,path2,url1,url2;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
+    private final int ADD_SUCCEESS = 1;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +54,7 @@ public class SpecificActivity extends Activity {
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
+        account = intent.getStringExtra("account");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
         username = (TextView)findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
@@ -87,25 +101,10 @@ public class SpecificActivity extends Activity {
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView1);
                 }else if (flag1 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
-                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
-                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .into(img);
-                    dialog.show();
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    int width = dm.widthPixels;
-                    int height = dm.heightPixels;
-                    // 设置dialog的宽高为屏幕的宽高
-                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(width, height);
-                    dialog.setContentView(imgEntryView, layoutParams);
-                    imgEntryView.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View paramView) {
-                            dialog.cancel();
-                        }
-                    });
+                    Intent intent=new Intent();
+                    intent.setClass(SpecificActivity.this, PictureActivity.class);
+                    intent.putExtra("url",url1); // 向下一个界面传递信息
+                    startActivity(intent);
                 }
             }
         });
@@ -119,23 +118,10 @@ public class SpecificActivity extends Activity {
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView2);
                 }else if (flag2 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
-                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(SpecificActivity.this).create();
-                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .into(img);
-                    dialog.show();
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    // 设置dialog的宽高为屏幕的宽高
-                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(dm.widthPixels, dm.heightPixels);
-                    dialog.setContentView(imgEntryView, layoutParams);
-                    imgEntryView.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View paramView) {
-                            dialog.cancel();
-                        }
-                    });
+                    Intent intent=new Intent();
+                    intent.setClass(SpecificActivity.this, PictureActivity.class);
+                    intent.putExtra("url",url2); // 向下一个界面传递信息
+                    startActivity(intent);
                 }
             }
         });
@@ -181,6 +167,7 @@ public class SpecificActivity extends Activity {
         //当点确定按钮时
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
+                addOredrs(goodsInfo.getId(), account, goodsInfo.getUsername());
             }
         });
 
@@ -228,4 +215,102 @@ public class SpecificActivity extends Activity {
             return false;
         }
     };
+
+    Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case ADD_SUCCEESS:
+                    String response = (String) msg.obj;
+                    if (parserXml(response)) {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SpecificActivity.this);
+                        dialog.setTitle("success");
+                        dialog.setMessage("购买成功!");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 购买成功后 跳转回首页
+                                Intent intent = new Intent(SpecificActivity.this, SearchActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    } else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SpecificActivity.this);
+                        dialog.setTitle("This is a warnining!");
+                        dialog.setMessage("对不起，系统出错了！");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                            }
+                        });
+                        dialog.show();
+                    }
+                    break;
+            }
+        }
+    };
+
+    private boolean parserXml(String xmlData) {
+
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String result = "";
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                        }
+                        // 简单的判断物品是否发布成功
+                        if (result.equals("succeessful"))
+                            return true;
+                        else if (result.equals("failed"))
+                            return false;
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return false;
+        }
+        return false;
+    }
+
+    private void addOredrs(String a, String b, String c) {
+        final String goods = a;
+        final String buyer= b;
+        final String seller = c;
+
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                try {
+                    String goodsid = URLEncoder.encode(goods, "UTF-8");
+                    String buyerid = URLEncoder.encode(buyer, "UTF-8");
+                    String sellerid = URLEncoder.encode(seller, "UTF-8");
+                    String url = "http://111.231.101.251:8080/fuwuduan/addOrders.jsp?goodsid=" + goodsid
+                            + "&buyerid=" + buyerid + "&sellerid=" + sellerid;
+                    // 发送消息
+                    Message msg = new Message();
+                    msg.what = ADD_SUCCEESS;
+                    msg.obj = HttpUtils.connection(url).toString();
+                    handler.sendMessage(msg);
+                }
+                catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+    }
 }

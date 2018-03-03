@@ -93,7 +93,9 @@
         <activity android:name=".activity.MyGoodsSpecificActivity" />
         <activity android:name=".activity.AccountManagementActivity" />
         <activity android:name=".activity.CoinMallActivity" />
-        <activity android:name=".activity.OpinionActivity"></activity>
+        <activity android:name=".activity.OpinionActivity" />
+        <activity android:name=".activity.PictureActivity" />
+        <activity android:name=".activity.MyOrdersActivity"></activity>
     </application>
 
 </manifest>
