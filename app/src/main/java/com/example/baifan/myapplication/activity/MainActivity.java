@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/denglu.jsp?account=" + account+ "&password=" + password;
+                String url = "http://111.231.101.251:8080/fuwuduan/dengLu.jsp?account=" + account+ "&password=" + password;
                 Message msg = new Message();
                 msg.what = 1;
                 msg.obj = HttpUtils.connection(url).toString();

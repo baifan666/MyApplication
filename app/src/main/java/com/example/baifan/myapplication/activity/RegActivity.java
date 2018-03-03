@@ -224,7 +224,7 @@ public class RegActivity extends Activity {
                     String a2 = URLEncoder.encode(a, "UTF-8"); // 中文转译！
                     String s2 = URLEncoder.encode(s, "UTF-8"); // 中文转译！
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/adduser.jsp?account=" + a2 + "&password="
+                    String url = "http://111.231.101.251:8080/fuwuduan/addUser.jsp?account=" + a2 + "&password="
                             + p + "&name=" + s2 + "&phone=" + cell;
                     // 发送消息
                     Message msg = new Message();

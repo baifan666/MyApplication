@@ -96,7 +96,7 @@ public class SearchResultActivity extends Activity {
                 try {
                     String str1 = URLEncoder.encode(str, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/search.jsp?str="+str1;
+                    String url = "http://111.231.101.251:8080/fuwuduan/searchGoods.jsp?str="+str1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = SEARCH;
