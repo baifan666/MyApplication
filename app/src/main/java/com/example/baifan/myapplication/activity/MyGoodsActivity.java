@@ -76,7 +76,6 @@ public class MyGoodsActivity extends Activity {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 myreadAll(username); //从服务端读取所有物品
-                //   goodsadapter.refresh(goodsdata);
                 mygoodsadapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh(2000);
             }

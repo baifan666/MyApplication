@@ -140,10 +140,6 @@ public class MainActivity extends AppCompatActivity {
                             dialog.show();
                         }
                         break;
-                    case 3:
-                        Toast.makeText(MainActivity.this,usertoken , Toast.LENGTH_SHORT).show();
-
-                        break;
                     default:
                         break;
                 }
@@ -202,11 +198,6 @@ public class MainActivity extends AppCompatActivity {
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
                             Log.d("result", result);
-                        }
-                        if ("token".equals(nodeName)) {
-                            String tokenStr = parse.nextText();
-                            usertoken = tokenStr;
-                            Log.d("token", usertoken);
                         }
                         break;
                     case XmlPullParser.END_TAG:

@@ -56,43 +56,46 @@
         android:orientation="vertical" >
 
         <EditText
+            android:drawableLeft="@drawable/yonghuming"
             android:id="@+id/new_act"
             android:layout_width="match_parent"
-            android:layout_height="45dip"
+            android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_edittext"
             android:hint="请输入用户名"
-            android:padding="10dip"
+            android:padding="10dp"
             android:singleLine="true"
             android:textColorHint="#AAAAAA" />
 
         <EditText
+            android:drawableLeft="@drawable/mima"
             android:id="@+id/new_psd1"
             android:layout_width="match_parent"
-            android:layout_height="45dip"
+            android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_edittext"
             android:hint="请输入密码"
             android:inputType="textPassword"
-            android:padding="10dip"
+            android:padding="10dp"
             android:singleLine="true"
             android:textColorHint="#AAAAAA" />
 
         <EditText
+            android:drawableLeft="@drawable/mima"
             android:id="@+id/new_psd2"
             android:layout_width="match_parent"
-            android:layout_height="45dip"
+            android:layout_height="45dp"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_edittext"
             android:hint="请再次输入密码"
             android:inputType="textPassword"
-            android:padding="10dip"
+            android:padding="10dp"
             android:singleLine="true"
             android:textColorHint="#AAAAAA" />
 
@@ -102,23 +105,25 @@
             android:orientation="vertical" >
 
             <EditText
+                android:drawableLeft="@drawable/yonghuming"
                 android:id="@+id/name"
                 android:layout_width="match_parent"
-                android:layout_height="45dip"
+                android:layout_height="45dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/bg_edittext"
                 android:hint="请输入姓名"
-                android:padding="5dip"
+                android:padding="10dp"
                 android:singleLine="true"
                 android:textColorHint="#AAAAAA" />
 
             <EditText
+                android:drawableLeft="@drawable/phone"
                 android:id="@+id/mobile"
                 android:layout_width="match_parent"
-                android:layout_height="45dip"
+                android:layout_height="45dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginTop="10dp"
@@ -126,7 +131,7 @@
                 android:background="@drawable/bg_edittext"
                 android:hint="请输入手机号码"
                 android:inputType="number"
-                android:padding="5dip"
+                android:padding="10dp"
                 android:singleLine="true"
                 android:textColorHint="#AAAAAA" />
 
@@ -134,13 +139,15 @@
 
         <Button
             android:id="@+id/register"
-            android:layout_width="fill_parent"
-            android:layout_height="45dip"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:layout_marginTop="15dp"
-            android:hint="注册"
-            android:textColor="#fff" />
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/btn_green"
+            android:text="注册"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 

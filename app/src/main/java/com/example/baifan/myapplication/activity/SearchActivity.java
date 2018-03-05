@@ -110,7 +110,7 @@ public class SearchActivity extends Activity implements
     private UpdataInfo info;
     private String localVersion;
 
-    private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui;
+    private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders;
     private ImageView game1,game2,game3,search,huihua,fabujilu;
     private Button send_btn;
 
@@ -402,6 +402,17 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, OpinionActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+        myorders = (TextView)tab04.findViewById(R.id.myorders);
+        myorders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, MyOrdersActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });

@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 
 public class AccountManagementActivity extends Activity {
     private TextView exitapp,updatepassword;
+    private String account;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,8 @@ public class AccountManagementActivity extends Activity {
         setContentView(R.layout.activity_account_management);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        Intent intent = getIntent();
+        account = intent.getStringExtra("username");
         exitapp = (TextView)findViewById(R.id.exitapp);
         exitapp.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,7 +36,10 @@ public class AccountManagementActivity extends Activity {
         updatepassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent=new Intent();
+                intent.setClass(AccountManagementActivity.this, ChangePasswordActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
     }

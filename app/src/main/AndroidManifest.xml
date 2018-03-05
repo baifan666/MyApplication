@@ -95,7 +95,9 @@
         <activity android:name=".activity.CoinMallActivity" />
         <activity android:name=".activity.OpinionActivity" />
         <activity android:name=".activity.PictureActivity" />
-        <activity android:name=".activity.MyOrdersActivity"></activity>
+        <activity android:name=".activity.MyOrdersActivity" />
+        <activity android:name=".activity.ChangePasswordActivity" />
+        <activity android:name=".activity.MyOrdersSpecificActivity"></activity>
     </application>
 
 </manifest>
