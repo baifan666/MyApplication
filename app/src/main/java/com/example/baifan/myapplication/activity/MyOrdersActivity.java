@@ -35,7 +35,7 @@ import java.util.List;
 public class MyOrdersActivity extends Activity {
     private final int MYREADALL = 1;
     private ImageView back;
-    private String account, isfinish;
+    private String account, isfinish="";
     // 物品显示列表
     private ArrayList<OrderSpecificInfo> orderdata = new ArrayList<OrderSpecificInfo>();
     private ListView _listOrders;
@@ -60,6 +60,7 @@ public class MyOrdersActivity extends Activity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 switch (i) {
                     case 0:
+                        isfinish = "";
                         myAll(account);
                         break;
                     case 1:
@@ -102,7 +103,11 @@ public class MyOrdersActivity extends Activity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                myreadAll(account,isfinish);
+                if("".equals(isfinish)) {
+                    myAll(account);
+                }else {
+                    myreadAll(account,isfinish);
+                }
                 myorderadapter.notifyDataSetChanged();
                 refreshlayout.finishRefresh(2000);
             }

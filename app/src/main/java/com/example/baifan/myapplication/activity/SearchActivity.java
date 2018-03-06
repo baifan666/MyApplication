@@ -69,6 +69,7 @@ import com.scwang.smartrefresh.layout.api.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
+import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -110,8 +111,8 @@ public class SearchActivity extends Activity implements
     private UpdataInfo info;
     private String localVersion;
 
-    private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders;
-    private ImageView game1,game2,game3,search,huihua,fabujilu;
+    private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders,wodefabu,shouchuwupin;
+    private ImageView game1,game2,game3,search,huihua;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -253,8 +254,8 @@ public class SearchActivity extends Activity implements
             }
         });
 
-        fabujilu = (ImageView) findViewById(R.id.top_fabujilu);
-        fabujilu.setOnClickListener(new View.OnClickListener() {
+        wodefabu = (TextView) tab04.findViewById(R.id.wodefabu);
+        wodefabu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent i = new Intent();
@@ -408,6 +409,16 @@ public class SearchActivity extends Activity implements
         });
         myorders = (TextView)tab04.findViewById(R.id.myorders);
         myorders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, MyOrdersActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+        shouchuwupin = (TextView)tab04.findViewById(R.id.shouchuwupin);
+        shouchuwupin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();

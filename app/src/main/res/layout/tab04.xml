@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -12,6 +17,7 @@
         <LinearLayout style="@style/top_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/zhanghaoguanli"
+                android:drawableLeft="@drawable/zhanghaoguanli"
                 android:clickable="true"
                 android:text="账号管理" />
             <ImageView style="@style/img_arrow"/>
@@ -21,16 +27,35 @@
         <LinearLayout style="@style/mid_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/jinbishangcheng"
+                android:drawableLeft="@drawable/jinbishangcheng"
                 android:clickable="true"
                 android:text="金币商城" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
-
+        <!-- 无圆角-->
+        <LinearLayout style="@style/mid_layout">
+            <TextView style="@style/usertext"
+                android:id="@+id/wodefabu"
+                android:drawableLeft="@drawable/wodefabu"
+                android:clickable="true"
+                android:text="我的发布" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <!-- 无圆角-->
+        <LinearLayout style="@style/mid_layout">
+            <TextView style="@style/usertext"
+                android:drawableLeft="@drawable/shouchuwupin"
+                android:id="@+id/shouchuwupin"
+                android:clickable="true"
+                android:text="售出物品" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
         <View style="@style/bg_line"/>
         <!-- 下圆角bottom_layout-->
         <LinearLayout style="@style/bottom_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/myorders"
+                android:drawableLeft="@drawable/myorders"
                 android:clickable="true"
                 android:text="我的订单" />
             <ImageView style="@style/img_arrow"/>
@@ -44,6 +69,7 @@
         <LinearLayout style="@style/top_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/about"
+                android:drawableLeft="@drawable/about"
                 android:clickable="true"
                 android:text="关于我们" />
             <ImageView style="@style/img_arrow"/>
@@ -53,6 +79,7 @@
         <LinearLayout style="@style/mid_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/fankui"
+                android:drawableLeft="@drawable/fankui"
                 android:clickable="true"
                 android:text="意见反馈" />
             <ImageView style="@style/img_arrow"/>
@@ -64,6 +91,7 @@
             <TextView
                 style="@style/usertext"
                 android:id="@+id/deletecache"
+                android:drawableLeft="@drawable/deletecache"
                 android:clickable="true"
                 android:text="清空缓存" />
             <TextView
@@ -79,6 +107,7 @@
         <LinearLayout style="@style/bottom_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/gengxin"
+                android:drawableLeft="@drawable/gengxin"
                 android:clickable="true"
                 android:text="检查更新" />
             <ImageView style="@style/img_arrow"/>
@@ -86,4 +115,4 @@
     </LinearLayout>
 
 </LinearLayout>
-
+</ScrollView>

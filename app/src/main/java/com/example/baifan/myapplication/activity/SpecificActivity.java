@@ -7,10 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.DisplayMetrics;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -22,10 +19,8 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.adapter.GoodsAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
-import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -133,15 +128,20 @@ public class SpecificActivity extends Activity {
                 finish();
             }
         });
-
         conversation = (Button)findViewById(R.id.conversation);
+        buy = (Button)findViewById(R.id.buy);
+
+        if(goodsInfo.getUsername().equals(account)) {
+            conversation.setEnabled(false);
+            buy.setEnabled(false);
+        }
         conversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 RongIM.getInstance().startPrivateChat(SpecificActivity.this, goodsInfo.getUsername(), "聊天中");
             }
         });
-        buy = (Button)findViewById(R.id.buy);
+
         buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

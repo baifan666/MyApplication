@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +25,13 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.HttpUtils;
+
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.StringReader;
+
 
 
 public class MyGoodsSpecificActivity extends Activity {
@@ -32,6 +41,7 @@ public class MyGoodsSpecificActivity extends Activity {
     private Button shanchu,xiugai;
     private GoodsInfo goodsInfo;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
+    private String result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -179,7 +189,7 @@ public class MyGoodsSpecificActivity extends Activity {
         //当点确定按钮时
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-
+                deleteGoods(goodsInfo.getId());
             }
         });
 
@@ -227,4 +237,96 @@ public class MyGoodsSpecificActivity extends Activity {
             return false;
         }
     };
+
+
+    private void parserXml(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private Handler handler;
+
+    {
+        handler = new Handler() {
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case 1:
+                        String response = (String) msg.obj;
+                        parserXml(response);
+                        if(result.equals("succeessful")) {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(MyGoodsSpecificActivity.this);
+                            dialog.setMessage("删除成功!");
+                            dialog.setCancelable(false);
+                            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Intent intent=new Intent();
+                                    intent.setClass(MyGoodsSpecificActivity.this, MyGoodsActivity.class);
+                                    intent.putExtra("username",username.getText().toString()); // 向下一个界面传递信息
+                                    startActivity(intent);
+                                }
+                            });
+                            dialog.show();
+                        }
+                        else {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(MyGoodsSpecificActivity.this);
+                            dialog.setTitle("This is a warnining!");
+                            dialog.setMessage("对不起，删除失败!");
+                            dialog.setCancelable(false);
+                            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                }
+                            });
+                            dialog.show();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+    }
+
+    private void deleteGoods(String goodsid) {
+        final String id = goodsid;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = "http://111.231.101.251:8080/fuwuduan/deleteGoods.jsp?id=" + id;
+                Message msg = new Message();
+                msg.what = 1;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
 }
