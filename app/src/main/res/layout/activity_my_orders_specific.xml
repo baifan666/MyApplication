@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         >
-
         <ImageView
             android:id="@+id/backImg"
             android:layout_width="wrap_content"
@@ -35,50 +34,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical" >
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="20"
-            android:orientation="vertical">
+            android:layout_height="match_parent"
+            android:background="#F3F6F8"
+            android:orientation="vertical" >
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal" >
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal">
                 <ImageView
-                    android:id="@+id/iv_user"
+                    android:id="@+id/iv_seller"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:paddingRight="10dp"
-                    android:src="@drawable/username"/>
+                    android:src="@drawable/maijia"/>
+
                 <TextView
-                    android:id="@+id/username"
+                    android:id="@+id/seller"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="20dp"
-                    android:paddingTop="5dp"
+                    android:paddingTop="2dp"
                     android:textStyle="bold"
-                    android:text="发布人"/>
+                    android:text="发布用户"/>
             </LinearLayout>
+
+
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="20dp"
+                android:layout_height="35dp"
                 android:orientation="horizontal">
                 <ImageView
-                    android:id="@+id/iv_publish_time"
+                    android:id="@+id/iv_mobile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingLeft="5dp"
                     android:paddingRight="10dp"
-                    android:src="@drawable/publish_time"/>
+                    android:src="@drawable/mobile"/>
                 <TextView
-                    android:id="@+id/publish_time"
+                    android:id="@+id/mobile"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
+                    android:textSize="20dp"
                     android:paddingTop="2dp"
-                    android:text="发布时间"/>
+                    android:singleLine="false"
+                    android:layout_gravity="center"
+                    android:autoLink="phone"
+                    android:text="联系方式"/>
+                <TextView
+                    android:id="@+id/isfinish"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="15dp"
+                    android:paddingTop="1dp"
+                    android:paddingRight="10dp"
+                    android:gravity="right"
+                    android:text="订单状态"/>
             </LinearLayout>
             <ImageView
                 android:layout_width="match_parent"
@@ -87,22 +101,20 @@
                 android:src="#E4E3E3" />
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="80dp"
+                android:layout_height="100dp"
                 android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/iv_title"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/title"/>
                 <TextView
                     android:id="@+id/title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/title"
                     android:textSize="25dp"
                     android:paddingTop="2dp"
-                    android:singleLine="false"
+                    android:ellipsize="end"
+                    android:singleLine="true"
+                    android:paddingLeft="8dp"
+                    android:scrollbars="vertical"
+                    android:layout_gravity="center"
                     android:text="标题"/>
             </LinearLayout>
             <ImageView
@@ -114,21 +126,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="160dp"
                 android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/iv_content"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/content"/>
                 <TextView
                     android:id="@+id/content"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/content"
                     android:textSize="20dp"
+                    android:paddingLeft="8dp"
                     android:paddingTop="2dp"
                     android:singleLine="false"
                     android:layout_gravity="center"
+                    android:scrollbars="vertical"
                     android:text="内容"/>
             </LinearLayout>
             <ImageView
@@ -181,6 +189,7 @@
                     android:paddingTop="2dp"
                     android:singleLine="false"
                     android:layout_gravity="center"
+                    android:scrollbars="vertical"
                     android:text="交易地点"/>
             </LinearLayout>
             <ImageView
@@ -188,28 +197,6 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="1dp"
                 android:src="#E4E3E3" />
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <ImageView
-                    android:id="@+id/iv_mobile"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/mobile"/>
-                <TextView
-                    android:id="@+id/mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textSize="20dp"
-                    android:paddingTop="2dp"
-                    android:singleLine="false"
-                    android:layout_gravity="center"
-                    android:autoLink="phone"
-                    android:text="联系方式"/>
-            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -228,6 +215,76 @@
                     android:layout_height="100dp"
                     android:layout_marginLeft="50dp"
                     android:scaleType="centerCrop"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/dingdanbianhao"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="3dp"
+                    android:singleLine="false"
+                    android:layout_gravity="center"
+                    android:text="订单编号："/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/goumaishijian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="3dp"
+                    android:singleLine="false"
+                    android:layout_gravity="center"
+                    android:text="购买时间："/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/wanchengshijian"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="14dp"
+                    android:paddingTop="2dp"
+                    android:paddingLeft="3dp"
+                    android:singleLine="false"
+                    android:layout_gravity="center"
+                    android:text="完成时间："/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="10dp">
+                <Button
+                    android:id="@+id/conversation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_green"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="10dp"
+                    android:text="和卖家聊聊" />
+
+                <Button
+                    android:id="@+id/finish"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/btn_green"
+                    android:layout_weight="1"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="10dp"
+                    android:text="确认完成" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

@@ -7,9 +7,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -57,12 +59,69 @@ public class MyGoodsSpecificActivity extends Activity {
         publishtime.setText(String.valueOf(goodsInfo.getPublish_time()));
         title = (TextView)findViewById(R.id.title);
         title.setText(String.valueOf(goodsInfo.getTitle()));
+        title.setMovementMethod(ScrollingMovementMethod.getInstance());
+        title.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                // TODO Auto-generated method stub
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         content = (TextView)findViewById(R.id.content);
         content.setText(String.valueOf(goodsInfo.getContent()));
+        content.setMovementMethod(ScrollingMovementMethod.getInstance());
+        content.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                // TODO Auto-generated method stub
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         price = (TextView)findViewById(R.id.price);
         price.setText(String.valueOf(goodsInfo.getPrice()));
         location = (TextView)findViewById(R.id.location);
         location.setText(String.valueOf(goodsInfo.getLocation()));
+        location.setMovementMethod(ScrollingMovementMethod.getInstance());
+        location.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                // TODO Auto-generated method stub
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         mobile = (TextView)findViewById(R.id.mobile);
         mobile.setText(String.valueOf(goodsInfo.getMobile()));
         path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/")+1);
@@ -209,8 +268,7 @@ public class MyGoodsSpecificActivity extends Activity {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
                 Toast.makeText(MyGoodsSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
                 flag1= 2;
-            } else if (e.toString() == "")
-                Toast.makeText(MyGoodsSpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
+            }
             // important to return false so the error placeholder can be placed
             return false;
         }
@@ -290,6 +348,7 @@ public class MyGoodsSpecificActivity extends Activity {
                                     intent.setClass(MyGoodsSpecificActivity.this, MyGoodsActivity.class);
                                     intent.putExtra("username",username.getText().toString()); // 向下一个界面传递信息
                                     startActivity(intent);
+                                    finish();
                                 }
                             });
                             dialog.show();

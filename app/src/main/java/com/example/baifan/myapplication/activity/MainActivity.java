@@ -2,6 +2,7 @@ package com.example.baifan.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
@@ -25,6 +26,7 @@ import java.io.StringReader;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
+import io.rong.imlib.model.UserInfo;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -114,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("MainActivity", "--onSuccess--" + userid);
                                     Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                     //服务器连接成功，跳转
+                                    RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid,userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
                                     Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                     act = username.getText().toString();
                                     intent.putExtra("account", act);

@@ -69,7 +69,6 @@ import com.scwang.smartrefresh.layout.api.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -422,7 +421,7 @@ public class SearchActivity extends Activity implements
             @Override
             public void onClick(View view) {
                 Intent intent=new Intent();
-                intent.setClass(SearchActivity.this, MyOrdersActivity.class);
+                intent.setClass(SearchActivity.this, MySellsActivity.class);
                 intent.putExtra("username",account); // 向下一个界面传递信息
                 startActivity(intent);
             }
@@ -510,6 +509,7 @@ public class SearchActivity extends Activity implements
                             public void onClick(DialogInterface dialog, int which) {
                                 // 物品新增成功后 跳转至界面
                                 Intent intent = new Intent(SearchActivity.this, SearchActivity.class);
+                                intent.putExtra("account", account);
                                 startActivity(intent);
                                 finish();
                             }

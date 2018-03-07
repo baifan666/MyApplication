@@ -14,6 +14,7 @@ public class App extends Application {
     public void onCreate() {
         super.onCreate();
         RongIM.init(this);//初始化
+        RongIM.getInstance().setMessageAttachedUserInfo(true);
     }
 
 }

@@ -19,7 +19,7 @@
         <EditText
             android:id="@+id/title"
             android:layout_width="fill_parent"
-            android:layout_height="35dp"
+            android:layout_height="60dp"
             android:background="#FFFFFF"
             android:gravity="top"
             android:hint="请输入标题..."
@@ -71,6 +71,7 @@
             android:background="#FFFFFF"
             android:gravity="top"
             android:hint="请输入价格...（单位：元）"
+            android:digits=".0123456789"
             android:inputType="number"
             android:maxLength="100"
             android:padding="5dp"

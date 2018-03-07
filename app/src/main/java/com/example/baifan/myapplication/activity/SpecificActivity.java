@@ -233,6 +233,7 @@ public class SpecificActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // 购买成功后 跳转回首页
                                 Intent intent = new Intent(SpecificActivity.this, SearchActivity.class);
+                                intent.putExtra("account", account);
                                 startActivity(intent);
                                 finish();
                             }
