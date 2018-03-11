@@ -12,8 +12,14 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <!-- 访问精确位置的权限 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 这个权限用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".application.App"
@@ -23,6 +29,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <!-- 百度地图key -->
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="azrbHW8CGeAEMt4MyLSplNCAodv7xZwG" />
+
         <activity android:name=".activity.MainActivity" />
         <activity android:name=".activity.WelcomeActivity">
             <intent-filter>
@@ -98,7 +110,8 @@
         <activity android:name=".activity.MyOrdersActivity" />
         <activity android:name=".activity.ChangePasswordActivity" />
         <activity android:name=".activity.MyOrdersSpecificActivity" />
-        <activity android:name=".activity.MySellsActivity"></activity>
+        <activity android:name=".activity.MySellsActivity" />
+        <activity android:name=".activity.MapActivity"></activity>
     </application>
 
 </manifest>

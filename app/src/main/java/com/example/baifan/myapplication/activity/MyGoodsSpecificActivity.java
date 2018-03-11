@@ -345,9 +345,10 @@ public class MyGoodsSpecificActivity extends Activity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     Intent intent=new Intent();
-                                    intent.setClass(MyGoodsSpecificActivity.this, MyGoodsActivity.class);
-                                    intent.putExtra("username",username.getText().toString()); // 向下一个界面传递信息
-                                    startActivity(intent);
+                                   // intent.setClass(MyGoodsSpecificActivity.this, MyGoodsActivity.class);
+                                    intent.putExtra("username",username.getText().toString());
+                                    MyGoodsSpecificActivity.this.setResult(1, intent);// 设置回传数据。resultCode值是1，这个值在主窗口将用来区分回传数据的来源，以做不同的处理
+                                    //startActivity(intent);
                                     finish();
                                 }
                             });

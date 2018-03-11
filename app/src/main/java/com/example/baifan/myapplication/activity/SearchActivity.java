@@ -133,6 +133,7 @@ public class SearchActivity extends Activity implements
     private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();
     private ListView _listGoods;
 
+    private ImageButton map;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -183,6 +184,15 @@ public class SearchActivity extends Activity implements
         price = (EditText)tab02.findViewById(R.id.price);
         mobile = (EditText)tab02.findViewById(R.id.mobile);
         location = (EditText)tab02.findViewById(R.id.location);
+
+        map = (ImageButton)tab02.findViewById(R.id.map);
+        map.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivityForResult(new Intent(SearchActivity.this,
+                        MapActivity.class), 0x2);
+            }
+        });
 
         send_btn = (Button)tab02.findViewById(R.id.send_btn);
         send_btn.setOnClickListener(new View.OnClickListener() {
@@ -861,6 +871,16 @@ public class SearchActivity extends Activity implements
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
+                }
+            }
+        }else if (requestCode == 0x2 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    //处理代码在此地
+                    location.setText(bundle.getString("address"));// 得到子窗口ChildActivity的回传数据
+                    Toast.makeText(SearchActivity.this, bundle.getString("address"),
+                            Toast.LENGTH_LONG).show();
                 }
             }
         }

@@ -211,4 +211,23 @@ public class MyGoodsActivity extends Activity {
         }
     };
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        switch (resultCode) {
+            case 1:         // 子窗口ChildActivity的回传数据
+                if (data != null) {
+                    Bundle bundle = data.getExtras();
+                    if (bundle != null) {
+                        //处理代码在此地
+                        username = bundle.getString("username");// 得到子窗口ChildActivity的回传数据
+                    }
+                }
+                break;
+            default:
+                //其它窗口的回传数据
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
 }
