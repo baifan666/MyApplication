@@ -138,8 +138,9 @@ public class MyOrdersSpecificActivity extends Activity {
             wanchengshijian.setVisibility(View.GONE);
         }else {
             isfinish.setText("订单已完成");
-            wanchengshijian.setText(orderSpecificInfo.getFinishtime());
-            finish.setVisibility(View.GONE);
+            wanchengshijian.setText("完成时间："+orderSpecificInfo.getFinishtime());
+            //finish.setVisibility(View.GONE);
+            finish.setText("去评价");
         }
 
         if(!path1.equals("")) {

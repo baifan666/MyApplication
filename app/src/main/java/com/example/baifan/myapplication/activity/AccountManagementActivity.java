@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
@@ -16,6 +16,7 @@ import com.example.baifan.myapplication.application.ExitApplication;
 public class AccountManagementActivity extends Activity {
     private TextView exitapp,updatepassword;
     private String account;
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,6 +26,13 @@ public class AccountManagementActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         account = intent.getStringExtra("username");
+        back = (ImageView)findViewById(R.id.IV_back); //返回
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         exitapp = (TextView)findViewById(R.id.exitapp);
         exitapp.setOnClickListener(new View.OnClickListener() {
             @Override
