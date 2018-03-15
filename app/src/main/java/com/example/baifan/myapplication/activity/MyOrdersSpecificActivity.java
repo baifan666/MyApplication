@@ -64,7 +64,6 @@ public class MyOrdersSpecificActivity extends Activity {
         title.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -85,7 +84,6 @@ public class MyOrdersSpecificActivity extends Activity {
         content.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -106,7 +104,6 @@ public class MyOrdersSpecificActivity extends Activity {
         location.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -233,7 +230,14 @@ public class MyOrdersSpecificActivity extends Activity {
         finish.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog();
+                if("0".equals(orderSpecificInfo.getIsfinish())) {
+                    showDialog();
+                }else {
+                    Intent i = new Intent();
+                    i.setClass(MyOrdersSpecificActivity.this, EvaluateActivity.class);
+                    i.putExtra("seller",seller.getText().toString()); // 传递卖家信息
+                    startActivity(i);
+                }
             }
         });
         conversation = (Button)findViewById(R.id.conversation);

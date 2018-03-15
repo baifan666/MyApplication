@@ -111,7 +111,8 @@
         <activity android:name=".activity.ChangePasswordActivity" />
         <activity android:name=".activity.MyOrdersSpecificActivity" />
         <activity android:name=".activity.MySellsActivity" />
-        <activity android:name=".activity.MapActivity"></activity>
+        <activity android:name=".activity.MapActivity" />
+        <activity android:name=".activity.EvaluateActivity"></activity>
     </application>
 
 </manifest>

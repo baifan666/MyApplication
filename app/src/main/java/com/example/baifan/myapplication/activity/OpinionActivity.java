@@ -23,7 +23,7 @@ public class OpinionActivity extends Activity {
         setContentView(R.layout.activity_opinion);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
-        back = (ImageView) findViewById(R.id.backImg); //返回
+        back = (ImageView) findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
