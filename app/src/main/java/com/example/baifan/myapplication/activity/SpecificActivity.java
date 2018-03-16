@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.method.ScrollingMovementMethod;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -57,12 +59,66 @@ public class SpecificActivity extends Activity {
         publishtime.setText(String.valueOf(goodsInfo.getPublish_time()));
         title = (TextView)findViewById(R.id.title);
         title.setText(String.valueOf(goodsInfo.getTitle()));
+        title.setMovementMethod(ScrollingMovementMethod.getInstance());
+        title.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         content = (TextView)findViewById(R.id.content);
         content.setText(String.valueOf(goodsInfo.getContent()));
+        content.setMovementMethod(ScrollingMovementMethod.getInstance());
+        content.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         price = (TextView)findViewById(R.id.price);
         price.setText(String.valueOf(goodsInfo.getPrice()));
         location = (TextView)findViewById(R.id.location);
         location.setText(String.valueOf(goodsInfo.getLocation()));
+        location.setMovementMethod(ScrollingMovementMethod.getInstance());
+        location.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                    //通知父控件不要干扰
+                    view.getParent().requestDisallowInterceptTouchEvent(true);
+                }
+                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                    view.getParent().requestDisallowInterceptTouchEvent(false);
+                }
+                return false;
+            }
+        });
         mobile = (TextView)findViewById(R.id.mobile);
         mobile.setText(String.valueOf(goodsInfo.getMobile()));
         path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/")+1);

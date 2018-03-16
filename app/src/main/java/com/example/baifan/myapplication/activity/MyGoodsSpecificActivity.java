@@ -63,7 +63,6 @@ public class MyGoodsSpecificActivity extends Activity {
         title.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -84,7 +83,6 @@ public class MyGoodsSpecificActivity extends Activity {
         content.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
@@ -107,7 +105,6 @@ public class MyGoodsSpecificActivity extends Activity {
         location.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                // TODO Auto-generated method stub
                 if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
                     //通知父控件不要干扰
                     view.getParent().requestDisallowInterceptTouchEvent(true);
