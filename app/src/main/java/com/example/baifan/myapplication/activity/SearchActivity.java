@@ -879,8 +879,8 @@ public class SearchActivity extends Activity implements
                 if (bundle != null) {
                     //处理代码在此地
                     location.setText(bundle.getString("address"));// 得到子窗口ChildActivity的回传数据
-                    Toast.makeText(SearchActivity.this, bundle.getString("address"),
-                            Toast.LENGTH_LONG).show();
+//                    Toast.makeText(SearchActivity.this, bundle.getString("address"),
+//                            Toast.LENGTH_LONG).show();
                 }
             }
         }

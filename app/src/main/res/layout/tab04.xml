@@ -29,7 +29,7 @@
                 android:id="@+id/jinbishangcheng"
                 android:drawableLeft="@drawable/jinbishangcheng"
                 android:clickable="true"
-                android:text="金币商城" />
+                android:text="每日签到" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
         <View style="@style/bg_line"/>
