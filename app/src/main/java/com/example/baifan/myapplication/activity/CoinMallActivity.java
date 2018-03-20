@@ -28,14 +28,15 @@ import java.io.StringReader;
 public class CoinMallActivity extends Activity {
     private ImageView back;
     private Button qiandao;
-    private String result,count;
+    private String result,count,coins;
     private String username;
     private Dialog mDialog;
-    private TextView textView,textView1,textView2,textView3,textView4;
+    private TextView textView,textView1,textView2,textView3,textView4,jinbishu;
     private final int ISSIGN = 1;
     private final int DISMISS = 2;
     private final int SIGN = 3;
     private final int SEARCHSIGN = 4;
+    private final int GETCOINS = 5;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,6 +58,7 @@ public class CoinMallActivity extends Activity {
         textView2 = (TextView)findViewById(R.id.textview2);
         textView3 = (TextView)findViewById(R.id.textview3);
         textView4 = (TextView)findViewById(R.id.textview4);
+        jinbishu = (TextView)findViewById(R.id.jinbishu);
         mDialog = DialogUtils.createLoadingDialog(CoinMallActivity.this, "正在获取签到信息...");
         isSign(username);
         searchSign(username);
@@ -137,6 +139,39 @@ public class CoinMallActivity extends Activity {
         }
     }
 
+    private void parserXml2(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("coins".equals(nodeName)) {
+                            String coinsStr = parse.nextText();
+                            coins = coinsStr;
+                            Log.d("count", coinsStr);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private Handler handler;
 
     {
@@ -152,7 +187,7 @@ public class CoinMallActivity extends Activity {
                         }
                         else {
                             qiandao.setText("今日已签到");
-                            qiandao.setVisibility(View.GONE);
+                            qiandao.setEnabled(false);
                             handler.sendEmptyMessage(DISMISS);
                         }
                         break;
@@ -164,7 +199,7 @@ public class CoinMallActivity extends Activity {
                         parserXml(response1);
                         if(result.equals("succeessful")) {
                             qiandao.setText("今日已签到");
-                            qiandao.setVisibility(View.GONE);
+                            qiandao.setEnabled(false);
                             handler.sendEmptyMessage(DISMISS);
                             AlertDialog.Builder dialog = new AlertDialog.Builder(CoinMallActivity.this);
                             dialog.setTitle("success");
@@ -194,14 +229,17 @@ public class CoinMallActivity extends Activity {
                         }
                         break;
                     case SEARCHSIGN:
-                        String response3 = (String) msg.obj;
-                        parserXml1(response3);
+                        String response2 = (String) msg.obj;
+                        parserXml1(response2);
                         if(result.equals("succeessful")) {
                             textView.setText("已连续签到"+count+"天");
-                            textView1.setText("第"+count+"天");
+                            int a = Integer.parseInt(count)-1;
+                            int b = Integer.parseInt(count)+1;
+                            int c = Integer.parseInt(count)+2;
+                            textView1.setText("第"+String.valueOf(a)+"天");
                             textView2.setText("第"+count+"天");
-                            textView3.setText("第"+count+"天");
-                            textView4.setText("第"+count+"天");
+                            textView3.setText("第"+String.valueOf(b)+"天");
+                            textView4.setText("第"+String.valueOf(c)+"天");
                             handler.sendEmptyMessage(DISMISS);
                         }
                         else {
@@ -218,6 +256,11 @@ public class CoinMallActivity extends Activity {
                             dialog.show();
                         }
                         break;
+                    case GETCOINS:
+                        String response3 = (String) msg.obj;
+                        parserXml(response3);
+                        jinbishu.setText(coins);
+                        break;
                     default:
                         break;
                 }
@@ -232,7 +275,7 @@ public class CoinMallActivity extends Activity {
             public void run() {
                 String url = "http://111.231.101.251:8080/fuwuduan/isSign.jsp?username=" + id;
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = ISSIGN;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler
@@ -245,9 +288,9 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/isSign.jsp?username=" + id;
+                String url = "http://111.231.101.251:8080/fuwuduan/userSign.jsp?username=" + id;
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = SIGN;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler
@@ -262,7 +305,7 @@ public class CoinMallActivity extends Activity {
             public void run() {
                 String url = "http://111.231.101.251:8080/fuwuduan/searchSign.jsp?username=" + id;
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = SEARCHSIGN;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler
