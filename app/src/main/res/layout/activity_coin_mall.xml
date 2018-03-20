@@ -2,12 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:background="#f9eff1">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F0F3F6">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -36,30 +36,32 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="126dp"
         android:background="@drawable/scbj"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/jinbishu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="已拥有xxxx金币，棒棒哒！"
-            android:layout_marginTop="20dp"
-            android:textColor="#000000"
             android:layout_gravity="center"
-            android:textSize="24dp" />
+            android:layout_marginTop="20dp"
+            android:text="已拥有xxxx金币，棒棒哒！"
+            android:textColor="#000000"
+            android:textSize="22dp" />
+
         <Button
             android:id="@+id/qiandao"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="50dp"
-            android:layout_marginRight="50dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/btn_green"
+            android:layout_height="45dp"
             android:layout_gravity="center"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="70dp"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/btn_green"
             android:text="今日签到"
-            android:textColor="#FFFFFF"
+            android:textColor="#3c3a3a"
             android:textSize="20dp" />
     </LinearLayout>
 
@@ -68,125 +70,197 @@
         android:layout_height="match_parent"
         android:background="#f9eff1"
         android:orientation="vertical">
+
         <TextView
             android:id="@+id/textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="已连续签到x天"
-            android:layout_marginTop="6dp"
-            android:layout_marginLeft="6dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="6dp"
+            android:text="已连续签到x天"
             android:textColor="#000000"
             android:textSize="15dp" />
-        <View style="@style/bg_line"/>
+
+        <View style="@style/bg_line" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="#f9eff1"
-            android:layout_marginTop="10dp"
+            android:layout_height="110dp"
             android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:background="#f9eff1"
             android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#f9eff1"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/textview1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="第x-1天"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center"
-                android:textColor="#000000"
-                android:textSize="15dp" />
-
-            <ImageView
-                android:id="@+id/image_view1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/zuoriqiandao"
-                android:scaleType="centerCrop" />
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="#f9eff1"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/textview2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="第x天"
-                android:layout_marginLeft="5dp"
-                android:layout_marginBottom="5dp"
-                android:layout_gravity="center"
-                android:textColor="#000000"
-                android:textSize="15dp" />
-        <ImageView
-            android:id="@+id/image_view2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:background="@drawable/yiqiandao"
-            android:scaleType="centerCrop"/>
-        </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#f9eff1"
                 android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="第x-1天"
+                    android:textColor="#000000"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/image_view1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/zuoriqiandao"
+                    android:scaleType="centerCrop" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#f9eff1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="第x天"
+                    android:textColor="#000000"
+                    android:textSize="15dp" />
+
+                <ImageView
+                    android:id="@+id/image_view2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/weiqiandao"
+                    android:scaleType="centerCrop" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="#f9eff1"
+                android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/textview3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="第x+1天"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:text="第x+1天"
                     android:textColor="#000000"
                     android:textSize="15dp" />
+
                 <ImageView
                     android:id="@+id/image_view3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/weiqiandao"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="#f9eff1"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/textview4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="第x+2天"
-                    android:layout_marginLeft="2.5dp"
-                    android:layout_marginBottom="5dp"
                     android:layout_gravity="center"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginLeft="2.5dp"
+                    android:text="第x+2天"
                     android:textColor="#000000"
                     android:textSize="15dp" />
+
                 <ImageView
                     android:id="@+id/image_view4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
                     android:background="@drawable/weiqiandao"
-                    android:scaleType="centerCrop"/>
+                    android:scaleType="centerCrop" />
             </LinearLayout>
         </LinearLayout>
+
+        <View style="@style/bg_line" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:text="签到说明"
+                android:textColor="#ff8282"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="150dip"
+                android:layout_height="1dip"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@id/tv"
+                android:background="#ff8282" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="150dip"
+                android:layout_height="1dip"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/tv"
+                android:background="#ff8282" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/help_1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginRight="6dp"
+            android:layout_marginTop="10dp"
+            android:text="签到第1天-第5天可分别获得10、20、30、40、50金币/天。5天后连续签到可获得50金币/天。若中断，则重新从10金币/天开始计算。"
+            android:textSize="16dp"
+            android:textColor="#000000" />
+
+        <ImageView
+            android:id="@+id/image_view5"
+            android:layout_width="wrap_content"
+            android:layout_height="180dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/jbsc"
+            android:scaleType="centerCrop" />
     </LinearLayout>
 </LinearLayout>
 </ScrollView>

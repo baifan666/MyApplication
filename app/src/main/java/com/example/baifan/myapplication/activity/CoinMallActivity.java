@@ -26,7 +26,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 
 public class CoinMallActivity extends Activity {
-    private ImageView back;
+    private ImageView back,imageView1,imageView2;
+    private String amount;
     private Button qiandao;
     private String result,count,coins;
     private String username;
@@ -37,6 +38,7 @@ public class CoinMallActivity extends Activity {
     private final int SIGN = 3;
     private final int SEARCHSIGN = 4;
     private final int GETCOINS = 5;
+    private final int SETCOINS = 6;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,10 +60,13 @@ public class CoinMallActivity extends Activity {
         textView2 = (TextView)findViewById(R.id.textview2);
         textView3 = (TextView)findViewById(R.id.textview3);
         textView4 = (TextView)findViewById(R.id.textview4);
+        imageView1 = (ImageView)findViewById(R.id.image_view1);
+        imageView2 = (ImageView)findViewById(R.id.image_view2);
         jinbishu = (TextView)findViewById(R.id.jinbishu);
         mDialog = DialogUtils.createLoadingDialog(CoinMallActivity.this, "正在获取签到信息...");
         isSign(username);
         searchSign(username);
+        getCoins(username);
         qiandao = (Button)findViewById(R.id.qiandao);
         qiandao.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,6 +195,7 @@ public class CoinMallActivity extends Activity {
                             qiandao.setEnabled(false);
                             handler.sendEmptyMessage(DISMISS);
                         }
+                        result = "";
                         break;
                     case DISMISS:
                         DialogUtils.closeDialog(mDialog);
@@ -198,6 +204,7 @@ public class CoinMallActivity extends Activity {
                         String response1 = (String) msg.obj;
                         parserXml(response1);
                         if(result.equals("succeessful")) {
+                            setCoins(username, amount);
                             qiandao.setText("今日已签到");
                             qiandao.setEnabled(false);
                             handler.sendEmptyMessage(DISMISS);
@@ -209,6 +216,7 @@ public class CoinMallActivity extends Activity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     searchSign(username);
+                                    getCoins(username);
                                     mDialog = DialogUtils.createLoadingDialog(CoinMallActivity.this, "正在获取签到信息...");
                                 }
                             });
@@ -227,19 +235,73 @@ public class CoinMallActivity extends Activity {
                             });
                             dialog.show();
                         }
+                        result = "";
                         break;
                     case SEARCHSIGN:
                         String response2 = (String) msg.obj;
                         parserXml1(response2);
                         if(result.equals("succeessful")) {
                             textView.setText("已连续签到"+count+"天");
-                            int a = Integer.parseInt(count)-1;
-                            int b = Integer.parseInt(count)+1;
-                            int c = Integer.parseInt(count)+2;
-                            textView1.setText("第"+String.valueOf(a)+"天");
-                            textView2.setText("第"+count+"天");
-                            textView3.setText("第"+String.valueOf(b)+"天");
-                            textView4.setText("第"+String.valueOf(c)+"天");
+                            if("0".equals(count)){
+                                imageView1.setImageResource(R.drawable.weiqiandao);
+                                imageView2.setImageResource(R.drawable.weiqiandao);
+                                textView1.setText("第1天");
+                                textView2.setText("第2天");
+                                textView3.setText("第3天");
+                                textView4.setText("第4天");
+                                amount = "10";
+                            }else if("1".equals(count)){
+                                imageView1.setImageResource(R.drawable.yiqiandao);
+                                imageView2.setImageResource(R.drawable.weiqiandao);
+                                textView1.setText("第1天");
+                                textView2.setText("第2天");
+                                textView3.setText("第3天");
+                                textView4.setText("第4天");
+                                amount = "20";
+                            }else if("2".equals(count)){
+                                imageView1.setImageResource(R.drawable.zuoriqiandao);
+                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                textView1.setText("第1天");
+                                textView2.setText("第2天");
+                                textView3.setText("第3天");
+                                textView4.setText("第4天");
+                                amount = "30";
+                            }else if("3".equals(count)){
+                                imageView1.setImageResource(R.drawable.zuoriqiandao);
+                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                textView1.setText("第2天");
+                                textView2.setText("第3天");
+                                textView3.setText("第4天");
+                                textView4.setText("第5天");
+                                amount = "30";
+                            }else if("4".equals(count)){
+                                imageView1.setImageResource(R.drawable.zuoriqiandao);
+                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                textView1.setText("第3天");
+                                textView2.setText("第4天");
+                                textView3.setText("第5天");
+                                textView4.setText("第6天");
+                                amount = "40";
+                            }else if("5".equals(count)){
+                                imageView1.setImageResource(R.drawable.zuoriqiandao);
+                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                textView1.setText("第4天");
+                                textView2.setText("第5天");
+                                textView3.setText("第6天");
+                                textView4.setText("第7天");
+                                amount = "50";
+                            }else {
+                                int a = Integer.parseInt(count)-1;
+                                int b = Integer.parseInt(count)+1;
+                                int c = Integer.parseInt(count)+2;
+                                imageView1.setImageResource(R.drawable.zuoriqiandao);
+                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                textView1.setText("第"+String.valueOf(a)+"天");
+                                textView2.setText("第"+count+"天");
+                                textView3.setText("第"+String.valueOf(b)+"天");
+                                textView4.setText("第"+String.valueOf(c)+"天");
+                                amount = "50";
+                            }
                             handler.sendEmptyMessage(DISMISS);
                         }
                         else {
@@ -255,11 +317,21 @@ public class CoinMallActivity extends Activity {
                             });
                             dialog.show();
                         }
+                        result = "";
                         break;
                     case GETCOINS:
                         String response3 = (String) msg.obj;
-                        parserXml(response3);
-                        jinbishu.setText(coins);
+                        parserXml2(response3);
+                        jinbishu.setText("已拥有"+coins+"个金币，棒棒哒！");
+                        break;
+                    case SETCOINS:
+                        String response4 = (String) msg.obj;
+                        parserXml(response4);
+                        if(result.equals("succeessful")) {
+                        }
+                        else {
+                        }
+                        result = "";
                         break;
                     default:
                         break;
@@ -320,7 +392,23 @@ public class CoinMallActivity extends Activity {
             public void run() {
                 String url = "http://111.231.101.251:8080/fuwuduan/getUser.jsp?account=" + id;
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = GETCOINS;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
+    private void setCoins(String username, String amount) {
+        final String id = username;
+        final String a = amount;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = "http://111.231.101.251:8080/fuwuduan/setCoins.jsp?username=" + id+"&amount="+a;
+                Message msg = new Message();
+                msg.what = SETCOINS;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler
