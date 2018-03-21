@@ -167,25 +167,10 @@ public class MyOrdersSpecificActivity extends Activity {
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView1);
                 }else if (flag1 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(MyOrdersSpecificActivity.this);
-                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(MyOrdersSpecificActivity.this).create();
-                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(MyOrdersSpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .into(img);
-                    dialog.show();
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    int width = dm.widthPixels;
-                    int height = dm.heightPixels;
-                    // 设置dialog的宽高为屏幕的宽高
-                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(width, height);
-                    dialog.setContentView(imgEntryView, layoutParams);
-                    imgEntryView.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View paramView) {
-                            dialog.cancel();
-                        }
-                    });
+                    Intent intent=new Intent();
+                    intent.setClass(MyOrdersSpecificActivity.this, PictureActivity.class);
+                    intent.putExtra("url",url1); // 向下一个界面传递信息
+                    startActivity(intent);
                 }
             }
         });
@@ -199,24 +184,10 @@ public class MyOrdersSpecificActivity extends Activity {
                             .error(R.drawable.error)//图片加载失败后，显示的图片
                             .into(imageView2);
                 }else if (flag2 == 1) {
-                    LayoutInflater inflater = LayoutInflater.from(MyOrdersSpecificActivity.this);
-                    View imgEntryView = inflater.inflate(R.layout.dialog_photo_entry, null); // 加载自定义的布局文件
-                    final AlertDialog dialog = new AlertDialog.Builder(MyOrdersSpecificActivity.this).create();
-                    ImageView img = (ImageView)imgEntryView.findViewById(R.id.large_image);
-                    Glide.with(MyOrdersSpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .into(img);
-                    dialog.show();
-                    DisplayMetrics dm = new DisplayMetrics();
-                    getWindowManager().getDefaultDisplay().getMetrics(dm);
-                    // 设置dialog的宽高为屏幕的宽高
-                    ViewGroup.LayoutParams layoutParams = new  ViewGroup.LayoutParams(dm.widthPixels, dm.heightPixels);
-                    dialog.setContentView(imgEntryView, layoutParams);
-                    imgEntryView.setOnClickListener(new View.OnClickListener() {
-                        public void onClick(View paramView) {
-                            dialog.cancel();
-                        }
-                    });
-                }
+                    Intent intent=new Intent();
+                    intent.setClass(MyOrdersSpecificActivity.this, PictureActivity.class);
+                    intent.putExtra("url",url2); // 向下一个界面传递信息
+                    startActivity(intent);                }
             }
         });
 

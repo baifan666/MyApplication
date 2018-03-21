@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 
 public class CoinMallActivity extends Activity {
-    private ImageView back,imageView1,imageView2;
+    private ImageView back,imageView1,imageView2,jbsc;
     private String amount;
     private Button qiandao;
     private String result,count,coins;
@@ -73,6 +73,17 @@ public class CoinMallActivity extends Activity {
             public void onClick(View view) {
                 mDialog = DialogUtils.createLoadingDialog(CoinMallActivity.this, "正在签到...");
                 userSign(username);
+            }
+        });
+        jbsc = (ImageView)findViewById(R.id.jbsc);
+        //点击商城图片，跳转至金币商城界面
+        jbsc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(CoinMallActivity.this, MallActivity.class);
+                intent.putExtra("username",username); // 向下一个界面传递信息
+                intent.putExtra("coins",coins); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
     }
@@ -243,48 +254,48 @@ public class CoinMallActivity extends Activity {
                         if(result.equals("succeessful")) {
                             textView.setText("已连续签到"+count+"天");
                             if("0".equals(count)){
-                                imageView1.setImageResource(R.drawable.weiqiandao);
-                                imageView2.setImageResource(R.drawable.weiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.weiqiandao);
+                                imageView2.setBackgroundResource(R.drawable.weiqiandao);
                                 textView1.setText("第1天");
                                 textView2.setText("第2天");
                                 textView3.setText("第3天");
                                 textView4.setText("第4天");
                                 amount = "10";
                             }else if("1".equals(count)){
-                                imageView1.setImageResource(R.drawable.yiqiandao);
-                                imageView2.setImageResource(R.drawable.weiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.yiqiandao);
+                                imageView2.setBackgroundResource(R.drawable.weiqiandao);
                                 textView1.setText("第1天");
                                 textView2.setText("第2天");
                                 textView3.setText("第3天");
                                 textView4.setText("第4天");
                                 amount = "20";
                             }else if("2".equals(count)){
-                                imageView1.setImageResource(R.drawable.zuoriqiandao);
-                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
+                                imageView2.setBackgroundResource(R.drawable.yiqiandao);
                                 textView1.setText("第1天");
                                 textView2.setText("第2天");
                                 textView3.setText("第3天");
                                 textView4.setText("第4天");
                                 amount = "30";
                             }else if("3".equals(count)){
-                                imageView1.setImageResource(R.drawable.zuoriqiandao);
-                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
+                                imageView2.setBackgroundResource(R.drawable.yiqiandao);
                                 textView1.setText("第2天");
                                 textView2.setText("第3天");
                                 textView3.setText("第4天");
                                 textView4.setText("第5天");
                                 amount = "30";
                             }else if("4".equals(count)){
-                                imageView1.setImageResource(R.drawable.zuoriqiandao);
-                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
+                                imageView2.setBackgroundResource(R.drawable.yiqiandao);
                                 textView1.setText("第3天");
                                 textView2.setText("第4天");
                                 textView3.setText("第5天");
                                 textView4.setText("第6天");
                                 amount = "40";
                             }else if("5".equals(count)){
-                                imageView1.setImageResource(R.drawable.zuoriqiandao);
-                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
+                                imageView2.setBackgroundResource(R.drawable.yiqiandao);
                                 textView1.setText("第4天");
                                 textView2.setText("第5天");
                                 textView3.setText("第6天");
@@ -294,8 +305,8 @@ public class CoinMallActivity extends Activity {
                                 int a = Integer.parseInt(count)-1;
                                 int b = Integer.parseInt(count)+1;
                                 int c = Integer.parseInt(count)+2;
-                                imageView1.setImageResource(R.drawable.zuoriqiandao);
-                                imageView2.setImageResource(R.drawable.yiqiandao);
+                                imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
+                                imageView2.setBackgroundResource(R.drawable.yiqiandao);
                                 textView1.setText("第"+String.valueOf(a)+"天");
                                 textView2.setText("第"+count+"天");
                                 textView3.setText("第"+String.valueOf(b)+"天");

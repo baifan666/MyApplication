@@ -52,6 +52,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 
+import com.baidu.android.pushservice.PushConstants;
+import com.baidu.android.pushservice.PushManager;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -72,6 +74,9 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import io.rong.imkit.RongIM;
+import io.rong.imlib.model.Conversation;
+import q.rorbin.badgeview.QBadgeView;
 
 
 public class SearchActivity extends Activity implements
@@ -139,6 +144,11 @@ public class SearchActivity extends Activity implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
+        PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
+                "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
+
+
+        initUnreadCountListener();
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         //将该Activity添加到ExitApplication实例中，
@@ -1080,5 +1090,38 @@ public class SearchActivity extends Activity implements
         }
         Log.d("resultStr", result);
     }
+
+    private void initUnreadCountListener() {
+        final Conversation.ConversationType[] conversationTypes = {Conversation.ConversationType.PRIVATE, Conversation.ConversationType.DISCUSSION,
+                Conversation.ConversationType.GROUP, Conversation.ConversationType.SYSTEM,
+                Conversation.ConversationType.PUBLIC_SERVICE};
+
+        Handler _handler = new Handler();
+        _handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
+            }
+        }, 500);
+    }
+
+
+    public RongIM.OnReceiveUnreadCountChangedListener mCountListener = new RongIM.OnReceiveUnreadCountChangedListener() {
+        @Override
+        public void onMessageIncreased(int count) {
+            Log.e("SearchActivity", "count:" + count);
+            if (count == 0) {
+//                mUnreadCount.setVisibility(View.GONE);
+            } else if (count > 0 && count < 100) {
+                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+//               mUnreadCount.setVisibility(View.VISIBLE);
+//                mUnreadCount.setText(count + "");
+           } else {
+                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText("99+");
+//                mUnreadCount.setVisibility(View.VISIBLE);
+//                mUnreadCount.setText("···");
+          }
+        }
+    };
 
 }
