@@ -2,6 +2,7 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -13,7 +14,7 @@ import com.example.baifan.myapplication.application.ExitApplication;
 public class EvaluateActivity extends Activity {
     private ImageView back;
     private RatingBar ratingBar;
-    private EditText score;
+    private double score,score1,score2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,12 +23,17 @@ public class EvaluateActivity extends Activity {
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
         back = (ImageView) findViewById(R.id.backImg); //返回
-        score = (EditText)findViewById(R.id.score);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         ratingBar = (RatingBar) findViewById(R.id.ratingBar1);
         ratingBar.setOnRatingBarChangeListener(new RatingBar.OnRatingBarChangeListener() {
             @Override
             public void onRatingChanged(RatingBar ratingBar, float rating, boolean fromUser) {
-                score.setText(String.valueOf(rating));
+
             }
         });
     }
