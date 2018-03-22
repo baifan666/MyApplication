@@ -2,9 +2,11 @@ package com.example.baifan.myapplication.activity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,16 +40,30 @@ public class MainActivity extends AppCompatActivity {
     String act, pasd;
     private final int GETTOKEN = 2;
     private String usertoken,result;
+    private CheckBox rememberPass;
+    private SharedPreferences pref;
+    private SharedPreferences.Editor editor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        rememberPass = (CheckBox)findViewById(R.id.cb_passworda);
+        pref= PreferenceManager.getDefaultSharedPreferences(this);
 
         username = (EditText) findViewById(R.id.username);
         userpassword = (EditText) findViewById(R.id.userpassword);
-        iv=(CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
+        boolean isRemenber=pref.getBoolean("remember_password",false);
+        if(isRemenber){
+            //将账号和密码都设置到文本中
+            String account=pref.getString("account","");
+            String password=pref.getString("password","");
+            username.setText(account);
+            userpassword.setText(password);
+            rememberPass.setChecked(true);
+        }
+        iv = (CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
         iv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -113,6 +129,15 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onSuccess(String userid) {
+                                    editor=pref.edit();
+                                    if(rememberPass.isChecked()){
+                                        editor.putBoolean("remember_password",true);
+                                        editor.putString("account",username.getText().toString());
+                                        editor.putString("password",userpassword.getText().toString());
+                                    }else {
+                                        editor.clear();
+                                    }
+                                    editor.apply();
                                     Log.d("MainActivity", "--onSuccess--" + userid);
                                     Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                     //服务器连接成功，跳转

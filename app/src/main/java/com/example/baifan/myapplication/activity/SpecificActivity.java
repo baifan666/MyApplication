@@ -194,7 +194,7 @@ public class SpecificActivity extends Activity {
         conversation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                RongIM.getInstance().startPrivateChat(SpecificActivity.this, goodsInfo.getUsername(), "聊天中");
+                RongIM.getInstance().startPrivateChat(SpecificActivity.this, goodsInfo.getUsername(), goodsInfo.getUsername());
             }
         });
 

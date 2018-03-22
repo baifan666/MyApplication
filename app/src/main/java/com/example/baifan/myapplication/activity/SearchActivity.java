@@ -75,6 +75,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import q.rorbin.badgeview.QBadgeView;
 
@@ -144,15 +145,17 @@ public class SearchActivity extends Activity implements
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
+        //将该Activity添加到ExitApplication实例中，
+        ExitApplication.getInstance().addActivity(this);
+
         PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
                 "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
 
-
         initUnreadCountListener();
+
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+
 
         initView();
         initViewPage();
@@ -911,6 +914,7 @@ public class SearchActivity extends Activity implements
             photoPath = null;
             adapter.notifyDataSetChanged();
         }
+        initUnreadCountListener();
     }
 
 
@@ -1103,6 +1107,51 @@ public class SearchActivity extends Activity implements
                 RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
             }
         }, 500);
+
+        Handler __handler = new Handler();
+        __handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                RongIMClient.setConnectionStatusListener(new RongIMClient.ConnectionStatusListener() {
+                    @Override
+                    public void onChanged(ConnectionStatus connectionStatus) {
+                        Log.e("SearchActivity", "融云连接状态监听--> " + connectionStatus.toString());
+                        switch (connectionStatus) {
+                            case CONNECTED://连接成功。
+                                break;
+                            case DISCONNECTED://断开连接。
+                                break;
+                            case CONNECTING://连接中。
+                                break;
+                            case NETWORK_UNAVAILABLE://网络不可用
+                                break;
+                            case KICKED_OFFLINE_BY_OTHER_CLIENT://用户账户在其他设备登录，本机会被踢掉线
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+                                        builder.setTitle("提示");
+                                        builder.setMessage("您的帐号在异地登录，请重新登录");
+                                        builder.setInverseBackgroundForced(true);
+                                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(final DialogInterface dialog, final int which) {
+                                                dialog.dismiss();
+                                                finish();
+                                            }
+                                        });
+                                        builder.show();
+                                    }
+                                });
+
+                                break;
+                        }
+                    }
+                });
+                     RongIM.getInstance().getRongIMClient().setConnectionStatusListener(mConnectionStatusListener);
+                    //RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
+            }
+        }, 500);
     }
 
 
@@ -1111,6 +1160,7 @@ public class SearchActivity extends Activity implements
         public void onMessageIncreased(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
+                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
 //                mUnreadCount.setVisibility(View.GONE);
             } else if (count > 0 && count < 100) {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
@@ -1124,4 +1174,33 @@ public class SearchActivity extends Activity implements
         }
     };
 
+    public RongIMClient.ConnectionStatusListener mConnectionStatusListener = new RongIMClient.ConnectionStatusListener() {
+
+        @Override
+        public void onChanged(ConnectionStatus connectionStatus) {
+            switch (connectionStatus) {
+                case CONNECTED://连接成功。
+                    break;
+                case DISCONNECTED://断开连接。
+                    break;
+                case CONNECTING://连接中。
+                    break;
+                case NETWORK_UNAVAILABLE://网络不可用
+                    break;
+                case KICKED_OFFLINE_BY_OTHER_CLIENT://用户账户在其他设备登录，本机会被踢掉线
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);
+                    builder.setTitle("提示");
+                    builder.setMessage("您的帐号在异地登录，请重新登录");
+                    builder.setInverseBackgroundForced(true);
+                    builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int which) {
+                            dialog.dismiss();
+                        }
+                    });
+                    builder.show();
+                    break;
+            }
+        }
+    };
 }
