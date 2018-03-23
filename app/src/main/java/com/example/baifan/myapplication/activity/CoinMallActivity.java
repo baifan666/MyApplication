@@ -284,7 +284,7 @@ public class CoinMallActivity extends Activity {
                                 textView2.setText("第3天");
                                 textView3.setText("第4天");
                                 textView4.setText("第5天");
-                                amount = "30";
+                                amount = "40";
                             }else if("4".equals(count)){
                                 imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
                                 imageView2.setBackgroundResource(R.drawable.yiqiandao);
@@ -292,7 +292,7 @@ public class CoinMallActivity extends Activity {
                                 textView2.setText("第4天");
                                 textView3.setText("第5天");
                                 textView4.setText("第6天");
-                                amount = "40";
+                                amount = "50";
                             }else if("5".equals(count)){
                                 imageView1.setBackgroundResource(R.drawable.zuoriqiandao);
                                 imageView2.setBackgroundResource(R.drawable.yiqiandao);
