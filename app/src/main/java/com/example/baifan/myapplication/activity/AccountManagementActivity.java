@@ -70,6 +70,7 @@ public class AccountManagementActivity extends Activity {
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 Intent intent = new Intent(AccountManagementActivity.this, MainActivity.class);
+                intent.putExtra("exit","0"); // 向下一个界面传递信息
                 startActivity(intent);
                 finish();
             }

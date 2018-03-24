@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <EditText
             android:id="@+id/content"
             android:layout_width="match_parent"
@@ -49,7 +50,18 @@
             android:hint="请输入反馈的内容"
             android:gravity="top"
             android:padding="5dp"
-            android:singleLine="true"
+            android:textColorHint="#AAAAAA" />
+        <EditText
+            android:id="@+id/contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bg_edittext"
+            android:hint="(选填)联系方式(邮箱/手机号)方便我们联系您"
+            android:gravity="top"
+            android:padding="5dp"
             android:textColorHint="#AAAAAA" />
         <Button
             android:id="@+id/fankui"
@@ -62,7 +74,8 @@
             android:text="反馈"
             android:textSize="20dp"
             android:textStyle="bold" />
-
+        <View style="@style/bg_line"
+            />
         <TextView android:text="下面是常见问题"
             android:id="@+id/help_allseequestions"
             android:textAppearance="?android:attr/textAppearanceMedium"

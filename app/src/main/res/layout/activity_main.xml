@@ -145,6 +145,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:orientation="vertical"
             android:gravity="bottom" >
 
             <TextView
@@ -153,9 +154,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="15dp"
                 android:layout_marginLeft="25dp"
-
                 android:text="账户注册"
                 android:textColor="#00868B" />
+
         </LinearLayout>
 
     </LinearLayout>

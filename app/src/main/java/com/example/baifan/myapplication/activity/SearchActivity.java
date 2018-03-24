@@ -152,7 +152,7 @@ public class SearchActivity extends Activity implements
                 "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
 
         initUnreadCountListener();
-
+        mDialog = DialogUtils.createLoadingDialog(SearchActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
 
@@ -560,6 +560,7 @@ public class SearchActivity extends Activity implements
                     parserXml2(response2);
                     goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
                     _listGoods.setAdapter(goodsadapter);
+                    DialogUtils.closeDialog(mDialog);
                     break;
             }
         }
@@ -1160,7 +1161,7 @@ public class SearchActivity extends Activity implements
         public void onMessageIncreased(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
-                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText(" ");
 //                mUnreadCount.setVisibility(View.GONE);
             } else if (count > 0 && count < 100) {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);

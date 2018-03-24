@@ -2,6 +2,7 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -32,6 +34,7 @@ public class RegActivity extends Activity {
     private String new_act, new_psd1, new_psd2, phone,name;
     private EditText new_act_edit, new_psd1_edit, new_psd2_edit, phone_edit,name_edit;
     private ImageView back;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -130,8 +133,10 @@ public class RegActivity extends Activity {
                     });
                     dialog.show();
                 }
-                else
+                else {
+                    mDialog = DialogUtils.createLoadingDialog(RegActivity.this, "注册中...");
                     addClient(new_act, new_psd1, name, phone);
+                }
             }
         });
     }
@@ -142,6 +147,7 @@ public class RegActivity extends Activity {
                 case 1:
                     String response = (String) msg.obj;
                     if (parserXml(response)) {
+                        DialogUtils.closeDialog(mDialog);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(RegActivity.this);
                         dialog.setTitle("This is a warnining!");
                         dialog.setMessage("恭喜您注册成功!");
@@ -156,6 +162,7 @@ public class RegActivity extends Activity {
                         });
                         dialog.show();
                     } else {
+                        DialogUtils.closeDialog(mDialog);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(RegActivity.this);
                         dialog.setTitle("This is a warnining!");
                         dialog.setMessage("对不起，您注册的账户名已存在!");

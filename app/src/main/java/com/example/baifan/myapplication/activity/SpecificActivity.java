@@ -37,7 +37,7 @@ import io.rong.imkit.RongIM;
 
 public class SpecificActivity extends Activity {
     private ImageView back,imageView1,imageView2;
-    TextView username,publishtime,title,content,price,location,mobile;
+    private TextView username,publishtime,title,content,price,location,mobile;
     private String account,path1,path2,url1,url2;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
@@ -327,7 +327,7 @@ public class SpecificActivity extends Activity {
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
                         }
-                        // 简单的判断物品是否发布成功
+                        // 简单的判断是否成功
                         if (result.equals("succeessful"))
                             return true;
                         else if (result.equals("failed"))

@@ -39,8 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView reg;
     String act, pasd;
     private final int GETTOKEN = 2;
-    private String usertoken,result;
-    private CheckBox rememberPass;
+    private String usertoken,result,tuichu;
+    private int flag;
+    private CheckBox rememberPass,autologin;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     @Override
@@ -49,12 +50,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        Intent intent = getIntent();
+        tuichu = intent.getStringExtra("exit");
+
         rememberPass = (CheckBox)findViewById(R.id.cb_passworda);
+        autologin = (CheckBox)findViewById(R.id.cb_logina);
         pref= PreferenceManager.getDefaultSharedPreferences(this);
 
         username = (EditText) findViewById(R.id.username);
         userpassword = (EditText) findViewById(R.id.userpassword);
-        boolean isRemenber=pref.getBoolean("remember_password",false);
+        boolean isRemenber = pref.getBoolean("remember_password",false);
+        boolean isCheck = pref.getBoolean("autologin",false);
+        if("0".equals(tuichu)) {
+            isCheck = false;
+        }
         if(isRemenber){
             //将账号和密码都设置到文本中
             String account=pref.getString("account","");
@@ -62,6 +71,43 @@ public class MainActivity extends AppCompatActivity {
             username.setText(account);
             userpassword.setText(password);
             rememberPass.setChecked(true);
+            if(isCheck) {
+                autologin.setChecked(true);
+                RongIM.connect(pref.getString("usertoken",""), new RongIMClient.ConnectCallback() {
+                    @Override
+                    public void onTokenIncorrect() {
+                        Log.e("MainActivity", "--onTokenIncorrect");
+                    }
+
+                    @Override
+                    public void onSuccess(String userid) {
+                        Log.d("MainActivity", "--onSuccess--" + userid);
+                        if(0 == flag) {
+                            Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
+                            //服务器连接成功，跳转
+                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                            act = username.getText().toString();
+                            intent.putExtra("account", act);
+                            startActivity(intent);
+                        } else {
+                            Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
+                            //服务器连接成功，跳转
+                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                            Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
+                            act = username.getText().toString();
+                            intent.putExtra("account", act);
+                            startActivity(intent);
+                        }
+                    }
+
+                    @Override
+                    public void onError(RongIMClient.ErrorCode errorCode) {
+                        Toast.makeText(MainActivity.this, errorCode.toString(), Toast.LENGTH_SHORT).show();
+                        Log.e("MainActivity", "--onError");
+                    }
+                });
+            }
         }
         iv = (CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
         iv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -134,18 +180,32 @@ public class MainActivity extends AppCompatActivity {
                                         editor.putBoolean("remember_password",true);
                                         editor.putString("account",username.getText().toString());
                                         editor.putString("password",userpassword.getText().toString());
+                                        editor.putString("usertoken",usertoken);
+                                        if(autologin.isChecked()) {
+                                            editor.putBoolean("autologin",true);
+                                        }
                                     }else {
                                         editor.clear();
                                     }
                                     editor.apply();
                                     Log.d("MainActivity", "--onSuccess--" + userid);
-                                    Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
-                                    //服务器连接成功，跳转
-                                    RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid,userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
-                                    Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                                    act = username.getText().toString();
-                                    intent.putExtra("account", act);
-                                    startActivity(intent);
+                                    if(0 == flag) {
+                                        Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
+                                        //服务器连接成功，跳转
+                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                                        Intent intent = new Intent(MainActivity.this, SearchActivity.class);
+                                        act = username.getText().toString();
+                                        intent.putExtra("account", act);
+                                        startActivity(intent);
+                                    } else {
+                                        Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
+                                        //服务器连接成功，跳转
+                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                                        Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
+                                        act = username.getText().toString();
+                                        intent.putExtra("account", act);
+                                        startActivity(intent);
+                                    }
                                 }
 
                                 @Override
@@ -217,7 +277,12 @@ public class MainActivity extends AppCompatActivity {
                 String nodeName = parse.getName();
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        // 从数据库读取2个参数
+                        // 从数据库读取3个参数
+                        if ("flag".equals(nodeName)) {
+                            String flagStr = parse.nextText();
+                            flag = Integer.parseInt(flagStr);
+                            Log.d("flag", String.valueOf(flag));
+                        }
                         if ("token".equals(nodeName)) {
                             String tokenStr = parse.nextText();
                             usertoken = tokenStr;
