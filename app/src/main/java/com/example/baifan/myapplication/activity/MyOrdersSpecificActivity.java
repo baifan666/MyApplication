@@ -2,18 +2,16 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -27,6 +25,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -36,6 +35,8 @@ import java.io.StringReader;
 
 import io.rong.imkit.RongIM;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class MyOrdersSpecificActivity extends Activity {
     private OrderSpecificInfo orderSpecificInfo;
     private ImageView back,imageView1,imageView2;
@@ -43,7 +44,11 @@ public class MyOrdersSpecificActivity extends Activity {
     private String path1,path2,url1,url2;
     private Button finish,conversation;
     private String result;
+    private int isEvaluate = 0;
+    private Dialog mDialog;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
+    private final int FINISHORDER = 1;
+    private final int SEARCHBUYEREVALUATE = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,11 +142,12 @@ public class MyOrdersSpecificActivity extends Activity {
             isfinish.setText("订单已完成");
             wanchengshijian.setText("完成时间："+orderSpecificInfo.getFinishtime());
             //finish.setVisibility(View.GONE);
-            finish.setText("去评价");
+            mDialog = DialogUtils.createLoadingDialog(MyOrdersSpecificActivity.this, "请稍等...");
+            searchBuyerEvaluate(orderSpecificInfo.getOrderid());
         }
 
         if(!path1.equals("")) {
-            url1 = "http://111.231.101.251:8080/fuwuduan/upload/"+path1;
+            url1 = SERVER_ADDRESS+"/upload/"+path1;
             Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener1 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -150,7 +156,7 @@ public class MyOrdersSpecificActivity extends Activity {
             Glide.with(this).load(R.drawable.good).into(imageView1);
         }
         if(!path2.equals("")) {
-            url2 = "http://111.231.101.251:8080/fuwuduan/upload/"+path2;
+            url2 = SERVER_ADDRESS+"/upload/"+path2;
             Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener2 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -206,7 +212,12 @@ public class MyOrdersSpecificActivity extends Activity {
                 }else {
                     Intent i = new Intent();
                     i.setClass(MyOrdersSpecificActivity.this, EvaluateActivity.class);
-                    i.putExtra("seller",seller.getText().toString()); // 传递卖家信息
+                    // 传递卖家信息
+                    i.putExtra("seller",seller.getText().toString());
+                    //传递卖家信息
+                    i.putExtra("buyer",orderSpecificInfo.getBuyerid());
+                    //传递订单编号
+                    i.putExtra("orderid",orderSpecificInfo.getOrderid());
                     startActivity(i);
                 }
             }
@@ -220,15 +231,15 @@ public class MyOrdersSpecificActivity extends Activity {
         });
     }
     /*
-*
-* 弹出对话框
-*
-* 弹出对话框的步骤：
-*  1.创建alertDialog的builder.
-*  2.要给builder设置属性, 对话框的内容,样式,按钮
-*  3.通过builder 创建一个对话框
-*  4.对话框show()出来
-*/
+    *
+    * 弹出对话框
+    *
+    * 弹出对话框的步骤：
+    *  1.创建alertDialog的builder.
+    *  2.要给builder设置属性, 对话框的内容,样式,按钮
+    *  3.通过builder 创建一个对话框
+    *  4.对话框show()出来
+    */
     protected void showDialog() {
         AlertDialog.Builder builer = new AlertDialog.Builder(this) ;
         builer.setTitle("二次确认");
@@ -280,13 +291,50 @@ public class MyOrdersSpecificActivity extends Activity {
         }
     }
 
+    private void parserXml1(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("count".equals(nodeName)) {
+                            String scoreStr = parse.nextText();
+                            isEvaluate = Integer.parseInt(scoreStr);
+                            Log.d("isEvaluate", String.valueOf(isEvaluate));
+                        }
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private Handler handler;
 
     {
         handler = new Handler() {
             public void handleMessage(Message msg) {
                 switch (msg.what) {
-                    case 1:
+                    case FINISHORDER:
                         String response = (String) msg.obj;
                         parserXml(response);
                         if(result.equals("succeessful")) {
@@ -317,6 +365,35 @@ public class MyOrdersSpecificActivity extends Activity {
                             });
                             dialog.show();
                         }
+                        result = "";
+                        break;
+                    case SEARCHBUYEREVALUATE:
+                        String response1 = (String) msg.obj;
+                        parserXml1(response1);
+                        if(result.equals("succeessful")) {
+                            if(0 == isEvaluate) {
+                                finish.setText("去评价");
+                            }else {
+                                finish.setText("已评价");
+                                finish.setEnabled(false);
+                            }
+                            DialogUtils.closeDialog(mDialog);
+                        }
+                        else {
+                            AlertDialog.Builder dialog = new AlertDialog.Builder(MyOrdersSpecificActivity.this);
+                            dialog.setTitle("This is a warnining!");
+                            dialog.setMessage("当前网络异常，请稍后再试！");
+                            dialog.setCancelable(false);
+                            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            });
+                            dialog.show();
+                            DialogUtils.closeDialog(mDialog);
+                        }
+                        result = "";
                         break;
                     default:
                         break;
@@ -330,9 +407,24 @@ public class MyOrdersSpecificActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/finishOrder.jsp?orderid=" + id;
+                String url = SERVER_ADDRESS+"/finishOrder.jsp?orderid=" + id;
                 Message msg = new Message();
-                msg.what = 1;
+                msg.what = FINISHORDER;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
+    private void searchBuyerEvaluate(String orderid) {
+        final String o = orderid;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = SERVER_ADDRESS+"/searchBuyerEvaluate.jsp?orderid=" + o;
+                Message msg = new Message();
+                msg.what = SEARCHBUYEREVALUATE;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler

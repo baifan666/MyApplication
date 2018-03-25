@@ -36,7 +36,6 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:layout_weight="40"
-        android:gravity="center"
         android:orientation="vertical">
         <com.tencent.smtt.sdk.WebView
             android:id="@+id/tbsContent"

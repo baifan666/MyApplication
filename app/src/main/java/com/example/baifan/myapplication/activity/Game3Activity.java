@@ -1,7 +1,6 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.view.KeyEvent;

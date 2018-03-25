@@ -2,7 +2,6 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.MotionEvent;
@@ -13,7 +12,6 @@ import android.widget.TextView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
-import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.model.UserOpinionInfo;
 
 public class UserOpinionSpecificActivity extends Activity {

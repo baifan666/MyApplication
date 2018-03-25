@@ -11,7 +11,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
@@ -29,6 +28,8 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
 
 public class SearchResultActivity extends Activity {
     private final int SEARCH = 1;
@@ -96,7 +97,7 @@ public class SearchResultActivity extends Activity {
                 try {
                     String str1 = URLEncoder.encode(str, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/searchGoods.jsp?str="+str1;
+                    String url = SERVER_ADDRESS+"/searchGoods.jsp?str="+str1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = SEARCH;

@@ -2,17 +2,20 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +26,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -34,15 +38,21 @@ import java.net.URLEncoder;
 
 import io.rong.imkit.RongIM;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 
 public class SpecificActivity extends Activity {
     private ImageView back,imageView1,imageView2;
     private TextView username,publishtime,title,content,price,location,mobile;
-    private String account,path1,path2,url1,url2;
+    private String account,path1,path2,url1,url2,result;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
     private final int ADD_SUCCEESS = 1;
+    private final int SEARCHSELLERSCORE = 2;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
+    private RatingBar ratingBar;
+    private double score;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +60,7 @@ public class SpecificActivity extends Activity {
         setContentView(R.layout.activity_specific);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        mDialog = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
@@ -125,22 +136,27 @@ public class SpecificActivity extends Activity {
         path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/")+1);
         imageView1 = (ImageView)findViewById(R.id.image_view1);
         imageView2 = (ImageView)findViewById(R.id.image_view2);
+        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        searchSellerScore(goodsInfo.getUsername());
+
         if(!path1.equals("")) {
-            url1 = "http://111.231.101.251:8080/fuwuduan/upload/"+path1;
+            url1 = SERVER_ADDRESS+"/upload/"+path1;
             Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener1 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
                     .into(imageView1);
         }else {
+            DialogUtils.closeDialog(mDialog);
             Glide.with(this).load(R.drawable.good).into(imageView1);
         }
         if(!path2.equals("")) {
-            url2 = "http://111.231.101.251:8080/fuwuduan/upload/"+path2;
+            url2 = SERVER_ADDRESS+"/upload/"+path2;
             Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener2 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
                     .into(imageView2);
         }else {
+            DialogUtils.closeDialog(mDialog);
             Glide.with(this).load(R.drawable.good).into(imageView2);
         }
         imageView1.setOnClickListener(new View.OnClickListener() {
@@ -268,6 +284,7 @@ public class SpecificActivity extends Activity {
         @Override
         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
             flag2 = 1;
+            DialogUtils.closeDialog(mDialog);
             return false;
         }
     };
@@ -308,6 +325,31 @@ public class SpecificActivity extends Activity {
                         dialog.show();
                     }
                     break;
+                case SEARCHSELLERSCORE:
+                    String response1 = (String) msg.obj;
+                    parserXml1(response1);
+                    if ("succeessful".equals(result)) {
+                        if(score == 0) {
+                            ratingBar.setRating(5);
+                        }else {
+                            ratingBar.setRating((float)score);
+                        }
+                    }else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SpecificActivity.this);
+                        dialog.setTitle("This is a warnining!");
+                        dialog.setMessage("当前网络状况不好，请稍后再试！");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    break;
+                default:
+                    break;
             }
         }
     };
@@ -343,6 +385,43 @@ public class SpecificActivity extends Activity {
         return false;
     }
 
+    private void parserXml1(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("count".equals(nodeName)) {
+                            String scoreStr = parse.nextText();
+                            score = Double.parseDouble(scoreStr);
+                            Log.d("score", String.valueOf(score));
+                        }
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
     private void addOredrs(String a, String b, String c) {
         final String goods = a;
         final String buyer= b;
@@ -355,7 +434,7 @@ public class SpecificActivity extends Activity {
                     String goodsid = URLEncoder.encode(goods, "UTF-8");
                     String buyerid = URLEncoder.encode(buyer, "UTF-8");
                     String sellerid = URLEncoder.encode(seller, "UTF-8");
-                    String url = "http://111.231.101.251:8080/fuwuduan/addOrders.jsp?goodsid=" + goodsid
+                    String url = SERVER_ADDRESS+"/addOrders.jsp?goodsid=" + goodsid
                             + "&buyerid=" + buyerid + "&sellerid=" + sellerid;
                     // 发送消息
                     Message msg = new Message();
@@ -370,4 +449,20 @@ public class SpecificActivity extends Activity {
             }
         }).start();
     }
+
+    private void searchSellerScore(String username) {
+        final String un = username;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = SERVER_ADDRESS+"/searchSellerScore.jsp?username=" + un;
+                Message msg = new Message();
+                msg.what = SEARCHSELLERSCORE;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
 }

@@ -19,7 +19,8 @@ import com.tencent.smtt.sdk.WebViewClient;
 public class Game1Activity extends Activity {
 
     com.tencent.smtt.sdk.WebView tbsContent;
-    private String url = "http://h.4399.com/play/194264.htm";
+    private String url = "h.4399.com/play/194264.htm";
+    //private String url = "https://x5.tencent.com/tbs/sdk.html";
     private ImageView back;
 
     @Override

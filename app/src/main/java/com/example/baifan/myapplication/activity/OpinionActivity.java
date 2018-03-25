@@ -24,6 +24,8 @@ import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class OpinionActivity extends Activity {
     private ImageView back;
     private EditText content,contacts;
@@ -138,7 +140,7 @@ public class OpinionActivity extends Activity {
                     String username1 = URLEncoder.encode(username, "UTF-8");
                     String content1 = URLEncoder.encode(content, "UTF-8");
                     String contacts1 = URLEncoder.encode(contacts, "UTF-8");
-                    String url = "http://111.231.101.251:8080/fuwuduan/addFeedback.jsp?username=" + username1
+                    String url = SERVER_ADDRESS+"/addFeedback.jsp?username=" + username1
                             + "&content=" + content1+"&contacts=" + contacts1;
                     // 发送消息
                     Message msg = new Message();

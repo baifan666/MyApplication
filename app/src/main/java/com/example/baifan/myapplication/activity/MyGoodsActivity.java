@@ -28,6 +28,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class MyGoodsActivity extends Activity {
 
     private final int MYREADALL = 1;
@@ -92,7 +94,7 @@ public class MyGoodsActivity extends Activity {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/myGoods.jsp?account="+acc1;
+                    String url = SERVER_ADDRESS+"/myGoods.jsp?account="+acc1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;

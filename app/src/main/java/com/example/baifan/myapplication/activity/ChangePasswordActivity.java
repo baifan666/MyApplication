@@ -27,6 +27,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 
 public class ChangePasswordActivity extends Activity {
 
@@ -186,7 +188,7 @@ public class ChangePasswordActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/changePassword.jsp?account=" + account+ "&newPassword=" + password;
+                String url = SERVER_ADDRESS+"/changePassword.jsp?account=" + account+ "&newPassword=" + password;
                 Message msg = new Message();
                 msg.what = 2;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -203,7 +205,7 @@ public class ChangePasswordActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/dengLu.jsp?account=" + account+ "&password=" + password;
+                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
                 Message msg = new Message();
                 msg.what = 1;
                 msg.obj = HttpUtils.connection(url).toString();

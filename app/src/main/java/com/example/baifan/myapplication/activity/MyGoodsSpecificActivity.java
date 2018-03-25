@@ -8,12 +8,9 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
-import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,6 +31,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
 
 
 public class MyGoodsSpecificActivity extends Activity {
@@ -126,7 +124,7 @@ public class MyGoodsSpecificActivity extends Activity {
         imageView1 = (ImageView)findViewById(R.id.image_view1);
         imageView2 = (ImageView)findViewById(R.id.image_view2);
         if(!path1.equals("")) {
-            url1 = "http://111.231.101.251:8080/fuwuduan/upload/"+path1;
+            url1 = SERVER_ADDRESS+"/upload/"+path1;
             Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener1 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -135,7 +133,7 @@ public class MyGoodsSpecificActivity extends Activity {
             Glide.with(this).load(R.drawable.good).into(imageView1);
         }
         if(!path2.equals("")) {
-            url2 = "http://111.231.101.251:8080/fuwuduan/upload/"+path2;
+            url2 = SERVER_ADDRESS+"/upload/"+path2;
             Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener2 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -348,7 +346,7 @@ public class MyGoodsSpecificActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/deleteGoods.jsp?id=" + id;
+                String url = SERVER_ADDRESS+"/deleteGoods.jsp?id=" + id;
                 Message msg = new Message();
                 msg.what = 1;
                 msg.obj = HttpUtils.connection(url).toString();

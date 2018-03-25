@@ -13,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.adapter.MyGoodsAdapter;
 import com.example.baifan.myapplication.adapter.UserOpinionAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.UserOpinionInfo;
@@ -26,6 +25,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
 
 public class CheckUserOpinionActivity extends Activity {
     private ImageView back;
@@ -79,7 +80,7 @@ public class CheckUserOpinionActivity extends Activity {
             @Override
             public void run() {
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/searchFeedback.jsp?";
+                    String url = SERVER_ADDRESS+"/searchFeedback.jsp?";
                     // 发送消息
                     Message msg = new Message();
                     msg.what = READALL;

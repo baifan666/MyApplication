@@ -26,7 +26,7 @@
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
-            android:hint="物品详情"
+            android:text="物品详情"
             android:textColor="#00868B"
             android:textSize="20sp" />
     </RelativeLayout>
@@ -60,6 +60,21 @@
                     android:paddingTop="5dp"
                     android:textStyle="bold"
                     android:text="发布人"/>
+
+                <RatingBar
+                    android:id="@+id/ratingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="3dp"
+                    style="?android:attr/ratingBarStyleSmall"
+                    android:numStars="5"
+                    android:max="255"
+                    android:progress="255"
+                    android:stepSize="0.5"
+                    />
+
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"

@@ -1,5 +1,6 @@
 package com.example.baifan.myapplication.activity;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,6 +20,7 @@ import android.widget.*;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -30,6 +32,8 @@ import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.UserInfo;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class MainActivity extends AppCompatActivity {
 
     private boolean isback;
@@ -37,13 +41,13 @@ public class MainActivity extends AppCompatActivity {
     private Button btnlogin;
     private  CheckBox iv;
     private TextView reg;
-    String act, pasd;
-    private final int GETTOKEN = 2;
+    private String act, pasd;
     private String usertoken,result,tuichu;
     private int flag;
     private CheckBox rememberPass,autologin;
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,45 +72,14 @@ public class MainActivity extends AppCompatActivity {
             //将账号和密码都设置到文本中
             String account=pref.getString("account","");
             String password=pref.getString("password","");
+            flag = pref.getInt("flag",0);
             username.setText(account);
             userpassword.setText(password);
             rememberPass.setChecked(true);
             if(isCheck) {
                 autologin.setChecked(true);
-                RongIM.connect(pref.getString("usertoken",""), new RongIMClient.ConnectCallback() {
-                    @Override
-                    public void onTokenIncorrect() {
-                        Log.e("MainActivity", "--onTokenIncorrect");
-                    }
-
-                    @Override
-                    public void onSuccess(String userid) {
-                        Log.d("MainActivity", "--onSuccess--" + userid);
-                        if(0 == flag) {
-                            Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
-                            //服务器连接成功，跳转
-                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
-                            Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                            act = username.getText().toString();
-                            intent.putExtra("account", act);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
-                            //服务器连接成功，跳转
-                            RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
-                            Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
-                            act = username.getText().toString();
-                            intent.putExtra("account", act);
-                            startActivity(intent);
-                        }
-                    }
-
-                    @Override
-                    public void onError(RongIMClient.ErrorCode errorCode) {
-                        Toast.makeText(MainActivity.this, errorCode.toString(), Toast.LENGTH_SHORT).show();
-                        Log.e("MainActivity", "--onError");
-                    }
-                });
+                mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
+                whetherRegister(account, password);
             }
         }
         iv = (CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
@@ -149,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     dialog.show();
-                } else
+                } else {
+                    mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
                     whetherRegister(act, pasd);
-
+                }
             }
         });
     }
@@ -175,12 +149,14 @@ public class MainActivity extends AppCompatActivity {
 
                                 @Override
                                 public void onSuccess(String userid) {
+                                    DialogUtils.closeDialog(mDialog);
                                     editor=pref.edit();
                                     if(rememberPass.isChecked()){
                                         editor.putBoolean("remember_password",true);
                                         editor.putString("account",username.getText().toString());
                                         editor.putString("password",userpassword.getText().toString());
                                         editor.putString("usertoken",usertoken);
+                                        editor.putInt("flag",flag);
                                         if(autologin.isChecked()) {
                                             editor.putBoolean("autologin",true);
                                         }
@@ -192,7 +168,7 @@ public class MainActivity extends AppCompatActivity {
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                         act = username.getText().toString();
                                         intent.putExtra("account", act);
@@ -200,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse("http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png")));
+                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
                                         Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
                                         act = username.getText().toString();
                                         intent.putExtra("account", act);
@@ -216,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
                             });
                         }
                         else {
+                            DialogUtils.closeDialog(mDialog);
                             AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
                             dialog.setTitle("This is a warnining!");
                             dialog.setMessage("对不起，您的账户或密码有错!");
@@ -242,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/dengLu.jsp?account=" + account+ "&password=" + password;
+                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
                 Message msg = new Message();
                 msg.what = 1;
                 msg.obj = HttpUtils.connection(url).toString();

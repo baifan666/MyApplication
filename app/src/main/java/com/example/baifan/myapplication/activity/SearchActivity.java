@@ -79,6 +79,8 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import q.rorbin.badgeview.QBadgeView;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 
 public class SearchActivity extends Activity implements
         android.view.View.OnClickListener{
@@ -131,7 +133,7 @@ public class SearchActivity extends Activity implements
     String account,path1,path2,tit,con,pri,loc,mob;
     private List <String> s = new ArrayList<String>();//创建了s来保存本地图片的地址
     private List <String> ss = new ArrayList<String>();//创建了ss来保存服务器图片的地址
-    private static String requestURL = "http://111.231.101.251:8080/fuwuduan/UploadShipServlet";
+    private static String requestURL = SERVER_ADDRESS+"/UploadShipServlet";
 
     private Dialog mDialog;
 
@@ -973,7 +975,7 @@ public class SearchActivity extends Activity implements
                     String loc1 = URLEncoder.encode(loc, "UTF-8");
                     String p11 = URLEncoder.encode(p1, "UTF-8");
                     String p21 = URLEncoder.encode(p2, "UTF-8");
-                    String url = "http://111.231.101.251:8080/fuwuduan/addGoods.jsp?account=" + acc1
+                    String url = SERVER_ADDRESS+"/addGoods.jsp?account=" + acc1
                             + "&title=" + tit1 + "&content=" + con1 + "&price=" + pri1 + "&mobile=" + mob1
                             + "&location=" + loc1 + "&path1=" + p11 + "&path2=" + p21;
                     // 发送消息
@@ -996,7 +998,7 @@ public class SearchActivity extends Activity implements
             @Override
             public void run() {
                 // 打开链接
-                String url = "http://111.231.101.251:8080/fuwuduan/goods.jsp";
+                String url = SERVER_ADDRESS+"/goods.jsp";
                 // 发送消息
                 Message msg = new Message();
                 msg.what = READALL;
@@ -1161,7 +1163,7 @@ public class SearchActivity extends Activity implements
         public void onMessageIncreased(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
-                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText(" ");
+                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
 //                mUnreadCount.setVisibility(View.GONE);
             } else if (count > 0 && count < 100) {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);

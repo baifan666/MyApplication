@@ -32,6 +32,8 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class MyOrdersActivity extends Activity {
     private final int MYREADALL = 1;
     private ImageView back;
@@ -254,7 +256,7 @@ public class MyOrdersActivity extends Activity {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/myOrders.jsp?account="+acc1+"&isfinish="+is;
+                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1+"&isfinish="+is;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;
@@ -277,7 +279,7 @@ public class MyOrdersActivity extends Activity {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = "http://111.231.101.251:8080/fuwuduan/myOrders.jsp?account="+acc1;
+                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;

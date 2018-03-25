@@ -76,8 +76,8 @@
     </LinearLayout>
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="6dp"
+        android:layout_height="5dp"
         android:layout_marginTop="1dp"
-        android:src="#E4E3E3" />
+        android:src="#daf06a" />
 
 </LinearLayout>

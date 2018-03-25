@@ -25,6 +25,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 
+import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+
 public class CoinMallActivity extends Activity {
     private ImageView back,imageView1,imageView2,jbsc;
     private String amount;
@@ -356,7 +358,7 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/isSign.jsp?username=" + id;
+                String url = SERVER_ADDRESS+"/isSign.jsp?username=" + id;
                 Message msg = new Message();
                 msg.what = ISSIGN;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -371,7 +373,7 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/userSign.jsp?username=" + id;
+                String url = SERVER_ADDRESS+"/userSign.jsp?username=" + id;
                 Message msg = new Message();
                 msg.what = SIGN;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -386,7 +388,7 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/searchSign.jsp?username=" + id;
+                String url = SERVER_ADDRESS+"/searchSign.jsp?username=" + id;
                 Message msg = new Message();
                 msg.what = SEARCHSIGN;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -401,7 +403,7 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/getUser.jsp?account=" + id;
+                String url = SERVER_ADDRESS+"/getUser.jsp?account=" + id;
                 Message msg = new Message();
                 msg.what = GETCOINS;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -417,7 +419,7 @@ public class CoinMallActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = "http://111.231.101.251:8080/fuwuduan/setCoins.jsp?username=" + id+"&amount="+a;
+                String url = SERVER_ADDRESS+"/setCoins.jsp?username=" + id+"&amount="+a;
                 Message msg = new Message();
                 msg.what = SETCOINS;
                 msg.obj = HttpUtils.connection(url).toString();
