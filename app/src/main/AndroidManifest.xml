@@ -209,7 +209,8 @@
 
         <activity android:name=".activity.ManagerActivity" />
         <activity android:name=".activity.CheckUserOpinionActivity" />
-        <activity android:name=".activity.UserOpinionSpecificActivity"></activity>
+        <activity android:name=".activity.UserOpinionSpecificActivity" />
+        <activity android:name=".activity.PrizeSpecificActivity"></activity>
     </application>
 
 </manifest>

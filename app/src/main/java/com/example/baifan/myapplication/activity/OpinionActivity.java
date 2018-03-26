@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -39,6 +40,7 @@ public class OpinionActivity extends Activity {
         setContentView(R.layout.activity_opinion);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         back = (ImageView) findViewById(R.id.IV_back); //返回

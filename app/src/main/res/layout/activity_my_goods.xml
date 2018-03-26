@@ -54,7 +54,8 @@
                 <ListView
                     android:id="@+id/listgoods"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:divider="@null">
                 </ListView>
                 <TextView
                     android:id="@+id/myText"
