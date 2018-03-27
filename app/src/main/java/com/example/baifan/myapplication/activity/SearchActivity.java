@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
@@ -69,6 +70,7 @@ import com.example.baifan.myapplication.adapter.Adapter;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
 import com.scwang.smartrefresh.layout.api.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -84,6 +86,7 @@ import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRES
 
 public class SearchActivity extends Activity implements
         android.view.View.OnClickListener{
+    private int startrow = 0;
     private boolean isback;
 
     private ViewPager mViewPager;// 用来放置界面切换
@@ -140,8 +143,12 @@ public class SearchActivity extends Activity implements
     // 物品显示列表
     private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();
     private ListView _listGoods;
-
+    private RefreshLayout refreshLayout;
+    private int num = 0,num1 = 0;//用来记录goodsdata中的数据条数
     private ImageButton map;
+
+    private int scrollPos; //滑动以后的可见的第一条数据
+    private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -164,25 +171,34 @@ public class SearchActivity extends Activity implements
         initEvent();
 
 
-        RefreshLayout refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
+        refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
+        refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
+        refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
+        refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
+        refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
+        refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                readAll(); //从服务端读取所有物品
-             //   goodsadapter.refresh(goodsdata);
+                startrow = 0;
+                refreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
+                readAll(startrow); //从服务端读取所有物品
                 goodsadapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
+                //refreshlayout.finishRefresh(2000);
             }
         });
-        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
-                refreshlayout.finishLoadmore(2000);
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                num1 = goodsdata.size();
+                startrow = startrow+10;
+                readAll(startrow); //从服务端读取接下来的10个数据
+                //refreshlayout.finishLoadmore(2000);
             }
         });
 
         _listGoods = (ListView)tab01.findViewById(R.id.listgoods);
-        readAll(); //从服务端读取所有物品
+        readAll(startrow); //从服务端读取所有物品
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -191,6 +207,25 @@ public class SearchActivity extends Activity implements
                 intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
                 intent.putExtra("account",account);
                 startActivity(intent);
+            }
+        });
+//给ListView设置监听器
+        _listGoods.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // scrollPos记录当前可见的List顶端的一行的位置
+                    scrollPos = _listGoods.getFirstVisiblePosition();
+                }
+                if (_listGoods != null) {
+                    View v=_listGoods .getChildAt(0);
+                    scrollTop=(v==null)?0:v.getTop();
+                }
+            }
+
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
             }
         });
 
@@ -219,44 +254,55 @@ public class SearchActivity extends Activity implements
                 pri = price.getText().toString();
                 mob = mobile.getText().toString();
                 loc = location.getText().toString();
-
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        for (String tmp : s) {
-                            File file = new File(tmp);
-                            if (file != null) {
-                                result = UploadUtil.uploadFile(file, requestURL);
-                                ss.add(result);
+                if("".equals(tit)||"".equals(con)||"".equals(pri)||"".equals(mob)||"".equals(loc))  {
+                    AlertDialog.Builder dialog = new AlertDialog.Builder(SearchActivity.this);
+                    dialog.setTitle("This is a warnining!");
+                    dialog.setMessage("请确保每一个信息已输入！");
+                    dialog.setCancelable(false);
+                    dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    dialog.show();
+                }else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            for (String tmp : s) {
+                                File file = new File(tmp);
+                                if (file != null) {
+                                    result = UploadUtil.uploadFile(file, requestURL);
+                                    ss.add(result);
+                                } else {
+                                    result = "1111111";
+                                }
+                            }
+                            HashSet h = new HashSet(ss);
+                            ss.clear();
+                            ss.addAll(h);
+                            if (ss.size() == 1) {
+                                path1 = ss.get(0);
+                                path2 = "";
+                            } else if (ss.size() == 2) {
+                                path1 = ss.get(0);
+                                path2 = ss.get(1);
                             } else {
-                                result = "1111111";
+                                path1 = "";
+                                path2 = "";
                             }
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    addGoods(account, tit, con, pri, mob, loc, path1, path2);
+                                }
+                            });
                         }
-                        HashSet h = new HashSet(ss);
-                        ss.clear();
-                        ss.addAll(h);
-                        if (ss.size()==1) {
-                            path1 = ss.get(0);
-                            path2 = "";
-                        }
-                        else if(ss.size()==2){
-                            path1 = ss.get(0);
-                            path2 = ss.get(1);
-                        }
-                        else {
-                            path1 = "";
-                            path2 = "";
-                        }
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                addGoods(account,tit,con,pri,mob,loc,path1,path2);
-                            }
-                        });
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
+
 
         search=(ImageView)findViewById(R.id.top_search);
         search.setOnClickListener(new View.OnClickListener() {
@@ -558,11 +604,20 @@ public class SearchActivity extends Activity implements
                     break;
                 case READALL:
                     String response2 = (String) msg.obj;
-                    goodsdata.clear();
+                    if(startrow == 0) {
+                        goodsdata.clear();
+                    }
                     parserXml2(response2);
+                    num = goodsdata.size();
+                    if(num == num1) {
+                        refreshLayout.finishLoadMoreWithNoMoreData();//显示全部加载完成，并不再触发加载更事件
+                    }
                     goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
                     _listGoods.setAdapter(goodsadapter);
                     DialogUtils.closeDialog(mDialog);
+                    refreshLayout.finishRefresh();//结束刷新
+                    _listGoods .setSelectionFromTop(scrollPos, scrollTop);
+                    refreshLayout.finishLoadMore();//结束加载
                     break;
             }
         }
@@ -993,12 +1048,13 @@ public class SearchActivity extends Activity implements
         }).start();
     }
 
-    private void readAll() {
+    private void readAll(int startrow) {
+        final String row = String.valueOf(startrow);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 // 打开链接
-                String url = SERVER_ADDRESS+"/goods.jsp";
+                String url = SERVER_ADDRESS+"/goods.jsp?startrow="+row;
                 // 发送消息
                 Message msg = new Message();
                 msg.what = READALL;
