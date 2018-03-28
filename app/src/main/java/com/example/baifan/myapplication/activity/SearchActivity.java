@@ -68,7 +68,6 @@ import com.example.baifan.myapplication.utils.UpdataInfoParser;
 import com.example.baifan.myapplication.utils.UploadUtil;
 import com.example.baifan.myapplication.adapter.Adapter;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
-import com.scwang.smartrefresh.layout.api.OnLoadmoreListener;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -156,7 +155,6 @@ public class SearchActivity extends Activity implements
         setContentView(R.layout.activity_search);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
-
         PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
                 "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
 

@@ -5,7 +5,8 @@
     android:orientation="vertical">
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
+        android:background="@color/colorPrimary"
         >
 
         <ImageView
@@ -24,8 +25,9 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:text="与xxx聊天中"
-            android:textColor="#00868B"
-            android:textSize="20sp" />
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </RelativeLayout>
     <fragment
         android:id="@+id/conversation"

@@ -7,7 +7,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="58dp"
+        android:background="@color/colorPrimary"
         >
 
         <ImageView
@@ -27,15 +28,16 @@
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:text="售出物品"
-            android:textColor="#00868B"
-            android:textSize="20sp" />
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:textStyle="bold"  />
     </RelativeLayout>
     <org.angmarch.views.NiceSpinner
         android:id="@+id/nice_spinner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#F0F3F6"
-        android:layout_margin="6dp"/>
+        android:layout_margin="1dp"/>
 
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"

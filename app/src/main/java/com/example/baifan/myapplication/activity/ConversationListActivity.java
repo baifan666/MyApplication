@@ -4,18 +4,30 @@ import android.net.Uri;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
+import android.widget.ImageView;
 
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.application.ExitApplication;
 
 import io.rong.imkit.fragment.ConversationListFragment;
 import io.rong.imlib.model.Conversation;
 
 public class ConversationListActivity extends FragmentActivity {
-
+    private ImageView back;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation_list);
+        //将该Activity添加到ExitApplication实例中，
+        ExitApplication.getInstance().addActivity(this);
+        back = (ImageView) findViewById(R.id.backImg); //返回
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         ConversationListFragment listFragment = (ConversationListFragment) ConversationListFragment.instantiate(this, ConversationListFragment.class.getName());
         Uri uri = Uri.parse("rong://" + getApplicationInfo().packageName).buildUpon()
                 .appendPath("conversationlist")

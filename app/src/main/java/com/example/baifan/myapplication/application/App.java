@@ -7,8 +7,6 @@ import com.baidu.mapapi.SDKInitializer;
 import com.tencent.smtt.sdk.QbSdk;
 
 import io.rong.imkit.RongIM;
-import io.rong.imlib.RongIMClient;
-
 /**
  * Created by baifan on 2018/2/13.
  */
