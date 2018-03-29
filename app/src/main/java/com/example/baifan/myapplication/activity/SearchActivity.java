@@ -68,6 +68,9 @@ import com.example.baifan.myapplication.utils.UpdataInfoParser;
 import com.example.baifan.myapplication.utils.UploadUtil;
 import com.example.baifan.myapplication.adapter.Adapter;
 import com.example.baifan.myapplication.adapter.GoodsAdapter;
+import com.nightonke.boommenu.BoomButtons.OnBMClickListener;
+import com.nightonke.boommenu.BoomButtons.TextOutsideCircleButton;
+import com.nightonke.boommenu.BoomMenuButton;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -148,6 +151,10 @@ public class SearchActivity extends Activity implements
 
     private int scrollPos; //滑动以后的可见的第一条数据
     private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
+
+    private BoomMenuButton boomMenuButton;   //BoomMenu开源ui
+    private static int index = 0;
+    private static String [] text = new String[]{"系统消息","会话"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -168,6 +175,26 @@ public class SearchActivity extends Activity implements
         initViewPage();
         initEvent();
 
+        boomMenuButton = (BoomMenuButton) findViewById(R.id.bmb);
+//        for (int i = 0; i < boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
+//            TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
+//                    .normalImageRes(R.drawable.ic_launcher)
+//                    .normalText("Butter Doesn't fly!");
+//            boomMenuButton.addBuilder(builder);
+//        }
+        for (int i = 0; i < boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
+            TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
+                    .listener(new OnBMClickListener() {
+                        @Override
+                        public void onBoomButtonClick(int index) {
+                            Toast.makeText(SearchActivity.this, "Clicked " + index, Toast.LENGTH_SHORT).show();
+                        }
+                    })
+                    .normalImageRes(getImageResource())
+                    .normalText(getext());
+            boomMenuButton.addBuilder(builder);
+        }
+
 
         refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
@@ -179,7 +206,6 @@ public class SearchActivity extends Activity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 startrow = 0;
-                refreshLayout.setEnableLoadMore(true);//是否启用上拉加载功能
                 readAll(startrow); //从服务端读取所有物品
                 goodsadapter.notifyDataSetChanged();
                 //refreshlayout.finishRefresh(2000);
@@ -207,7 +233,7 @@ public class SearchActivity extends Activity implements
                 startActivity(intent);
             }
         });
-//给ListView设置监听器
+        //给ListView设置监听器
         _listGoods.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView absListView, int i) {
@@ -260,9 +286,11 @@ public class SearchActivity extends Activity implements
                     dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
+
                         }
                     });
                     dialog.show();
+                    DialogUtils.closeDialog(mDialog);
                 }else {
                     new Thread(new Runnable() {
                         @Override
@@ -604,11 +632,13 @@ public class SearchActivity extends Activity implements
                     String response2 = (String) msg.obj;
                     if(startrow == 0) {
                         goodsdata.clear();
+                        refreshLayout.setNoMoreData(false);
                     }
                     parserXml2(response2);
                     num = goodsdata.size();
                     if(num == num1) {
-                        refreshLayout.finishLoadMoreWithNoMoreData();//显示全部加载完成，并不再触发加载更事件
+                        refreshLayout.setNoMoreData(true);
+                       // refreshLayout.finishLoadMoreWithNoMoreData();//显示全部加载完成，并不再触发加载更事件
                     }
                     goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
                     _listGoods.setAdapter(goodsadapter);
@@ -825,22 +855,22 @@ public class SearchActivity extends Activity implements
 
         switch (arg0.getId()) {
             case R.id.id_tab_weixin:
-                mViewPager.setCurrentItem(0);
+                mViewPager.setCurrentItem(0,false);
                 resetImg();
                 mWeiXinImg.setImageResource(R.drawable.zhuye_pressed);
                 break;
             case R.id.id_tab_address:
-                mViewPager.setCurrentItem(1);
+                mViewPager.setCurrentItem(1,false);
                 resetImg();
                 mAddressImg.setImageResource(R.drawable.fabu_pressed);
                 break;
             case R.id.id_tab_frd:
-                mViewPager.setCurrentItem(2);
+                mViewPager.setCurrentItem(2,false);
                 resetImg();
                 mFrdImg.setImageResource(R.drawable.faxian_pressed);
                 break;
             case R.id.id_tab_settings:
-                mViewPager.setCurrentItem(3);
+                mViewPager.setCurrentItem(3,false);
                 resetImg();
                 mSettingImg.setImageResource(R.drawable.wode_pressed);
                 break;
@@ -1260,4 +1290,36 @@ public class SearchActivity extends Activity implements
             }
         }
     };
+
+    static String getext() {
+        if (index >= text.length) index = 0;
+        return text[index++];
+    }
+
+    private static int imageResourceIndex = 0;
+
+    static int getImageResource() {
+        if (imageResourceIndex >= imageResources.length) imageResourceIndex = 0;
+        return imageResources[imageResourceIndex++];
+    }
+
+    private static int[] imageResources = new int[]{
+            R.drawable.xitongxiaoxi,
+            R.drawable.huihua,
+//            R.drawable.bee,
+//            R.drawable.butterfly,
+//            R.drawable.cat,
+//            R.drawable.deer,
+//            R.drawable.dolphin,
+//            R.drawable.eagle,
+//            R.drawable.horse,
+//            R.drawable.jellyfish,
+//            R.drawable.owl,
+//            R.drawable.peacock,
+//            R.drawable.pig,
+//            R.drawable.rat,
+//            R.drawable.snake,
+//            R.drawable.squirrel
+    };
+
 }

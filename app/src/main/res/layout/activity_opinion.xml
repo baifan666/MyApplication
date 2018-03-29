@@ -77,6 +77,7 @@
             android:textSize="20dp"
             android:textStyle="bold" />
         <View style="@style/bg_line"
+            android:layout_marginTop="6dp"
             />
         <TextView android:text="下面是常见问题"
             android:id="@+id/help_allseequestions"

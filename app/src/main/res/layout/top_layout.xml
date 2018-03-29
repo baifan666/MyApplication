@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="58dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimary"
     android:orientation="horizontal">
 
@@ -15,7 +16,15 @@
         android:textColor="#ffffff"
         android:textSize="19dp"
         android:textStyle="bold" />
-
+    <com.nightonke.boommenu.BoomMenuButton
+        android:id="@+id/bmb"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:bmb_buttonEnum="textOutsideCircle"
+        app:bmb_piecePlaceEnum="piecePlace_dot_2_1"
+        app:bmb_buttonPlaceEnum="buttonPlace_sc_2_1"
+        app:bmb_backgroundEffect="false"
+        />
     <ImageView
         android:id="@+id/top_search"
         android:layout_width="0dp"
