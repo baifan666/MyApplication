@@ -19,13 +19,15 @@ import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.PrizeInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 
+import org.w3c.dom.Text;
+
 import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
 
 public class PrizeSpecificActivity extends Activity {
     private ImageView back,img;
     private PrizeInfo prizeInfo;
     private String path,url;
-    private TextView prizename,prizecoins;
+    private TextView prizename,prizecoins,number;
     private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class PrizeSpecificActivity extends Activity {
         prizename.setText(prizeInfo.getPrizename());
         prizecoins = (TextView)findViewById(R.id.prizecoins);
         prizecoins.setText(String.valueOf(prizeInfo.getPrizecoins()));
+        number = (TextView)findViewById(R.id.number);
+        number.setText("剩余可兑换数量"+String.valueOf(prizeInfo.getNumber())+"个");
         path = prizeInfo.getPictureurl().substring(prizeInfo.getPictureurl().lastIndexOf("/")+1);
         url = SERVER_ADDRESS+"/prize/"+path;
         img = (ImageView)findViewById(R.id.img);

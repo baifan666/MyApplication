@@ -49,7 +49,8 @@
             android:value="azrbHW8CGeAEMt4MyLSplNCAodv7xZwG" />
 
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.WelcomeActivity">
+        <activity android:name=".activity.WelcomeActivity"
+            android:theme="@style/SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

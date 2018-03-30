@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F0F3F6">
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <LinearLayout
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="15"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -35,6 +35,11 @@
             android:textSize="20dp"
             android:textStyle="bold" />
     </RelativeLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F0F3F6">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -42,7 +47,7 @@
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
+                android:layout_height="160dp"
                 android:scaleType="fitXY"/>
             <TextView
                 android:id="@+id/prizename"
@@ -52,23 +57,37 @@
                 android:textSize="25dp"
                 android:text="商品名称"
                 android:textColor="#000000"/>
-
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
             <TextView
                 android:id="@+id/prizecoins"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/jinbi"
                 android:layout_marginLeft="20dp"
                 android:textSize="20dp"
                 android:text="金币数"
                 android:textColor="#ff5959"/>
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12dp"
+                android:paddingTop="2dp"
+                android:paddingRight="10dp"
+                android:gravity="right"
+                android:text="剩余可兑换xx个"/>
+        </LinearLayout>
             <View style="@style/bg_line"/>
             <TextView
                 android:id="@+id/tv1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:drawableLeft="@drawable/xiangxishuoming"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="6dp"
                 android:textSize="12dp"
                 android:text="详情说明："
                 android:textColor="#a2a2a2"/>
@@ -80,18 +99,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="签到第1天-第5天可分别获得10、20、30、40、50金币/天。5天后连续签到可获得50金币/天。若中断，则重新从10金币/天开始计算。"
+                android:layout_marginTop="4dp"
+                android:text="点击马上兑换，输入相关信息，在1到5个工作日内，工作人员会按兑换顺序进行发货。"
                 android:textSize="15dp"
                 android:textColor="#000000" />
             <View style="@style/bg_line"
-                android:layout_marginTop="20dp"/>
+                android:layout_marginTop="12dp"/>
             <TextView
                 android:id="@+id/tv2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/zhongyaoshengming"
                 android:layout_marginLeft="10dp"
+                android:layout_marginTop="6dp"
                 android:textSize="12dp"
                 android:text="重要声明："
                 android:textColor="#a2a2a2"/>
@@ -103,11 +123,33 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
-                android:text="签到第1天-第5天可分别获得10、20、30、40、50金币/天。5天后连续签到可获得50金币/天。若中断，则重新从10金币/天开始计算。"
+                android:layout_marginTop="4dp"
+                android:text="•除商品本身不能正常兑换外，商品一经兑换，一律不退还金币，请用户兑换时，确保输入的信息正确；
+•通过非法途径获得金币后进行的正常兑换行为，或不按商品兑换规则进行兑换，平台有权不提供服务；
+•凡以不正当手段（包括但不限于作弊、扰乱系统、实施网络攻击等）进行兑换，平台有权终止该次兑换。"
                 android:textSize="15dp"
                 android:textColor="#000000" />
         </LinearLayout>
-
+    </ScrollView>
 </LinearLayout>
-</ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="#fafbf2"
+        android:orientation="vertical">
+    <Button
+        android:id="@+id/duihuan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_green"
+        android:layout_gravity="center"
+        android:text="马上兑换"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+    </LinearLayout>
+</LinearLayout>
