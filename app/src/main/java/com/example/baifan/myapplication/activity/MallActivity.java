@@ -44,6 +44,7 @@ public class MallActivity extends Activity {
     private PrizeAdapter prizeAdapter;
     private Dialog mDialog;
     private boolean isShowView = true;
+    private RefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,9 +70,8 @@ public class MallActivity extends Activity {
             }
         });
         gridprize = (GridView)findViewById(R.id.gridprize);
-        gridprize.setEmptyView(findViewById(R.id.myText));
         listprize = (ListView)findViewById(R.id.listprize);
-        listprize.setEmptyView(findViewById(R.id.myText));
+
         searchPrize();  //从服务度读取全部奖品信息
         mDialog = DialogUtils.createLoadingDialog(MallActivity.this, "加载中...");
         gridprize.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -80,6 +80,8 @@ public class MallActivity extends Activity {
                 PrizeInfo prizeInfo = prizedata.get(position);
                 Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
                 intent.putExtra("prizeInfo",prizeInfo); // 向下一个界面传递信息
+                intent.putExtra("username",username);
+                intent.putExtra("coins",coins);
                 startActivity(intent);
             }
         });
@@ -89,10 +91,12 @@ public class MallActivity extends Activity {
                 PrizeInfo prizeInfo = prizedata.get(i);
                 Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
                 intent.putExtra("prizeInfo",prizeInfo); // 向下一个界面传递信息
+                intent.putExtra("username",username);
+                intent.putExtra("coins",coins);
                 startActivity(intent);
             }
         });
-        RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
@@ -100,7 +104,6 @@ public class MallActivity extends Activity {
                 searchPrize();  //从服务度读取全部奖品信息
                 //   goodsadapter.refresh(goodsdata);
                 prizeAdapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
             }
         });
     }
@@ -118,6 +121,7 @@ public class MallActivity extends Activity {
             gridprize.setAdapter(prizeAdapter);
             listprize.setVisibility(View.GONE);
             gridprize.setSelection(0);
+            gridprize.setEmptyView(findViewById(R.id.myText));
             isShowView = !isShowView;
         } else {
             if (listprize == null) {
@@ -128,6 +132,7 @@ public class MallActivity extends Activity {
             listprize.setAdapter(prizeAdapter);
             gridprize.setVisibility(View.GONE);
             listprize.setSelection(0);//可将第一个item对我们可见显示，用于错乱，也可以不要
+            listprize.setEmptyView(findViewById(R.id.myText));
             isShowView = !isShowView;
         }
     }
@@ -222,6 +227,7 @@ public class MallActivity extends Activity {
                     parserXml(response);
                     setLayout();
                     DialogUtils.closeDialog(mDialog);
+                    refreshLayout.finishRefresh();//结束刷新
                     break;
             }
         }

@@ -151,7 +151,7 @@ public class RegActivity extends Activity {
                     if (parserXml(response)) {
                         DialogUtils.closeDialog(mDialog);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(RegActivity.this);
-                        dialog.setTitle("This is a warnining!");
+                        dialog.setTitle("Success!");
                         dialog.setMessage("恭喜您注册成功!");
                         dialog.setCancelable(false);
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {

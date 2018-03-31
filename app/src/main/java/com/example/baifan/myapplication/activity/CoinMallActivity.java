@@ -28,7 +28,7 @@ import java.io.StringReader;
 import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
 
 public class CoinMallActivity extends Activity {
-    private ImageView back,imageView1,imageView2,jbsc;
+    private ImageView back,imageView1,imageView2,jbsc,paihang;
     private String amount;
     private Button qiandao;
     private String result,count,coins;
@@ -88,6 +88,15 @@ public class CoinMallActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        paihang = (ImageView)findViewById(R.id.paihang);
+        paihang.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
     }
 
     private void parserXml(String xmlData) {
