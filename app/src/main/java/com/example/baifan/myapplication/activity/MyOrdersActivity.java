@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.MyOrderAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -43,7 +45,8 @@ public class MyOrdersActivity extends Activity {
     private ListView _listOrders;
     private MyOrderAdapter myorderadapter;
     private NiceSpinner niceSpinner;
-
+    private Dialog mDialog;
+    private RefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,7 @@ public class MyOrdersActivity extends Activity {
         niceSpinner = (NiceSpinner) findViewById(R.id.nice_spinner);
         List<String> dataset = new LinkedList<>(Arrays.asList("全部", "进行中","已完成"));
         myAll(account);
+        mDialog = DialogUtils.createLoadingDialog(MyOrdersActivity.this, "加载中...");
         niceSpinner.attachDataSource(dataset);
         niceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -101,7 +105,7 @@ public class MyOrdersActivity extends Activity {
             }
         });
 
-        RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
@@ -111,7 +115,7 @@ public class MyOrdersActivity extends Activity {
                     myreadAll(account,isfinish);
                 }
                 myorderadapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
+                //refreshlayout.finishRefresh(2000);
             }
         });
     }
@@ -127,6 +131,8 @@ public class MyOrdersActivity extends Activity {
                     parserXml1(response2);
                     myorderadapter = new MyOrderAdapter(MyOrdersActivity.this, R.layout.orders_item, orderdata);
                     _listOrders.setAdapter(myorderadapter);
+                    DialogUtils.closeDialog(mDialog);
+                    refreshLayout.finishRefresh();//结束刷新
                     break;
             }
         }

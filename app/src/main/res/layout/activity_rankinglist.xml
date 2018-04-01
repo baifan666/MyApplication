@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F0F3F6">
+    android:background="#fdfef6">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -32,6 +32,34 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#ffd9e0"
+        android:orientation="horizontal"
+        >
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="用户名"
+            android:textColor="#ffffff"
+            android:layout_marginLeft="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="right"
+            android:text="连续签到天数"
+            android:textColor="#ffffff"
+            android:layout_marginRight="10dp"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
 
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -39,7 +67,7 @@
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F0F3F6"
+        android:background="#fdfef6"
         app:srlPrimaryColor="#444444"
         app:srlAccentColor="@android:color/white"
         app:srlEnablePreviewInEditMode="true">
@@ -53,10 +81,12 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
             <ListView
-                android:id="@+id/listgoods"
+                android:id="@+id/rankinglist"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:divider="@null">
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:scrollbars="none">
             </ListView>
         </LinearLayout>
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>

@@ -39,13 +39,11 @@ public class RankinglistAdapter extends ArrayAdapter<UserSignInfo> {
         }
         // 发布用户
         TextView username = ( TextView )view.findViewById(R.id.username);
-        // 发布时间
-        TextView publish_time =( TextView )view.findViewById(R.id.publish_time);
-        // 标题
-        TextView title = ( TextView )view.findViewById(R.id.title);
+        // 连续签到天数
+        TextView signcount =( TextView )view.findViewById(R.id.signcount);
 
         username.setText(info.getUsername());
-
+        signcount.setText(String.valueOf(info.getSigncount()));
 
         return view;
     }

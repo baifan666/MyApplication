@@ -48,6 +48,7 @@ public class PrizeSpecificActivity extends Activity {
     private Dialog mDialog;
     private Button duihuan;
     private final int DUIHUAN = 1;
+    private final int SETCOINS = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,7 @@ public class PrizeSpecificActivity extends Activity {
         prizeInfo = (PrizeInfo) intent.getSerializableExtra("prizeInfo");
         username = intent.getStringExtra("username");
         coins = intent.getStringExtra("coins");
+        Toast.makeText(PrizeSpecificActivity.this,coins,Toast.LENGTH_LONG).show();
         prizename = (TextView)findViewById(R.id.prizename);
         prizename.setText(prizeInfo.getPrizename());
         prizecoins = (TextView)findViewById(R.id.prizecoins);
@@ -81,6 +83,12 @@ public class PrizeSpecificActivity extends Activity {
                 .error(R.drawable.error)//图片加载失败后，显示的图片
                 .into(img);
         duihuan = (Button)findViewById(R.id.duihuan);
+        if(Integer.parseInt(coins) >= prizeInfo.getPrizecoins()) {
+            duihuan.setEnabled(true);
+        } else {
+            duihuan.setEnabled(false);
+            duihuan.setText("金币不足");
+        }
         duihuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -122,6 +130,7 @@ public class PrizeSpecificActivity extends Activity {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
                 Toast.makeText(PrizeSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
             }
+            DialogUtils.closeDialog(mDialog);
             // important to return false so the error placeholder can be placed
             return false;
         }
@@ -132,6 +141,21 @@ public class PrizeSpecificActivity extends Activity {
         }
     };
 
+    private void setCoins(String username, String amount) {
+        final String id = username;
+        final String a = amount;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = SERVER_ADDRESS+"/setCoins.jsp?username=" + id+"&amount="+a;
+                Message msg = new Message();
+                msg.what = SETCOINS;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
 
     private void addDHJL(String username,String prizeid,String prizename,String mobile,
                              String address,String name) {
@@ -208,6 +232,7 @@ public class PrizeSpecificActivity extends Activity {
                     String response = (String) msg.obj;
                     parserXml(response);
                     if ("succeessful".equals(result)) {
+                        setCoins(username,"-"+String.valueOf(prizeInfo.getPrizecoins()));
                         DialogUtils.closeDialog(mDialog);
                         AlertDialog.Builder dialog = new AlertDialog.Builder(PrizeSpecificActivity.this);
                         dialog.setTitle("Success!");
@@ -235,6 +260,18 @@ public class PrizeSpecificActivity extends Activity {
                         });
                         dialog.show();
                     }
+                    result = "";
+                    break;
+                case SETCOINS:
+                    String response2 = (String) msg.obj;
+                    parserXml(response2);
+                    if(result.equals("succeessful")) {
+                    }
+                    else {
+                    }
+                    result = "";
+                    break;
+                default:
                     break;
             }
         }

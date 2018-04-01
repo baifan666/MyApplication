@@ -109,10 +109,9 @@ public class ManagerActivity extends AppCompatActivity {
             }
         });
     }
-
     /*
- * 获取当前程序的版本号
- */
+    * 获取当前程序的版本号
+    */
     private String getVersionName() throws Exception{
         //获取packagemanager的实例
         PackageManager packageManager = getPackageManager();

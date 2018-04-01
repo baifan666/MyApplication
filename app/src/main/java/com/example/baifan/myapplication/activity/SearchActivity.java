@@ -896,6 +896,7 @@ public class SearchActivity extends Activity implements
         if(isback){
             isback=false;
             // 结束所有Activity
+            RongIM.getInstance().removeUnReadMessageCountChangedObserver(mCountListener);
             ExitApplication.getInstance().exit();
         }else{
             Toast.makeText(SearchActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
@@ -1191,7 +1192,7 @@ public class SearchActivity extends Activity implements
         _handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
+                RongIM.getInstance().addUnReadMessageCountChangedObserver(mCountListener, conversationTypes);
             }
         }, 500);
 
@@ -1242,23 +1243,41 @@ public class SearchActivity extends Activity implements
     }
 
 
-    public RongIM.OnReceiveUnreadCountChangedListener mCountListener = new RongIM.OnReceiveUnreadCountChangedListener() {
+    public io.rong.imkit.manager.IUnReadMessageObserver mCountListener = new io.rong.imkit.manager.IUnReadMessageObserver() {
         @Override
-        public void onMessageIncreased(int count) {
+        public void onCountChanged(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+ //               new QBadgeView(SearchActivity.this).bindTarget(huihua).hide(true);
 //                mUnreadCount.setVisibility(View.GONE);
             } else if (count > 0 && count < 100) {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
 //               mUnreadCount.setVisibility(View.VISIBLE);
 //                mUnreadCount.setText(count + "");
-           } else {
+            } else {
                 new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText("99+");
 //                mUnreadCount.setVisibility(View.VISIBLE);
 //                mUnreadCount.setText("···");
-          }
+            }
         }
+//setText
+//        @Override
+//        public void onMessageIncreased(int count) {
+//            Log.e("SearchActivity", "count:" + count);
+//            if (count == 0) {
+//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+////                mUnreadCount.setVisibility(View.GONE);
+//            } else if (count > 0 && count < 100) {
+//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+////               mUnreadCount.setVisibility(View.VISIBLE);
+////                mUnreadCount.setText(count + "");
+//           } else {
+//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText("99+");
+////                mUnreadCount.setVisibility(View.VISIBLE);
+////                mUnreadCount.setText("···");
+//          }
+//        }
     };
 
     public RongIMClient.ConnectionStatusListener mConnectionStatusListener = new RongIMClient.ConnectionStatusListener() {

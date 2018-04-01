@@ -20,4 +20,8 @@ public class UserSignInfo {
     public void setSigncount(int signcount) {
         this.signcount = signcount;
     }
+    public UserSignInfo(String username,int signcount){
+        this.username = username;
+        this.signcount = signcount;
+    }
 }

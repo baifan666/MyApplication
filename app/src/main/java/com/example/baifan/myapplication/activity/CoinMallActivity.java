@@ -93,7 +93,8 @@ public class CoinMallActivity extends Activity {
         paihang.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(CoinMallActivity.this, RankinglistActivity.class);
+                startActivity(intent);
             }
         });
 
