@@ -34,7 +34,7 @@ import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRES
 
 public class MallActivity extends Activity {
     private final int GETALL = 1;
-    private ImageView back,change;
+    private ImageView back,change,duihuanjilu;
     private String coins;
     private String username;
     // 物品显示列表
@@ -106,6 +106,16 @@ public class MallActivity extends Activity {
                 prizeAdapter.notifyDataSetChanged();
             }
         });
+
+        duihuanjilu = (ImageView)findViewById(R.id.duihuanjilu);
+        duihuanjilu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MallActivity.this, RecordActivity.class);
+                intent.putExtra("username",username);
+                startActivity(intent);
+            }
+        });
     }
 
     /**
@@ -121,7 +131,6 @@ public class MallActivity extends Activity {
             gridprize.setAdapter(prizeAdapter);
             listprize.setVisibility(View.GONE);
             gridprize.setSelection(0);
-            gridprize.setEmptyView(findViewById(R.id.myText));
             isShowView = !isShowView;
         } else {
             if (listprize == null) {
@@ -132,7 +141,6 @@ public class MallActivity extends Activity {
             listprize.setAdapter(prizeAdapter);
             gridprize.setVisibility(View.GONE);
             listprize.setSelection(0);//可将第一个item对我们可见显示，用于错乱，也可以不要
-            listprize.setEmptyView(findViewById(R.id.myText));
             isShowView = !isShowView;
         }
     }
@@ -225,6 +233,10 @@ public class MallActivity extends Activity {
                     String response = (String) msg.obj;
                     prizedata.clear();
                     parserXml(response);
+                    if(prizedata.size() == 0) {
+                        gridprize.setEmptyView(findViewById(R.id.myText));
+                        listprize.setEmptyView(findViewById(R.id.myText));
+                    }
                     setLayout();
                     DialogUtils.closeDialog(mDialog);
                     refreshLayout.finishRefresh();//结束刷新

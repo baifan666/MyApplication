@@ -94,7 +94,6 @@ public class MyOrdersActivity extends Activity {
             }
         });
         _listOrders = (ListView) findViewById(R.id.listorders);
-        _listOrders.setEmptyView(findViewById(R.id.myText));
         _listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -115,7 +114,6 @@ public class MyOrdersActivity extends Activity {
                     myreadAll(account,isfinish);
                 }
                 myorderadapter.notifyDataSetChanged();
-                //refreshlayout.finishRefresh(2000);
             }
         });
     }
@@ -129,6 +127,9 @@ public class MyOrdersActivity extends Activity {
                     String response2 = (String) msg.obj;
                     orderdata.clear();
                     parserXml1(response2);
+                    if (orderdata.size() == 0) {
+                        _listOrders.setEmptyView(findViewById(R.id.myText));
+                    }
                     myorderadapter = new MyOrderAdapter(MyOrdersActivity.this, R.layout.orders_item, orderdata);
                     _listOrders.setAdapter(myorderadapter);
                     DialogUtils.closeDialog(mDialog);

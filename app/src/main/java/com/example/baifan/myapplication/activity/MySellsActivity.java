@@ -43,7 +43,7 @@ public class MySellsActivity extends Activity {
     private ListView _listOrders;
     private SellOrderAdapter sellOrderAdapter;
     private NiceSpinner niceSpinner;
-
+    private RefreshLayout refreshLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -90,7 +90,6 @@ public class MySellsActivity extends Activity {
             }
         });
         _listOrders = (ListView) findViewById(R.id.listorders);
-        _listOrders.setEmptyView(findViewById(R.id.myText));
         _listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -101,7 +100,7 @@ public class MySellsActivity extends Activity {
             }
         });
 
-        RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
@@ -111,7 +110,6 @@ public class MySellsActivity extends Activity {
                     myreadAll(account,isfinish);
                 }
                 sellOrderAdapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
             }
         });
     }
@@ -125,8 +123,12 @@ public class MySellsActivity extends Activity {
                     String response2 = (String) msg.obj;
                     orderdata.clear();
                     parserXml1(response2);
+                    if (orderdata.size() == 0) {
+                        _listOrders.setEmptyView(findViewById(R.id.myText));
+                    }
                     sellOrderAdapter = new SellOrderAdapter(MySellsActivity.this, R.layout.sell_item, orderdata);
                     _listOrders.setAdapter(sellOrderAdapter);
+                    refreshLayout.finishRefresh();
                     break;
             }
         }

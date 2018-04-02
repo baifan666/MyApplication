@@ -49,4 +49,13 @@ public class DHJLInfo implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    public DHJLInfo( String username,String prizename, String dhtime,
+                     String mobile,String address,String name) {
+        this.address = address;
+        this.username = username;
+        this.mobile = mobile;
+        this.prizename = prizename;
+        this.dhtime = dhtime;
+        this.name = name;
+    }
 }

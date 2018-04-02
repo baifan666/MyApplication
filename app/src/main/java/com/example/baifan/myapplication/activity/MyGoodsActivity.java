@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.MyGoodsAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -33,14 +35,14 @@ import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRES
 public class MyGoodsActivity extends Activity {
 
     private final int MYREADALL = 1;
-
+    private Dialog mDialog;
     private ImageView back;
     private String username;
 
     // 物品显示列表
     private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();
     private ListView _listGoods;
-
+    private RefreshLayout refreshLayout;
     private MyGoodsAdapter mygoodsadapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +51,7 @@ public class MyGoodsActivity extends Activity {
         setContentView(R.layout.activity_my_goods);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
-
+        mDialog = DialogUtils.createLoadingDialog(MyGoodsActivity.this, "加载中...");
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,7 +63,6 @@ public class MyGoodsActivity extends Activity {
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         _listGoods = (ListView)findViewById(R.id.listgoods);
-        _listGoods.setEmptyView(findViewById(R.id.myText));
         myreadAll(username);//从服务端读取所有物品
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -73,13 +74,12 @@ public class MyGoodsActivity extends Activity {
             }
         });
 
-        RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 myreadAll(username); //从服务端读取所有物品
                 mygoodsadapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
             }
         });
     }
@@ -206,8 +206,13 @@ public class MyGoodsActivity extends Activity {
                     String response2 = (String) msg.obj;
                     goodsdata.clear();
                     parserXml1(response2);
+                    if(goodsdata.size() == 0){
+                        _listGoods.setEmptyView(findViewById(R.id.myText));
+                    }
                     mygoodsadapter = new MyGoodsAdapter(MyGoodsActivity.this, R.layout.mygoods_item, goodsdata);
                     _listGoods.setAdapter(mygoodsadapter);
+                    refreshLayout.finishRefresh();//结束刷新
+                    DialogUtils.closeDialog(mDialog);
                     break;
             }
         }
