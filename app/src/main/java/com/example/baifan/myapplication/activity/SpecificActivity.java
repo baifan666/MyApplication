@@ -27,7 +27,9 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
+import com.example.baifan.myapplication.utils.GlideImageLoader;
 import com.example.baifan.myapplication.utils.HttpUtils;
+import com.youth.banner.Banner;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -35,10 +37,14 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 
 import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.youth.banner.BannerConfig.CENTER;
+import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 
 public class SpecificActivity extends Activity {
@@ -53,6 +59,8 @@ public class SpecificActivity extends Activity {
     private RatingBar ratingBar;
     private double score;
     private Dialog mDialog;
+    private Banner banner;
+    List<String> images= new ArrayList<String>();       //设置图片集合
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,6 +149,7 @@ public class SpecificActivity extends Activity {
 
         if(!path1.equals("")) {
             url1 = SERVER_ADDRESS+"/upload/"+path1;
+            images.add(url1);
             Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener1 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -151,6 +160,7 @@ public class SpecificActivity extends Activity {
         }
         if(!path2.equals("")) {
             url2 = SERVER_ADDRESS+"/upload/"+path2;
+            images.add(url2);
             Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                     .listener( requestListener2 )
                     .error(R.drawable.error)//图片加载失败后，显示的图片
@@ -220,6 +230,31 @@ public class SpecificActivity extends Activity {
                 showDialog();
             }
         });
+
+        banner = (Banner) findViewById(R.id.banner);
+        //BannerConfig.NOT_INDICATOR	不显示指示器和标题	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR	显示圆形指示器	setBannerStyle
+        //BannerConfig.NUM_INDICATOR	显示数字指示器	setBannerStyle
+        //BannerConfig.NUM_INDICATOR_TITLE	显示数字指示器和标题	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR_TITLE	显示圆形指示器和标题（垂直显示）	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE	显示圆形指示器和标题（水平显示）	setBannerStyle
+        //BannerConfig.LEFT	指示器居左	setIndicatorGravity
+        //BannerConfig.CENTER	指示器居中	setIndicatorGravity
+        //BannerConfig.RIGHT	指示器居右	setIndicatorGravity
+        banner.setBannerStyle(CIRCLE_INDICATOR);
+        banner.setIndicatorGravity(CENTER);
+        //设置自动轮播，默认为true
+        banner.isAutoPlay(true);
+        //设置轮播时间
+        banner.setDelayTime(1500);
+        //设置图片加载器
+        banner.setImageLoader(new GlideImageLoader());
+        //设置图片资源:url或本地资源
+        //设置图片集合
+        banner.setImages(images);
+        //banner设置方法全部调用完毕时最后调用
+        banner.start();
+
     }
 
     /*

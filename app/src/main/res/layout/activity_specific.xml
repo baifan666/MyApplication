@@ -42,7 +42,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="20"
             android:orientation="vertical">
-
+            <com.youth.banner.Banner
+                android:id="@+id/banner"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="576px" />
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
