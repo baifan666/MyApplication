@@ -106,9 +106,23 @@ public class PrizeSpecificActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取输入框的内容
-                                Toast.makeText(PrizeSpecificActivity.this, name.getText().toString(), Toast.LENGTH_SHORT).show();
-                                addDHJL(username,prizeInfo.getPrizeid(),prizeInfo.getPrizename(),mobile.getText().toString(),
-                                        address.getText().toString(),name.getText().toString());
+                                //Toast.makeText(PrizeSpecificActivity.this, name.getText().toString(), Toast.LENGTH_SHORT).show();
+                                if("".equals(name.getText().toString()) || "".equals(mobile.getText().toString()) || "".equals(address.getText().toString())) {
+                                    AlertDialog.Builder dialog1 = new AlertDialog.Builder(PrizeSpecificActivity.this);
+                                    dialog1.setTitle("This is a warnining!");
+                                    dialog1.setMessage("请确保每一个信息已输入！");
+                                    dialog1.setCancelable(false);
+                                    dialog1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    dialog1.show();
+                                }else {
+                                    addDHJL(username, prizeInfo.getPrizeid(), prizeInfo.getPrizename(), mobile.getText().toString(),
+                                            address.getText().toString(), name.getText().toString());
+                                }
                             }
                         })
                         .setNegativeButton("取消", new DialogInterface.OnClickListener() {

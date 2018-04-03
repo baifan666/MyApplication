@@ -36,11 +36,13 @@ public class RecordActivity extends Activity {
     private Dialog mDialog;
     private ListView listrecord;
     private String username;
+    private int flag = 0;//倘若前一页面有flag传递进来，表示是管理员登陆
     private RefreshLayout refreshLayout;
 
     // 物品显示列表
     private ArrayList<DHJLInfo> data =new ArrayList<DHJLInfo>();
     private final int GETMYDHJL = 1;
+    private final int GETALL = 2;
     private MyDHJLAdapter myDHJLAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,7 @@ public class RecordActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
+        flag = intent.getIntExtra("flag",0);
         mDialog = DialogUtils.createLoadingDialog(RecordActivity.this, "加载中...");
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -60,8 +63,11 @@ public class RecordActivity extends Activity {
             }
         });
         listrecord = (ListView)findViewById(R.id.listrecord);
-
-        myreadAll(username);//从服务端读取所有兑换记录
+        if(flag == 0 ) {
+            myreadAll(username);//从服务端读取当前用户所有兑换记录
+        }else {
+            readAll();   //从服务端读取所有用户的兑换记录
+        }
         refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
@@ -71,6 +77,23 @@ public class RecordActivity extends Activity {
             }
         });
 
+    }
+
+    private void readAll() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 打开链接
+                String url = SERVER_ADDRESS + "/searchDHJL.jsp";
+                // 发送消息
+                Message msg = new Message();
+                msg.what = GETMYDHJL;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+        // 2）解析数据：xml-->ArrayList
     }
 
     private void myreadAll(String username) {
@@ -112,7 +135,20 @@ public class RecordActivity extends Activity {
                     listrecord.setAdapter(myDHJLAdapter);
                     DialogUtils.closeDialog(mDialog);
                     refreshLayout.finishRefresh();//结束刷新
-
+                    break;
+                case GETALL:
+                    String response1 = (String) msg.obj;
+                    data.clear();
+                    parserXml(response1);
+                    if(data.size() == 0) {
+                        listrecord.setEmptyView(findViewById(R.id.myText));
+                    }
+                    myDHJLAdapter = new MyDHJLAdapter(RecordActivity.this, R.layout.record_item, data);
+                    listrecord.setAdapter(myDHJLAdapter);
+                    DialogUtils.closeDialog(mDialog);
+                    refreshLayout.finishRefresh();//结束刷新
+                    break;
+                default:
                     break;
             }
         }

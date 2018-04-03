@@ -3,6 +3,7 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,9 +28,10 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
-import com.example.baifan.myapplication.utils.GlideImageLoader;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -48,7 +50,7 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 
 public class SpecificActivity extends Activity {
-    private ImageView back,imageView1,imageView2;
+    private ImageView back;
     private TextView username,publishtime,title,content,price,location,mobile;
     private String account,path1,path2,url1,url2,result;
     private Button conversation,buy;
@@ -58,7 +60,7 @@ public class SpecificActivity extends Activity {
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private RatingBar ratingBar;
     private double score;
-    private Dialog mDialog;
+    private Dialog mDialog,mDialog1;
     private Banner banner;
     List<String> images= new ArrayList<String>();       //设置图片集合
     @Override
@@ -68,7 +70,6 @@ public class SpecificActivity extends Activity {
         setContentView(R.layout.activity_specific);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
-        mDialog = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
@@ -79,41 +80,56 @@ public class SpecificActivity extends Activity {
         title = (TextView)findViewById(R.id.title);
         title.setText(String.valueOf(goodsInfo.getTitle()));
         title.setMovementMethod(ScrollingMovementMethod.getInstance());
-        title.setOnTouchListener(new View.OnTouchListener() {
+        title.post(new Runnable() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
+            public void run() {
+                if(title.getLineCount() > 1) {
+                    title.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                                view.getParent().requestDisallowInterceptTouchEvent(false);
+                            }
+                            return false;
+                        }
+                    });
                 }
-                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    view.getParent().requestDisallowInterceptTouchEvent(false);
-                }
-                return false;
             }
         });
+
         content = (TextView)findViewById(R.id.content);
         content.setText(String.valueOf(goodsInfo.getContent()));
         content.setMovementMethod(ScrollingMovementMethod.getInstance());
-        content.setOnTouchListener(new View.OnTouchListener() {
+        content.post(new Runnable() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
+            public void run() {
+                if(content.getLineCount() > 9) {
+                    content.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                                view.getParent().requestDisallowInterceptTouchEvent(false);
+                            }
+                            return false;
+                        }
+                    });
                 }
-                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    view.getParent().requestDisallowInterceptTouchEvent(false);
-                }
-                return false;
             }
         });
         price = (TextView)findViewById(R.id.price);
@@ -121,87 +137,46 @@ public class SpecificActivity extends Activity {
         location = (TextView)findViewById(R.id.location);
         location.setText(String.valueOf(goodsInfo.getLocation()));
         location.setMovementMethod(ScrollingMovementMethod.getInstance());
-        location.setOnTouchListener(new View.OnTouchListener() {
+        location.post(new Runnable() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
+            public void run() {
+                if(location.getLineCount() > 1) {
+                    location.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+                                //通知父控件不要干扰
+                                view.getParent().requestDisallowInterceptTouchEvent(true);
+                            }
+                            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+                                view.getParent().requestDisallowInterceptTouchEvent(false);
+                            }
+                            return false;
+                        }
+                    });
                 }
-                if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
-                    //通知父控件不要干扰
-                    view.getParent().requestDisallowInterceptTouchEvent(true);
-                }
-                if(motionEvent.getAction()==MotionEvent.ACTION_UP){
-                    view.getParent().requestDisallowInterceptTouchEvent(false);
-                }
-                return false;
             }
         });
         mobile = (TextView)findViewById(R.id.mobile);
         mobile.setText(String.valueOf(goodsInfo.getMobile()));
         path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/")+1);
         path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/")+1);
-        imageView1 = (ImageView)findViewById(R.id.image_view1);
-        imageView2 = (ImageView)findViewById(R.id.image_view2);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         searchSellerScore(goodsInfo.getUsername());
-
-        if(!path1.equals("")) {
-            url1 = SERVER_ADDRESS+"/upload/"+path1;
+        if(!"".equals(path1)) {
+            mDialog = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
+            url1 = SERVER_ADDRESS + "/upload/" + path1;
             images.add(url1);
-            Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                    .listener( requestListener1 )
-                    .error(R.drawable.error)//图片加载失败后，显示的图片
-                    .into(imageView1);
-        }else {
-            DialogUtils.closeDialog(mDialog);
-            Glide.with(this).load(R.drawable.good).into(imageView1);
         }
-        if(!path2.equals("")) {
+        if (!"".equals(path2)) {
+            mDialog1 = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
             url2 = SERVER_ADDRESS+"/upload/"+path2;
             images.add(url2);
-            Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                    .listener( requestListener2 )
-                    .error(R.drawable.error)//图片加载失败后，显示的图片
-                    .into(imageView2);
-        }else {
-            DialogUtils.closeDialog(mDialog);
-            Glide.with(this).load(R.drawable.good).into(imageView2);
         }
-        imageView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (flag1 == 2) {
-                    Glide.with(SpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .listener( requestListener1 )
-                            .error(R.drawable.error)//图片加载失败后，显示的图片
-                            .into(imageView1);
-                }else if (flag1 == 1) {
-                    Intent intent=new Intent();
-                    intent.setClass(SpecificActivity.this, PictureActivity.class);
-                    intent.putExtra("url",url1); // 向下一个界面传递信息
-                    startActivity(intent);
-                }
-            }
-        });
-
-        imageView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (flag2 == 2) {
-                    Glide.with(SpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .listener( requestListener2 )
-                            .error(R.drawable.error)//图片加载失败后，显示的图片
-                            .into(imageView2);
-                }else if (flag2 == 1) {
-                    Intent intent=new Intent();
-                    intent.setClass(SpecificActivity.this, PictureActivity.class);
-                    intent.putExtra("url",url2); // 向下一个界面传递信息
-                    startActivity(intent);
-                }
-            }
-        });
 
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -246,16 +221,53 @@ public class SpecificActivity extends Activity {
         //设置自动轮播，默认为true
         banner.isAutoPlay(true);
         //设置轮播时间
-        banner.setDelayTime(1500);
-        //设置图片加载器
-        banner.setImageLoader(new GlideImageLoader());
+        banner.setDelayTime(3000);
+        //自定义图片加载框架
+        banner.setImageLoader(new ImageLoader() {
+            @Override
+            public void displayImage(Context context, Object path, ImageView imageView) {
+                String p = String.valueOf(path);
+                Glide.with(getApplicationContext()).load(p).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                        .listener( requestListener )
+                        .error(R.drawable.error)//图片加载失败后，显示的图片
+                        .into(imageView);
+            }
+        });
         //设置图片资源:url或本地资源
         //设置图片集合
         banner.setImages(images);
         //banner设置方法全部调用完毕时最后调用
         banner.start();
+        banner.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                Intent intent = new Intent(SpecificActivity.this, PictureActivity.class);
+                intent.putExtra("url",images.get(position)); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
 
     }
+
+    //设置错误监听
+    private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
+        @Override
+        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+            if(e.toString().contains("java.net.SocketTimeoutException")) {
+                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
+            }
+            DialogUtils.closeDialog(mDialog);
+            DialogUtils.closeDialog(mDialog1);
+            // important to return false so the error placeholder can be placed
+            return false;
+        }
+        @Override
+        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            DialogUtils.closeDialog(mDialog);
+            DialogUtils.closeDialog(mDialog1);
+            return false;
+        }
+    };
 
     /*
   *
@@ -287,42 +299,6 @@ public class SpecificActivity extends Activity {
         dialog.show();
     }
 
-    //设置错误监听
-    private RequestListener<String, GlideDrawable> requestListener1 = new RequestListener<String, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-                flag1= 2;
-            } else if (e.toString() == "")
-            Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-            // important to return false so the error placeholder can be placed
-            return false;
-        }
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            flag1 = 1;
-            return false;
-        }
-    };
-    private RequestListener<String, GlideDrawable> requestListener2 = new RequestListener<String, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-                flag2= 2;
-            }
-            //Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-            // important to return false so the error placeholder can be placed
-            return false;
-        }
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            flag2 = 1;
-            DialogUtils.closeDialog(mDialog);
-            return false;
-        }
-    };
 
     Handler handler = new Handler() {
         @Override

@@ -149,7 +149,7 @@
         android:background="@drawable/btn_green"
         android:layout_gravity="center"
         android:text="马上兑换"
-        android:textColor="#FFFFFF"
+        android:textColor="#000000"
         android:textSize="20sp" />
     </LinearLayout>
 </LinearLayout>

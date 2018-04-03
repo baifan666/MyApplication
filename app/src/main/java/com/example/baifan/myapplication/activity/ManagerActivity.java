@@ -32,7 +32,7 @@ import java.net.URL;
 
 public class ManagerActivity extends AppCompatActivity {
     private boolean isback;
-    private TextView cache,gengxin,deletecache,zhanghaoguanli,scgl,ckfk;
+    private TextView cache,gengxin,deletecache,zhanghaoguanli,scgl,ckfk,dhjl;
     private UpdataInfo info;
     private String localVersion,account;
     private final String TAG = this.getClass().getName();
@@ -105,6 +105,16 @@ public class ManagerActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(ManagerActivity.this, CheckUserOpinionActivity.class);
+                startActivity(intent);
+            }
+        });
+        dhjl = (TextView)findViewById(R.id.dhjl);
+        dhjl.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(ManagerActivity.this, RecordActivity.class);
+                intent.putExtra("flag",1);
                 startActivity(intent);
             }
         });

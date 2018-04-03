@@ -33,6 +33,16 @@
                 <ImageView style="@style/img_arrow"/>
             </LinearLayout>
             <View style="@style/bg_line"/>
+            <!-- 无圆角-->
+            <LinearLayout style="@style/mid_layout">
+                <TextView style="@style/usertext"
+                    android:id="@+id/dhjl"
+                    android:drawableLeft="@drawable/quanbujilu"
+                    android:clickable="true"
+                    android:text="用户兑换记录" />
+                <ImageView style="@style/img_arrow"/>
+            </LinearLayout>
+            <View style="@style/bg_line"/>
             <!-- 下圆角bottom_layout-->
             <LinearLayout style="@style/bottom_layout">
                 <TextView style="@style/usertext"
