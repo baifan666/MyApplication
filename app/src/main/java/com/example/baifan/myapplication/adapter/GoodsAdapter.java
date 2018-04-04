@@ -9,7 +9,9 @@ import android.widget.TextView;
 
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.TimeUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -45,7 +47,7 @@ public class GoodsAdapter extends ArrayAdapter<GoodsInfo> {
         TextView title = ( TextView )view.findViewById(R.id.title);
 
         username.setText(info.getUsername());
-        publish_time.setText(info.getPublish_time());
+        publish_time.setText(TimeUtil.getTimeFormatText(info.getPublish_time()));
         title.setText(info.getTitle());
 
         return view;

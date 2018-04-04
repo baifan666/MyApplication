@@ -72,7 +72,11 @@ public class RecordActivity extends Activity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                myreadAll(username); //从服务端读取所有兑换记录
+                if(flag == 0 ) {
+                    myreadAll(username);//从服务端读取当前用户所有兑换记录
+                }else {
+                    readAll();   //从服务端读取所有用户的兑换记录
+                }
                 myDHJLAdapter.notifyDataSetChanged();
             }
         });
