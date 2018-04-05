@@ -208,8 +208,7 @@ public class SpecificActivity extends Activity {
             public void onClick(View view) {
                 LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
                 View view1 = inflater.inflate(R.layout.mobile_window, null);
-                usermobile = (EditText) view1.findViewById(R.id.name);
-                mobile = (TextView)view1.findViewById(R.id.mobile);
+                usermobile = (EditText) view1.findViewById(R.id.mobile);
                 new AlertDialog.Builder(SpecificActivity.this)
                         .setTitle("请正确输入联系方式")
                         .setIcon(R.drawable.zhuyi)
@@ -219,7 +218,7 @@ public class SpecificActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取输入框的内容
                                 //Toast.makeText(PrizeSpecificActivity.this, name.getText().toString(), Toast.LENGTH_SHORT).show();
-                                if("".equals(mobile.getText().toString())) {
+                                if("".equals(usermobile.getText().toString())) {
                                     AlertDialog.Builder dialog1 = new AlertDialog.Builder(SpecificActivity.this);
                                     dialog1.setTitle("This is a warnining!");
                                     dialog1.setMessage("请确保每一个信息已输入！");
@@ -232,7 +231,7 @@ public class SpecificActivity extends Activity {
                                     });
                                     dialog1.show();
                                 }else {
-                                    buyermobile = mobile.getText().toString();
+                                    buyermobile = usermobile.getText().toString();
                                     showDialog();
                                 }
                             }
