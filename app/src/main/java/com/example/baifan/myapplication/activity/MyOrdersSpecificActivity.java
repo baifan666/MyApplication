@@ -3,6 +3,9 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,28 +30,37 @@ import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
+import com.youth.banner.Banner;
+import com.youth.banner.listener.OnBannerListener;
+import com.youth.banner.loader.ImageLoader;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.util.ArrayList;
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 
 import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.youth.banner.BannerConfig.CENTER;
+import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 public class MyOrdersSpecificActivity extends Activity {
     private OrderSpecificInfo orderSpecificInfo;
-    private ImageView back,imageView1,imageView2;
+    private ImageView back;
     private TextView seller,mobile,isfinish,title,content,price,location,dingdanbianhao,goumaishijian,wanchengshijian;
     private String path1,path2,url1,url2;
-    private Button finish,conversation;
+    private Button finish,conversation,copy;
     private String result;
     private int isEvaluate = 0;
-    private Dialog mDialog;
+    private Dialog mDialog,mDialog1,mDialog2;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private final int FINISHORDER = 1;
     private final int SEARCHBUYEREVALUATE = 2;
+    private Banner banner;
+    List<String> images= new ArrayList<String>();       //设置图片集合
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,8 +144,6 @@ public class MyOrdersSpecificActivity extends Activity {
         wanchengshijian = (TextView)findViewById(R.id.wanchengshijian);
         path1 = orderSpecificInfo.getPath1().substring(orderSpecificInfo.getPath1().lastIndexOf("/")+1);
         path2 = orderSpecificInfo.getPath2().substring(orderSpecificInfo.getPath2().lastIndexOf("/")+1);
-        imageView1 = (ImageView)findViewById(R.id.image_view1);
-        imageView2 = (ImageView)findViewById(R.id.image_view2);
         finish = (Button)findViewById(R.id.finish);
         if("0".equals(orderSpecificInfo.getIsfinish())) {
             isfinish.setText("订单进行中");
@@ -145,57 +155,16 @@ public class MyOrdersSpecificActivity extends Activity {
             mDialog = DialogUtils.createLoadingDialog(MyOrdersSpecificActivity.this, "请稍等...");
             searchBuyerEvaluate(orderSpecificInfo.getOrderid());
         }
-
-        if(!path1.equals("")) {
-            url1 = SERVER_ADDRESS+"/upload/"+path1;
-            Glide.with(this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                    .listener( requestListener1 )
-                    .error(R.drawable.error)//图片加载失败后，显示的图片
-                    .into(imageView1);
-        }else {
-            Glide.with(this).load(R.drawable.good).into(imageView1);
+        if(!"".equals(path1)) {
+            mDialog1 = DialogUtils.createLoadingDialog(MyOrdersSpecificActivity.this, "加载中...");
+            url1 = SERVER_ADDRESS + "/upload/" + path1;
+            images.add(url1);
         }
-        if(!path2.equals("")) {
+        if (!"".equals(path2)) {
+            mDialog2 = DialogUtils.createLoadingDialog(MyOrdersSpecificActivity.this, "加载中...");
             url2 = SERVER_ADDRESS+"/upload/"+path2;
-            Glide.with(this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                    .listener( requestListener2 )
-                    .error(R.drawable.error)//图片加载失败后，显示的图片
-                    .into(imageView2);
-        }else {
-            Glide.with(this).load(R.drawable.good).into(imageView2);
+            images.add(url2);
         }
-        imageView1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (flag1 == 2) {
-                    Glide.with(MyOrdersSpecificActivity.this).load(url1).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .listener( requestListener1 )
-                            .error(R.drawable.error)//图片加载失败后，显示的图片
-                            .into(imageView1);
-                }else if (flag1 == 1) {
-                    Intent intent=new Intent();
-                    intent.setClass(MyOrdersSpecificActivity.this, PictureActivity.class);
-                    intent.putExtra("url",url1); // 向下一个界面传递信息
-                    startActivity(intent);
-                }
-            }
-        });
-
-        imageView2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (flag2 == 2) {
-                    Glide.with(MyOrdersSpecificActivity.this).load(url2).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                            .listener( requestListener2 )
-                            .error(R.drawable.error)//图片加载失败后，显示的图片
-                            .into(imageView2);
-                }else if (flag2 == 1) {
-                    Intent intent=new Intent();
-                    intent.setClass(MyOrdersSpecificActivity.this, PictureActivity.class);
-                    intent.putExtra("url",url2); // 向下一个界面传递信息
-                    startActivity(intent);                }
-            }
-        });
 
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -214,7 +183,7 @@ public class MyOrdersSpecificActivity extends Activity {
                     i.setClass(MyOrdersSpecificActivity.this, EvaluateActivity.class);
                     // 传递卖家信息
                     i.putExtra("seller",seller.getText().toString());
-                    //传递卖家信息
+                    //传递买家信息
                     i.putExtra("buyer",orderSpecificInfo.getBuyerid());
                     //传递订单编号
                     i.putExtra("orderid",orderSpecificInfo.getOrderid());
@@ -227,6 +196,61 @@ public class MyOrdersSpecificActivity extends Activity {
             @Override
             public void onClick(View view) {
                 RongIM.getInstance().startPrivateChat(MyOrdersSpecificActivity.this, orderSpecificInfo.getUsername(), "聊天中");
+            }
+        });
+
+        banner = (Banner) findViewById(R.id.banner);
+        //BannerConfig.NOT_INDICATOR	不显示指示器和标题	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR	显示圆形指示器	setBannerStyle
+        //BannerConfig.NUM_INDICATOR	显示数字指示器	setBannerStyle
+        //BannerConfig.NUM_INDICATOR_TITLE	显示数字指示器和标题	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR_TITLE	显示圆形指示器和标题（垂直显示）	setBannerStyle
+        //BannerConfig.CIRCLE_INDICATOR_TITLE_INSIDE	显示圆形指示器和标题（水平显示）	setBannerStyle
+        //BannerConfig.LEFT	指示器居左	setIndicatorGravity
+        //BannerConfig.CENTER	指示器居中	setIndicatorGravity
+        //BannerConfig.RIGHT	指示器居右	setIndicatorGravity
+        banner.setBannerStyle(CIRCLE_INDICATOR);
+        banner.setIndicatorGravity(CENTER);
+        //设置自动轮播，默认为true
+        banner.isAutoPlay(true);
+        //设置轮播时间
+        banner.setDelayTime(3000);
+        //自定义图片加载框架
+        banner.setImageLoader(new ImageLoader() {
+            @Override
+            public void displayImage(Context context, Object path, ImageView imageView) {
+                String p = String.valueOf(path);
+                Glide.with(getApplicationContext()).load(p).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                        .listener( requestListener )
+                        .error(R.drawable.error)//图片加载失败后，显示的图片
+                        .into(imageView);
+            }
+        });
+        //设置图片资源:url或本地资源
+        //设置图片集合
+        banner.setImages(images);
+        //banner设置方法全部调用完毕时最后调用
+        banner.start();
+        banner.setOnBannerListener(new OnBannerListener() {
+            @Override
+            public void OnBannerClick(int position) {
+                Intent intent = new Intent(MyOrdersSpecificActivity.this, PictureActivity.class);
+                intent.putExtra("url",images.get(position)); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+
+        copy = (Button)findViewById(R.id.copy);
+        copy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //获取剪贴板管理器：
+                ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                // 创建普通字符型ClipData
+                ClipData mClipData = ClipData.newPlainText("Label", dingdanbianhao.getText().toString().substring(dingdanbianhao.getText().toString().length()-14));
+                // 将ClipData内容放到系统剪贴板里。
+                cm.setPrimaryClip(mClipData);
+                Toast.makeText(MyOrdersSpecificActivity.this, "订单号已复制成功！", Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -433,35 +457,20 @@ public class MyOrdersSpecificActivity extends Activity {
     }
 
     //设置错误监听
-    private RequestListener<String, GlideDrawable> requestListener1 = new RequestListener<String, GlideDrawable>() {
+    private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
                 Toast.makeText(MyOrdersSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-                flag1= 2;
             }
+            DialogUtils.closeDialog(mDialog1);
+            DialogUtils.closeDialog(mDialog2);
             return false;
         }
         @Override
         public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            flag1 = 1;
-            return false;
-        }
-    };
-    private RequestListener<String, GlideDrawable> requestListener2 = new RequestListener<String, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(MyOrdersSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-                flag2= 2;
-            }
-            //Toast.makeText(SpecificActivity.this,e.toString(),Toast.LENGTH_LONG).show();
-            // important to return false so the error placeholder can be placed
-            return false;
-        }
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            flag2 = 1;
+            DialogUtils.closeDialog(mDialog1);
+            DialogUtils.closeDialog(mDialog2);
             return false;
         }
     };

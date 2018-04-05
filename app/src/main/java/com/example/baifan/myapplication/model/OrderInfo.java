@@ -9,7 +9,12 @@ import java.io.Serializable;
 public class OrderInfo implements Serializable {
     private String orderid;
     private String ordertime;
-
+    private String goodsid;
+    private String buyerid;
+    private String sellerid;
+    private String isfinish;
+    private String finishtime;
+    private String buyermobile;
     public String getOrderid() {
         return orderid;
     }
@@ -66,15 +71,17 @@ public class OrderInfo implements Serializable {
         this.finishtime = finishtime;
     }
 
-    private String goodsid;
-    private String buyerid;
-    private String sellerid;
-    private String isfinish;
-    private String finishtime;
+    public String getBuyermobile() {
+        return buyermobile;
+    }
+
+    public void setBuyermobile(String buyermobile) {
+        this.buyermobile = buyermobile;
+    }
 
     // 对应列表中显示的物品
     public OrderInfo(String orderid, String ordertime,String goodsid,String buyerid,String sellerid,
-                     String isfinish, String finishtime) {
+                     String isfinish, String finishtime,String buyermobile) {
         this.orderid = orderid;
         this.ordertime = ordertime;
         this.goodsid = goodsid;
@@ -82,5 +89,7 @@ public class OrderInfo implements Serializable {
         this.sellerid = sellerid;
         this.isfinish = isfinish;
         this.finishtime = finishtime;
+        this.buyermobile = buyermobile;
     }
+
 }

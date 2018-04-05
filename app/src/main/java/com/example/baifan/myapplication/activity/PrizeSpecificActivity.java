@@ -44,7 +44,8 @@ public class PrizeSpecificActivity extends Activity {
     private String path,url,result;
     private String coins;
     private String username;
-    private TextView prizename,prizecoins,number,address,mobile,name;
+    private TextView prizename,prizecoins,number;
+    private EditText address,mobile,name;
     private Dialog mDialog;
     private Button duihuan;
     private final int DUIHUAN = 1;
@@ -92,15 +93,14 @@ public class PrizeSpecificActivity extends Activity {
         duihuan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final EditText text = new EditText(PrizeSpecificActivity.this);
                 LayoutInflater inflater = LayoutInflater.from(PrizeSpecificActivity.this);
                 View view1 = inflater.inflate(R.layout.info_window, null);
-                name = (TextView)view1.findViewById(R.id.name);
-                mobile = (TextView)view1.findViewById(R.id.mobile);
-                address = (TextView)view1.findViewById(R.id.address);
+                name = (EditText) view1.findViewById(R.id.name);
+                mobile = (EditText) view1.findViewById(R.id.mobile);
+                address = (EditText) view1.findViewById(R.id.address);
                 new AlertDialog.Builder(PrizeSpecificActivity.this)
                         .setTitle("请正确输入相关消息")
-                        .setIcon(android.R.drawable.ic_dialog_info)
+                        .setIcon(R.drawable.zhuyi)
                         .setView(view1)
                         .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                             @Override

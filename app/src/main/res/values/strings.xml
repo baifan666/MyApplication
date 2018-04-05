@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">校园二手交易平台</string>
     <string name="url_server">http://111.231.101.251:8080/fuwuduan/version.xml</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
 </resources>

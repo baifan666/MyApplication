@@ -18,7 +18,7 @@
         android:singleLine="true"
         android:textColorHint="#AAAAAA" />
     <EditText
-        android:drawableLeft="@drawable/yonghuming"
+        android:drawableLeft="@drawable/phone"
         android:id="@+id/mobile"
         android:layout_width="match_parent"
         android:layout_height="45dp"
@@ -33,7 +33,7 @@
         android:singleLine="true"
         android:textColorHint="#AAAAAA" />
     <EditText
-        android:drawableLeft="@drawable/phone"
+        android:drawableLeft="@drawable/home"
         android:id="@+id/address"
         android:layout_width="match_parent"
         android:layout_height="45dp"

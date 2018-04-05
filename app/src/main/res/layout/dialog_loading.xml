@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:text="发布中.."
-            android:textColor="#f0f0f0"
+            android:textColor="#414141"
             android:textSize="15sp" />
     </LinearLayout>
 

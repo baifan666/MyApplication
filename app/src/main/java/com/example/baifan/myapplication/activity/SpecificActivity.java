@@ -6,15 +6,18 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -52,7 +55,8 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 public class SpecificActivity extends Activity {
     private ImageView back;
     private TextView username,publishtime,title,content,price,location,mobile;
-    private String account,path1,path2,url1,url2,result;
+    private EditText usermobile;
+    private String account,path1,path2,url1,url2,result,buyermobile;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
     private final int ADD_SUCCEESS = 1;
@@ -202,7 +206,44 @@ public class SpecificActivity extends Activity {
         buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showDialog();
+                LayoutInflater inflater = LayoutInflater.from(SpecificActivity.this);
+                View view1 = inflater.inflate(R.layout.mobile_window, null);
+                usermobile = (EditText) view1.findViewById(R.id.name);
+                mobile = (TextView)view1.findViewById(R.id.mobile);
+                new AlertDialog.Builder(SpecificActivity.this)
+                        .setTitle("请正确输入联系方式")
+                        .setIcon(R.drawable.zhuyi)
+                        .setView(view1)
+                        .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // 获取输入框的内容
+                                //Toast.makeText(PrizeSpecificActivity.this, name.getText().toString(), Toast.LENGTH_SHORT).show();
+                                if("".equals(mobile.getText().toString())) {
+                                    AlertDialog.Builder dialog1 = new AlertDialog.Builder(SpecificActivity.this);
+                                    dialog1.setTitle("This is a warnining!");
+                                    dialog1.setMessage("请确保每一个信息已输入！");
+                                    dialog1.setCancelable(false);
+                                    dialog1.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+
+                                        }
+                                    });
+                                    dialog1.show();
+                                }else {
+                                    buyermobile = mobile.getText().toString();
+                                    showDialog();
+                                }
+                            }
+                        })
+                        .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        }).show();
             }
         });
 
@@ -282,11 +323,11 @@ public class SpecificActivity extends Activity {
     protected void showDialog() {
         AlertDialog.Builder builer = new AlertDialog.Builder(this) ;
         builer.setTitle("二次确认");
-        builer.setMessage("确定要购买吗？请务必和发布人确认清楚哦！");
+        builer.setMessage("请务必确认手机号正确，并且和物品发布人确认清楚！");
         //当点确定按钮时
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                addOredrs(goodsInfo.getId(), account, goodsInfo.getUsername());
+                addOredrs(goodsInfo.getId(), account, goodsInfo.getUsername(),buyermobile);
             }
         });
 
@@ -433,11 +474,11 @@ public class SpecificActivity extends Activity {
         }
     }
 
-    private void addOredrs(String a, String b, String c) {
+    private void addOredrs(String a, String b, String c,String d) {
         final String goods = a;
         final String buyer= b;
         final String seller = c;
-
+        final String buyermobile = d;
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
@@ -445,8 +486,9 @@ public class SpecificActivity extends Activity {
                     String goodsid = URLEncoder.encode(goods, "UTF-8");
                     String buyerid = URLEncoder.encode(buyer, "UTF-8");
                     String sellerid = URLEncoder.encode(seller, "UTF-8");
+                    String buyermobile1 = URLEncoder.encode(buyermobile,"UTF-8");
                     String url = SERVER_ADDRESS+"/addOrders.jsp?goodsid=" + goodsid
-                            + "&buyerid=" + buyerid + "&sellerid=" + sellerid;
+                            + "&buyerid=" + buyerid + "&sellerid=" + sellerid+"&buyermobile="+buyermobile1;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = ADD_SUCCEESS;

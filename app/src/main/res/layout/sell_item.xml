@@ -45,11 +45,6 @@
             android:textColor="#7eb6ff"
             android:text="订单状态"/>
     </LinearLayout>
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="1dp"
-        android:src="#E4E3E3" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

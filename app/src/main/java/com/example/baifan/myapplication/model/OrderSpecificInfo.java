@@ -23,6 +23,7 @@ public class OrderSpecificInfo implements Serializable {
     private String deleted;
     private String path1;
     private String path2;
+    private String buyermobile;
     public String getOrderid() {
         return orderid;
     }
@@ -151,8 +152,37 @@ public class OrderSpecificInfo implements Serializable {
         this.path2 = path2;
     }
 
+    public String getBuyermobile() {
+        return buyermobile;
+    }
+
+    public void setBuyermobile(String buyermobile) {
+        this.buyermobile = buyermobile;
+    }
+
     public OrderSpecificInfo(String id, String username,String title,String publish_time,String content,
                      double price, String mobile, String location, String path1,String path2,String orderid,
+                             String ordertime,String buyerid,String isfinish, String finishtime, String buyermobile) {
+        this.id = id;
+        this.username= username;
+        this.title = title;
+        this.publish_time = publish_time;
+        this.content = content;
+        this.price = price;
+        this.mobile = mobile;
+        this.location = location;
+        this.path1 = path1;
+        this.path2 = path2;
+        this.orderid = orderid;
+        this.ordertime = ordertime;
+        this.buyerid = buyerid;
+        this.isfinish = isfinish;
+        this.finishtime = finishtime;
+        this.buyermobile = buyermobile;
+    }
+
+    public OrderSpecificInfo(String id, String username,String title,String publish_time,String content,
+                             double price, String mobile, String location, String path1,String path2,String orderid,
                              String ordertime,String buyerid,String isfinish, String finishtime) {
         this.id = id;
         this.username= username;

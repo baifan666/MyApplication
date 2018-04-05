@@ -942,7 +942,7 @@ public class SearchActivity extends Activity implements
                     if(uri !=null) {
                         // 这里开始的第二部分，获取图片的路径：
                         String[] proj = {MediaStore.Images.Media.DATA};
-                        Cursor cursor = managedQuery(uri, proj, null, null, null);
+                        Cursor cursor = getContentResolver().query(uri, proj, null, null, null);
                         // 按我个人理解 这个是获得用户选择的图片的索引值
                         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                         cursor.moveToFirst();
@@ -959,7 +959,7 @@ public class SearchActivity extends Activity implements
                                 if(uri2 !=null) {
                                     // 这里开始的第二部分，获取图片的路径：
                                     String[] proj = {MediaStore.Images.Media.DATA};
-                                    Cursor cursor = managedQuery(uri2, proj, null, null, null);
+                                    Cursor cursor = getContentResolver().query(uri2, proj, null, null, null);
                                     // 按我个人理解 这个是获得用户选择的图片的索引值
                                     int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
                                     cursor.moveToFirst();

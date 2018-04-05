@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.SellOrderAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -44,6 +46,7 @@ public class MySellsActivity extends Activity {
     private SellOrderAdapter sellOrderAdapter;
     private NiceSpinner niceSpinner;
     private RefreshLayout refreshLayout;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +57,7 @@ public class MySellsActivity extends Activity {
         Intent intent = getIntent();
         account = intent.getStringExtra("username");
         niceSpinner = (NiceSpinner) findViewById(R.id.nice_spinner);
+        mDialog = DialogUtils.createLoadingDialog(MySellsActivity.this, "加载中...");
         List<String> dataset = new LinkedList<>(Arrays.asList("全部", "进行中","已完成"));
         myAll(account);
         niceSpinner.attachDataSource(dataset);
@@ -93,10 +97,10 @@ public class MySellsActivity extends Activity {
         _listOrders.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                OrderSpecificInfo orderSpecificInfo = orderdata.get(position);
-//                Intent intent = new Intent(MySellsActivity.this, MyOrdersSpecificActivity.class);
-//                intent.putExtra("orderSpecificInfo",orderSpecificInfo); // 向下一个界面传递信息
-//                startActivity(intent);
+                OrderSpecificInfo orderSpecificInfo = orderdata.get(position);
+                Intent intent = new Intent(MySellsActivity.this, MySellsSpecificActivity.class);
+                intent.putExtra("orderSpecificInfo",orderSpecificInfo); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
 
@@ -128,6 +132,7 @@ public class MySellsActivity extends Activity {
                     }
                     sellOrderAdapter = new SellOrderAdapter(MySellsActivity.this, R.layout.sell_item, orderdata);
                     _listOrders.setAdapter(sellOrderAdapter);
+                    DialogUtils.closeDialog(mDialog);
                     refreshLayout.finishRefresh();
                     break;
             }
@@ -159,6 +164,7 @@ public class MySellsActivity extends Activity {
             String buyerid = "";
             String finishtime = "";
             String isfinish = "";
+            String buyermobile = "";
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 result += nodeName;
@@ -226,6 +232,10 @@ public class MySellsActivity extends Activity {
                             String finishtimeStr = parse.nextText();
                             result +="完成时间" + finishtimeStr +", ";
                             finishtime = finishtimeStr;
+                        }else if ("buyermobile".equals(nodeName)) {
+                            String buyermobileStr = parse.nextText();
+                            result +="买家联系方式" + buyermobileStr +", ";
+                            buyermobile = buyermobileStr;
                         }
 
 
@@ -234,8 +244,9 @@ public class MySellsActivity extends Activity {
                         result += " \n ";
                         Log.d("end_tag", "节点结束");
                         // 添加数据
-                        OrderSpecificInfo info = new OrderSpecificInfo(id,username,title,publish_time,content,
-                                price, mobile, location,path1,path2,orderid, ordertime, buyerid,isfinish, finishtime);
+                        OrderSpecificInfo info = new OrderSpecificInfo(id, username, title, publish_time, content,
+                                price, mobile, location, path1, path2, orderid,
+                                ordertime, buyerid, isfinish, finishtime, buyermobile);
                         orderdata.add(info);
                         break;
                     default:
