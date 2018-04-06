@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -31,9 +33,16 @@ import com.baidu.mapapi.search.geocode.GeoCoder;
 import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
+import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
+import com.baidu.mapapi.search.poi.PoiCitySearchOption;
+import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiIndoorResult;
+import com.baidu.mapapi.search.poi.PoiResult;
+import com.baidu.mapapi.search.poi.PoiSearch;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.PoiListAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.MyOverLay;
 
 import java.util.ArrayList;
 
@@ -44,11 +53,14 @@ public class MapActivity extends Activity {
     public LocationClient mLocationClient;
     public BDLocationListener myListener = new MyLocationListener();
     private LatLng latLng,ll;
+    private PoiSearch mPoiSearch;
     private ArrayList<PoiInfo> poiInfos = new ArrayList<PoiInfo>();
     private PoiListAdapter adapter;
     private ListView iv_item;
     private boolean isFirstLoc = true; // 是否首次定位
     private BitmapDescriptor bitmap = BitmapDescriptorFactory.fromResource(R.drawable.marker);//构建Marker图标
+    private EditText city,keyword;
+    private Button search;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +76,10 @@ public class MapActivity extends Activity {
                 finish();
             }
         });
+        city = (EditText)findViewById(R.id.city);
+        keyword = (EditText)findViewById(R.id.keyword);
+        search = (Button)findViewById(R.id.search);
+
         iv_item = (ListView)findViewById(R.id.iv_item);
         iv_item.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -125,11 +141,69 @@ public class MapActivity extends Activity {
 
             }
         });
+        // 创建PoiSearch实例
+        mPoiSearch = PoiSearch.newInstance();
+        //POI检索的监听对象
+        OnGetPoiSearchResultListener resultListener = new OnGetPoiSearchResultListener() {
+            //获得POI的检索结果，一般检索数据都是在这里获取
+            @Override
+            public void onGetPoiResult(PoiResult poiResult) {
+                //如果搜索到的结果不为空，并且没有错误
+                if (poiResult != null && poiResult.error == PoiResult.ERRORNO.NO_ERROR) {
+                    MyOverLay overlay = new MyOverLay(myBaiduMap, mPoiSearch);//这传入search对象，因为一般搜索到后，点击时方便发出详细搜索
+                    //设置数据,这里只需要一步，
+                    overlay.setData(poiResult);
+                    //添加到地图
+                    overlay.addToMap();
+                    //将显示视图拉倒正好可以看到所有POI兴趣点的缩放等级
+                    overlay.zoomToSpan();//计算工具
+                    //设置标记物的点击监听事件
+                    myBaiduMap.setOnMarkerClickListener(overlay);
+                } else {
+                    Toast.makeText(getApplication(), "搜索不到你需要的信息！", Toast.LENGTH_SHORT).show();
+                }
+            }
+            //获得POI的详细检索结果，如果发起的是详细检索，这个方法会得到回调(需要uid)
+            //详细检索一般用于单个地点的搜索，比如搜索一大堆信息后，选择其中一个地点再使用详细检索
+            @Override
+            public void onGetPoiDetailResult(PoiDetailResult poiDetailResult) {
+                if (poiDetailResult.error != SearchResult.ERRORNO.NO_ERROR) {
+                    Toast.makeText(getApplication(), "抱歉，未找到结果",
+                            Toast.LENGTH_SHORT).show();
+                } else {// 正常返回结果的时候，此处可以获得很多相关信息
+                    Toast.makeText(getApplication(), poiDetailResult.getName() + ": "
+                                    + poiDetailResult.getAddress(),
+                            Toast.LENGTH_LONG).show();
+                }
+            }
+            //获得POI室内检索结果
+            @Override
+            public void onGetPoiIndoorResult(PoiIndoorResult poiIndoorResult) {
+            }
+        };
+        /**
+        *设置监听
+        */
+        mPoiSearch.setOnGetPoiSearchResultListener(resultListener);
+
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //发起检索
+                PoiCitySearchOption poiCity = new PoiCitySearchOption();
+                poiCity.keyword(keyword.getText().toString()).city(city.getText().toString());//这里还能设置显示的个数，默认显示10个
+                mPoiSearch.searchInCity(poiCity);//执行搜索，搜索结束后，在搜索监听对象里面的方法会被回调
+            }
+        });
     }
 
     //配置定位SDK参数
     private void initLocation() {
         LocationClientOption option = new LocationClientOption();
+        /**
+         * 设置定位模式 Battery_Saving 低功耗模式 Device_Sensors 仅设备(Gps)模式 Hight_Accuracy
+         * 高精度模式
+         /   */
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
@@ -157,8 +231,7 @@ public class MapActivity extends Activity {
             // 反地理编码查询结果回调函数
             @Override
             public void onGetReverseGeoCodeResult(ReverseGeoCodeResult result) {
-                if (result == null
-                        || result.error != SearchResult.ERRORNO.NO_ERROR) {
+                if (result == null || result.error != SearchResult.ERRORNO.NO_ERROR) {
                     // 没有检测到结果
                     Toast.makeText(MapActivity.this, "抱歉，未能找到结果",
                             Toast.LENGTH_LONG).show();
@@ -238,6 +311,8 @@ public class MapActivity extends Activity {
             }
         }
     }
+
+
 
 
     @Override
