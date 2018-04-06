@@ -178,7 +178,15 @@
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:src="#E4E3E3" />
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="#ffffff">
+        <com.youth.banner.Banner
+            android:id="@+id/banner"
+            android:layout_width="100dp"
+            android:layout_height="100dp" />
         <GridView
             android:id="@+id/gridView1"
             android:layout_width="fill_parent"
@@ -187,12 +195,12 @@
             android:columnWidth="90dp"
             android:gravity="center"
             android:horizontalSpacing="5dp"
-            android:numColumns="4"
+            android:numColumns="auto_fit"
             android:padding="10dp"
             android:stretchMode="columnWidth"
             android:verticalSpacing="5dp" >
         </GridView>
-
+    </LinearLayout>
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"

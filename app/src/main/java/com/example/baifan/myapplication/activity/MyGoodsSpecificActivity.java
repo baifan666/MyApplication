@@ -47,13 +47,13 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 public class MyGoodsSpecificActivity extends Activity {
     private ImageView back;
     private TextView username,publishtime,title,content,price,location,mobile;
-    private String path1,path2,url1,url2;
+    private String path1,path2,url1,url2,goodsid;
     private Button shanchu,xiugai;
     private GoodsInfo goodsInfo;
     private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private Dialog mDialog,mDialog1;
     private Banner banner;
-    List<String> images= new ArrayList<String>();       //设置图片集合
+    private List<String> images= new ArrayList<String>();       //设置图片集合
     private String result;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +64,7 @@ public class MyGoodsSpecificActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
+        goodsid = goodsInfo.getId();
         username = (TextView)findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
         publishtime = (TextView)findViewById(R.id.publish_time);
@@ -169,8 +170,11 @@ public class MyGoodsSpecificActivity extends Activity {
                 intent.putExtra("price",price.getText().toString());   //价格
                 intent.putExtra("location",location.getText().toString());    //地点
                 intent.putExtra("mobile",mobile.getText().toString());      //联系方式
+                intent.putExtra("path1",goodsInfo.getPath1());    //图片数据库原始字段
+                intent.putExtra("path2",goodsInfo.getPath2());    //图片数据库原始字段
                 intent.putExtra("url1",url1);    //图片url
                 intent.putExtra("url2",url2);    //图片url
+                intent.putExtra("goodsid",goodsid);    //发布内容数据库对应的主键id
                 startActivity(intent);
             }
         });
@@ -253,9 +257,9 @@ public class MyGoodsSpecificActivity extends Activity {
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
             if(e.toString().contains("java.net.SocketTimeoutException")) {
                 Toast.makeText(MyGoodsSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-                DialogUtils.closeDialog(mDialog);
-                DialogUtils.closeDialog(mDialog1);
             }
+            DialogUtils.closeDialog(mDialog);
+            DialogUtils.closeDialog(mDialog1);
             // important to return false so the error placeholder can be placed
             return false;
         }

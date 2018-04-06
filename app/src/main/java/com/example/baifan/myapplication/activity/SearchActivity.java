@@ -133,9 +133,9 @@ public class SearchActivity extends Activity implements
     private Adapter adapter;
     private GoodsAdapter goodsadapter;
 
-    String result = null;
+    private String result = null;
     private EditText title,content,price,location,mobile;
-    String account,path1,path2,tit,con,pri,loc,mob;
+    private String account,path1,path2,tit,con,pri,loc,mob;
     private List <String> s = new ArrayList<String>();//创建了s来保存本地图片的地址
     private List <String> ss = new ArrayList<String>();//创建了ss来保存服务器图片的地址
     private static String requestURL = SERVER_ADDRESS+"/UploadShipServlet";
@@ -152,9 +152,6 @@ public class SearchActivity extends Activity implements
     private int scrollPos; //滑动以后的可见的第一条数据
     private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
 
-    private BoomMenuButton boomMenuButton;   //BoomMenu开源ui
-    private static int index = 0;
-    private static String [] text = new String[]{"系统消息","会话"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,27 +171,6 @@ public class SearchActivity extends Activity implements
         initView();
         initViewPage();
         initEvent();
-
-        boomMenuButton = (BoomMenuButton) findViewById(R.id.bmb);
-//        for (int i = 0; i < boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
-//            TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
-//                    .normalImageRes(R.drawable.ic_launcher)
-//                    .normalText("Butter Doesn't fly!");
-//            boomMenuButton.addBuilder(builder);
-//        }
-        for (int i = 0; i < boomMenuButton.getPiecePlaceEnum().pieceNumber(); i++) {
-            TextOutsideCircleButton.Builder builder = new TextOutsideCircleButton.Builder()
-                    .listener(new OnBMClickListener() {
-                        @Override
-                        public void onBoomButtonClick(int index) {
-                            Toast.makeText(SearchActivity.this, "Clicked " + index, Toast.LENGTH_SHORT).show();
-                        }
-                    })
-                    .normalImageRes(getImageResource())
-                    .normalText(getext());
-            boomMenuButton.addBuilder(builder);
-        }
-
 
         refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
@@ -398,7 +374,9 @@ public class SearchActivity extends Activity implements
 
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                dialog(position);
+                if(position < 2 ) {
+                    dialog(position);
+                }
                 return true;
             }
         });
@@ -1308,37 +1286,6 @@ public class SearchActivity extends Activity implements
                     break;
             }
         }
-    };
-
-    static String getext() {
-        if (index >= text.length) index = 0;
-        return text[index++];
-    }
-
-    private static int imageResourceIndex = 0;
-
-    static int getImageResource() {
-        if (imageResourceIndex >= imageResources.length) imageResourceIndex = 0;
-        return imageResources[imageResourceIndex++];
-    }
-
-    private static int[] imageResources = new int[]{
-            R.drawable.xitongxiaoxi,
-            R.drawable.huihua,
-//            R.drawable.bee,
-//            R.drawable.butterfly,
-//            R.drawable.cat,
-//            R.drawable.deer,
-//            R.drawable.dolphin,
-//            R.drawable.eagle,
-//            R.drawable.horse,
-//            R.drawable.jellyfish,
-//            R.drawable.owl,
-//            R.drawable.peacock,
-//            R.drawable.pig,
-//            R.drawable.rat,
-//            R.drawable.snake,
-//            R.drawable.squirrel
     };
 
 }

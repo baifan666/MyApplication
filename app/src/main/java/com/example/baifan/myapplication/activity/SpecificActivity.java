@@ -217,7 +217,7 @@ public class SpecificActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取输入框的内容
-                                //Toast.makeText(PrizeSpecificActivity.this, name.getText().toString(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(SpecificActivity.this, usermobile.getText().toString(), Toast.LENGTH_SHORT).show();
                                 if("".equals(usermobile.getText().toString())) {
                                     AlertDialog.Builder dialog1 = new AlertDialog.Builder(SpecificActivity.this);
                                     dialog1.setTitle("This is a warnining!");

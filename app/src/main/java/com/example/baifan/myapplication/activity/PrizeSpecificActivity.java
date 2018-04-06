@@ -69,13 +69,16 @@ public class PrizeSpecificActivity extends Activity {
         prizeInfo = (PrizeInfo) intent.getSerializableExtra("prizeInfo");
         username = intent.getStringExtra("username");
         coins = intent.getStringExtra("coins");
-        Toast.makeText(PrizeSpecificActivity.this,coins,Toast.LENGTH_LONG).show();
+        //Toast.makeText(PrizeSpecificActivity.this,coins,Toast.LENGTH_LONG).show();
         prizename = (TextView)findViewById(R.id.prizename);
         prizename.setText(prizeInfo.getPrizename());
         prizecoins = (TextView)findViewById(R.id.prizecoins);
         prizecoins.setText(String.valueOf(prizeInfo.getPrizecoins()));
         number = (TextView)findViewById(R.id.number);
         number.setText("剩余可兑换数量"+String.valueOf(prizeInfo.getNumber())+"个");
+        if(prizeInfo.getNumber() == 0) {
+            number.setEnabled(false);
+        }
         path = prizeInfo.getPictureurl().substring(prizeInfo.getPictureurl().lastIndexOf("/")+1);
         url = SERVER_ADDRESS+"/prize/"+path;
         img = (ImageView)findViewById(R.id.img);
