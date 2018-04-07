@@ -26,7 +26,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class CheckUserOpinionActivity extends Activity {
     private ImageView back;

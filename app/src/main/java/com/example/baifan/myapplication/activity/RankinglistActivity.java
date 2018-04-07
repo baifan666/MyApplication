@@ -27,7 +27,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class RankinglistActivity extends Activity {
     private ImageView back;

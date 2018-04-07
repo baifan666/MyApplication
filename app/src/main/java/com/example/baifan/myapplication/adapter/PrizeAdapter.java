@@ -19,7 +19,7 @@ import com.example.baifan.myapplication.model.PrizeInfo;
 
 import java.util.List;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 /**
  * Created by baifan on 2018/3/26.

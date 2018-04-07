@@ -222,6 +222,7 @@
         <activity android:name=".activity.MySellsSpecificActivity" />
         <activity android:name=".activity.Evaluate2Activity" />
         <activity android:name=".activity.AlterGoodsActivity"></activity>
+        <activity android:name=".wxapi.WXEntryActivity" android:exported="true"/>
     </application>
 
 </manifest>

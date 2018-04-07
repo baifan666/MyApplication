@@ -13,7 +13,6 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.PrizeAdapter;
@@ -30,7 +29,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.util.ArrayList;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class MallActivity extends Activity {
     private final int GETALL = 1;

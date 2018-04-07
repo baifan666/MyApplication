@@ -80,7 +80,7 @@ import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
 import q.rorbin.badgeview.QBadgeView;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 
 public class SearchActivity extends Activity implements

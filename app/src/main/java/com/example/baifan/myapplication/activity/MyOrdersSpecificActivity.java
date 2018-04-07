@@ -43,7 +43,7 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 import static com.youth.banner.BannerConfig.CENTER;
 import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 

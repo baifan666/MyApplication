@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.application;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -12,14 +13,22 @@ import io.rong.imkit.RongIM;
  */
 
 public class App extends Application {
+    private static Context mContext;
+
+    public static Context getContext() {
+        return mContext;
+    }
     @Override
     public void onCreate() {
         super.onCreate();
+        mContext = getApplicationContext();
         SDKInitializer.initialize(getApplicationContext());
         RongIM.init(this);//初始化
         RongIM.getInstance().setMessageAttachedUserInfo(true);
         initTBS();
+
     }
+
     /**
      * 初始化TBS浏览服务X5内核
      */

@@ -34,7 +34,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class MySellsActivity extends Activity {
     private final int MYREADALL = 1;

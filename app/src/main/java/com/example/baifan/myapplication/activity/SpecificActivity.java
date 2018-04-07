@@ -6,7 +6,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +31,7 @@ import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
+import com.example.baifan.myapplication.utils.WxShareAndLoginUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
@@ -47,13 +47,13 @@ import java.util.List;
 
 import io.rong.imkit.RongIM;
 
-import static com.example.baifan.myapplication.utils.ServerAddress.SERVER_ADDRESS;
+import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 import static com.youth.banner.BannerConfig.CENTER;
 import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 
 public class SpecificActivity extends Activity {
-    private ImageView back;
+    private ImageView back,share;
     private TextView username,publishtime,title,content,price,location,mobile;
     private EditText usermobile;
     private String account,path1,path2,url1,url2,result,buyermobile;
@@ -284,6 +284,14 @@ public class SpecificActivity extends Activity {
                 Intent intent = new Intent(SpecificActivity.this, PictureActivity.class);
                 intent.putExtra("url",images.get(position)); // 向下一个界面传递信息
                 startActivity(intent);
+            }
+        });
+
+        share = (ImageView)findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                WxShareAndLoginUtils.WxTextShare("测试微信分享",WxShareAndLoginUtils.WECHAT_MOMENT);
             }
         });
 
