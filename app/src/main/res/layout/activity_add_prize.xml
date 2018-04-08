@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        android:layout_weight="15"
+        android:background="#F0F3F6">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="@color/colorPrimary"
+            >
+
+            <ImageView
+                android:id="@+id/backImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/back" />
+
+            <TextView
+                android:id="@+id/registerTextb"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:text="新增商城物品"
+                android:textColor="#ffffff"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="20"
+                android:orientation="vertical">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="2dp"
+                    android:src="#E4E3E3" />
+
+                <EditText
+                    android:id="@+id/prizename"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="#FFFFFF"
+                    android:gravity="top"
+                    android:hint="请输入奖品名称..."
+                    android:maxLength="100"
+                    android:padding="5dp"
+                    android:singleLine="false"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:src="#E4E3E3" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:src="#E4E3E3" />
+
+                <EditText
+                    android:id="@+id/prizecoins"
+                    android:layout_width="match_parent"
+                    android:layout_height="32dp"
+                    android:background="#FFFFFF"
+                    android:gravity="top"
+                    android:hint="请输入兑换所需金币数量...（单位：个）"
+                    android:inputType="number"
+                    android:maxLength="100"
+                    android:padding="5dp"
+                    android:singleLine="false"
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:src="#E4E3E3" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:src="#E4E3E3" />
+
+                <EditText
+                    android:id="@+id/number"
+                    android:layout_width="fill_parent"
+                    android:layout_height="32dp"
+                    android:background="#FFFFFF"
+                    android:gravity="top"
+                    android:hint="请输入奖品数量..."
+                    android:inputType="number"
+                    android:maxLength="100"
+                    android:padding="5dp"
+                    android:singleLine="false"
+                    android:textColor="#000000"
+                    android:textSize="16dp" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:src="#E4E3E3" />
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="10dp"
+                    android:src="#E4E3E3" />
+
+                <GridView
+                    android:id="@+id/gridView1"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:background="#FFFFFF"
+                    android:columnWidth="90dp"
+                    android:gravity="center"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="4"
+                    android:padding="10dp"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp" >
+                </GridView>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/beijing1"/>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:background="#fafbf2"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/cancal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_green"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:text="取消" />
+
+        <Button
+            android:id="@+id/add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/btn_green"
+            android:layout_weight="1"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="10dp"
+            android:text="新增" />
+    </LinearLayout>
+</LinearLayout>

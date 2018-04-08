@@ -29,7 +29,17 @@
                     android:id="@+id/scgl"
                     android:drawableLeft="@drawable/guanli"
                     android:clickable="true"
-                    android:text="商城管理" />
+                    android:text="商品管理" />
+                <ImageView style="@style/img_arrow"/>
+            </LinearLayout>
+            <View style="@style/bg_line"/>
+            <!-- 无圆角-->
+            <LinearLayout style="@style/mid_layout">
+                <TextView style="@style/usertext"
+                    android:id="@+id/xzsp"
+                    android:drawableLeft="@drawable/xinzengshangpin"
+                    android:clickable="true"
+                    android:text="新增商品" />
                 <ImageView style="@style/img_arrow"/>
             </LinearLayout>
             <View style="@style/bg_line"/>

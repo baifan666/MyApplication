@@ -31,7 +31,6 @@ import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
-import com.example.baifan.myapplication.utils.WxShareAndLoginUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.listener.OnBannerListener;
 import com.youth.banner.loader.ImageLoader;
@@ -77,17 +76,17 @@ public class SpecificActivity extends Activity {
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
-        username = (TextView)findViewById(R.id.username);
+        username = (TextView) findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
-        publishtime = (TextView)findViewById(R.id.publish_time);
+        publishtime = (TextView) findViewById(R.id.publish_time);
         publishtime.setText(String.valueOf(goodsInfo.getPublish_time()));
-        title = (TextView)findViewById(R.id.title);
+        title = (TextView) findViewById(R.id.title);
         title.setText(String.valueOf(goodsInfo.getTitle()));
         title.setMovementMethod(ScrollingMovementMethod.getInstance());
         title.post(new Runnable() {
             @Override
             public void run() {
-                if(title.getLineCount() > 1) {
+                if (title.getLineCount() > 1) {
                     title.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -109,25 +108,25 @@ public class SpecificActivity extends Activity {
             }
         });
 
-        content = (TextView)findViewById(R.id.content);
+        content = (TextView) findViewById(R.id.content);
         content.setText(String.valueOf(goodsInfo.getContent()));
         content.setMovementMethod(ScrollingMovementMethod.getInstance());
         content.post(new Runnable() {
             @Override
             public void run() {
-                if(content.getLineCount() > 9) {
+                if (content.getLineCount() > 9) {
                     content.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
-                            if(motionEvent.getAction()==MotionEvent.ACTION_DOWN){
+                            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
                                 //通知父控件不要干扰
                                 view.getParent().requestDisallowInterceptTouchEvent(true);
                             }
-                            if(motionEvent.getAction()==MotionEvent.ACTION_MOVE){
+                            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
                                 //通知父控件不要干扰
                                 view.getParent().requestDisallowInterceptTouchEvent(true);
                             }
-                            if(motionEvent.getAction()==MotionEvent.ACTION_UP){
+                            if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
                                 view.getParent().requestDisallowInterceptTouchEvent(false);
                             }
                             return false;
@@ -136,15 +135,15 @@ public class SpecificActivity extends Activity {
                 }
             }
         });
-        price = (TextView)findViewById(R.id.price);
+        price = (TextView) findViewById(R.id.price);
         price.setText(String.valueOf(goodsInfo.getPrice()));
-        location = (TextView)findViewById(R.id.location);
+        location = (TextView) findViewById(R.id.location);
         location.setText(String.valueOf(goodsInfo.getLocation()));
         location.setMovementMethod(ScrollingMovementMethod.getInstance());
         location.post(new Runnable() {
             @Override
             public void run() {
-                if(location.getLineCount() > 1) {
+                if (location.getLineCount() > 1) {
                     location.setOnTouchListener(new View.OnTouchListener() {
                         @Override
                         public boolean onTouch(View view, MotionEvent motionEvent) {
@@ -165,34 +164,34 @@ public class SpecificActivity extends Activity {
                 }
             }
         });
-        mobile = (TextView)findViewById(R.id.mobile);
+        mobile = (TextView) findViewById(R.id.mobile);
         mobile.setText(String.valueOf(goodsInfo.getMobile()));
-        path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/")+1);
-        path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/")+1);
-        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
+        path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/") + 1);
+        path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/") + 1);
+        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
         searchSellerScore(goodsInfo.getUsername());
-        if(!"".equals(path1)) {
+        if (!"".equals(path1)) {
             mDialog = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
             url1 = SERVER_ADDRESS + "/upload/" + path1;
             images.add(url1);
         }
         if (!"".equals(path2)) {
             mDialog1 = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
-            url2 = SERVER_ADDRESS+"/upload/"+path2;
+            url2 = SERVER_ADDRESS + "/upload/" + path2;
             images.add(url2);
         }
 
-        back = (ImageView)findViewById(R.id.backImg); //返回
+        back = (ImageView) findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        conversation = (Button)findViewById(R.id.conversation);
-        buy = (Button)findViewById(R.id.buy);
+        conversation = (Button) findViewById(R.id.conversation);
+        buy = (Button) findViewById(R.id.buy);
 
-        if(goodsInfo.getUsername().equals(account)) {
+        if (goodsInfo.getUsername().equals(account)) {
             conversation.setEnabled(false);
             buy.setEnabled(false);
         }
@@ -218,7 +217,7 @@ public class SpecificActivity extends Activity {
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取输入框的内容
                                 Toast.makeText(SpecificActivity.this, usermobile.getText().toString(), Toast.LENGTH_SHORT).show();
-                                if("".equals(usermobile.getText().toString())) {
+                                if ("".equals(usermobile.getText().toString())) {
                                     AlertDialog.Builder dialog1 = new AlertDialog.Builder(SpecificActivity.this);
                                     dialog1.setTitle("This is a warnining!");
                                     dialog1.setMessage("请确保每一个信息已输入！");
@@ -230,7 +229,7 @@ public class SpecificActivity extends Activity {
                                         }
                                     });
                                     dialog1.show();
-                                }else {
+                                } else {
                                     buyermobile = usermobile.getText().toString();
                                     showDialog();
                                 }
@@ -268,7 +267,7 @@ public class SpecificActivity extends Activity {
             public void displayImage(Context context, Object path, ImageView imageView) {
                 String p = String.valueOf(path);
                 Glide.with(getApplicationContext()).load(p).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-                        .listener( requestListener )
+                        .listener(requestListener)
                         .error(R.drawable.error)//图片加载失败后，显示的图片
                         .into(imageView);
             }
@@ -282,21 +281,25 @@ public class SpecificActivity extends Activity {
             @Override
             public void OnBannerClick(int position) {
                 Intent intent = new Intent(SpecificActivity.this, PictureActivity.class);
-                intent.putExtra("url",images.get(position)); // 向下一个界面传递信息
+                intent.putExtra("url", images.get(position)); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });
 
-        share = (ImageView)findViewById(R.id.share);
+        share = (ImageView) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                WxShareAndLoginUtils.WxTextShare("测试微信分享",WxShareAndLoginUtils.WECHAT_MOMENT);
+//                startActivityForResult(new Intent(SpecificActivity.this,
+//                        SelectPicPopupWindow.class), 0x1);
+//                startActivity(new Intent(SpecificActivity.this, ShareSelectActivity.class));
+                Intent intent = new Intent(SpecificActivity.this, ShareSelectActivity.class);
+                intent.putExtra("title",goodsInfo.getTitle().toString() ); // 向下一个界面传递信息
+                intent.putExtra("content",goodsInfo.getContent().toString() ); // 向下一个界面传递信息
+                startActivity(intent);
             }
         });
-
     }
-
     //设置错误监听
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override

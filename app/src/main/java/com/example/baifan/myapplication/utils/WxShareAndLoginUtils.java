@@ -3,7 +3,6 @@ package com.example.baifan.myapplication.utils;
 import android.graphics.Bitmap;
 import android.widget.Toast;
 
-import com.bumptech.glide.util.Util;
 import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.common.Config;
 import com.tencent.mm.opensdk.modelmsg.SendAuth;

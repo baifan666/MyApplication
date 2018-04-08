@@ -61,8 +61,7 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 public class AlterGoodsActivity extends Activity {
     private ImageView back;
     private EditText title,content,price,location,mobile;
-    private String account,path1,path2,tit,con,pri,loc,mob,url1,url2,goodsid;
-    private Bitmap bitmap1,bitmap2;
+    private String path1,path2,tit,con,pri,loc,mob,url1,url2,goodsid;
     private String result = null;
     private ImageButton map;
     private List<String> s = new ArrayList<String>();//创建了s来保存本地图片的地址
