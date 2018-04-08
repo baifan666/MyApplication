@@ -22,7 +22,12 @@ import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -30,8 +35,12 @@ import java.io.StringReader;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
-import io.rong.imlib.model.UserInfo;
-
+import com.tencent.connect.UserInfo;
+import com.tencent.connect.auth.QQToken;
+import com.tencent.connect.common.Constants;
+import com.tencent.tauth.IUiListener;
+import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class MainActivity extends AppCompatActivity {
@@ -39,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean isback;
     private EditText username, userpassword;
     private Button btnlogin;
+    private ImageView qq_login;
     private  CheckBox iv;
     private TextView reg;
     private String act, pasd;
@@ -48,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
     private Dialog mDialog;
+    private Tencent mTencent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,7 +139,92 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        //QQ第三方登录
+        mTencent = Tencent.createInstance("101466661",getApplicationContext());//将101466661为自己的AppID
+        qq_login = (ImageView)findViewById(R.id.qq_login);
+        qq_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //get_simple_userinfo
+                mTencent.login(MainActivity.this,"all",new BaseUiListener());
+            }
+        });
     }
+
+    private class BaseUiListener implements IUiListener {
+
+
+        //这个类需要实现三个方法 onComplete（）：登录成功需要做的操作写在这里
+        // onError onCancel 方法具体内容自己搜索
+
+        public void onComplete(Object response) {
+            Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
+            try {
+                //获得的数据是JSON格式的，获得你想获得的内容
+                //如果你不知道你能获得什么，看一下下面的LOG
+                Log.v("----TAG--", "-------------" + response.toString());
+                String openidString = ((JSONObject) response).getString("openid");
+                mTencent.setOpenId(openidString);
+                //saveUser("44", "text", "text", 1);
+                mTencent.setAccessToken(((JSONObject) response).getString("access_token"), ((JSONObject) response).getString("expires_in"));
+                Log.v("TAG", "-------------" + openidString);
+                //access_token= ((JSONObject) response).getString("access_token");
+                //expires_in = ((JSONObject) response).getString("expires_in");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            /**到此已经获得OpneID以及其他你想获得的内容了
+             QQ登录成功了，我们还想获取一些QQ的基本信息，比如昵称，头像什么的，这个时候怎么办？
+             sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，我么可以通过这个类拿到这些信息
+             如何得到这个UserInfo类呢？  获取详细信息的UserInfo ，返回的信息参看下面地址：
+             http://wiki.open.qq.com/wiki/%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF#1._Tencent.E7.B1.BB.E7.9A.84request.E6.88.96requestAsync.E6.8E.A5.E5.8F.A3.E7.AE.80.E4.BB.8B
+             */
+
+            QQToken qqToken = mTencent.getQQToken();
+            UserInfo info = new UserInfo(getApplicationContext(), qqToken);
+
+            //    info.getUserInfo(new BaseUIListener(this,"get_simple_userinfo"));
+            info.getUserInfo(new IUiListener() {
+                @Override
+                public void onComplete(Object o) {
+                    //用户信息获取到了
+                    try {
+                        Log.v("用户名", ((JSONObject) o).getString("nickname"));
+                        Log.v("用户姓名", ((JSONObject) o).getString("gender"));
+                        Log.v("UserInfo",o.toString());
+                        Toast.makeText(getApplicationContext(), o.toString(), Toast.LENGTH_SHORT).show();
+//                        Intent intent1 = new Intent(MainActivity.this,MainActivity.class);
+//                        startActivity(intent1);
+//                        finish();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                @Override
+                public void onError(UiError uiError) {
+                    Log.v("UserInfo","onError");
+                }
+                @Override
+                public void onCancel() {
+                    Log.v("UserInfo","onCancel");
+                }
+            });
+        }
+        @Override
+        public void onError(UiError uiError) {
+            Toast.makeText(MainActivity.this, "onError", Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(MainActivity.this, "onCancel", Toast.LENGTH_SHORT).show();
+        }
+
+
+    }
+
+
+
 
     private Handler handler;
 
@@ -168,7 +264,7 @@ public class MainActivity extends AppCompatActivity {
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
+                                        //RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                         act = username.getText().toString();
                                         intent.putExtra("account", act);
@@ -176,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
                                     } else {
                                         Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
+                                        //RongIM.getInstance().setCurrentUserInfo(new UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
                                         Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
                                         act = username.getText().toString();
                                         intent.putExtra("account", act);
@@ -283,4 +379,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Tencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
+
+        if(requestCode == Constants.REQUEST_API) {
+            if(resultCode == Constants.REQUEST_LOGIN) {
+                Tencent.handleResultData(data, new BaseUiListener());
+            }
+        }
+    }
 }

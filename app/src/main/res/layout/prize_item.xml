@@ -44,5 +44,4 @@
             android:gravity="right"
             android:text="数量"/>
     </LinearLayout>
-
 </LinearLayout>
