@@ -201,7 +201,6 @@ public class CoinMallActivity extends Activity {
     }
 
     private Handler handler;
-
     {
         handler = new Handler() {
             public void handleMessage(Message msg) {

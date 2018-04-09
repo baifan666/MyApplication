@@ -228,7 +228,7 @@
         <activity
             android:name=".activity.ShareSelectActivity"
             android:theme="@style/MyDialogStyleBottom" />
-        <activity android:name=".activity.AddPrizeActivity"></activity>
+        <activity android:name=".activity.AddPrizeActivity" />
 
         <!-- qq -->
         <activity
@@ -247,9 +247,9 @@
         <activity
             android:name="com.tencent.connect.common.AssistActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" >
-        </activity>
-
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+        <activity android:name=".activity.BindingActivity" />
+        <activity android:name=".activity.BindingRegActivity"></activity>
     </application>
 
 </manifest>

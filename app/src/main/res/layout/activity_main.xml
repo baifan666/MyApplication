@@ -158,7 +158,7 @@
                 android:id="@+id/qq_login"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="26dp"
+                android:layout_marginBottom="28dp"
                 android:layout_marginLeft="30dp"
                 android:background="@drawable/qq_login"
                 android:scaleType="fitXY"/>

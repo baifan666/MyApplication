@@ -11,7 +11,7 @@ public class UserInfo {
     private String mobile;  //手机号
     private String coins;  //金币
     private String head_url;  //头像
-
+    private String openid;   //第三方登陆qq唯一标识
     public String getUsername() {
         return username;
     }
@@ -51,9 +51,14 @@ public class UserInfo {
     public void setCoins(String location) {
         this.coins = coins;
     }
+    public String getOpenid() {
+        return openid;
+    }
 
+    public void setOpenid(String openid) {
+        this.openid = openid;
+    }
 
-    // 对应列表中显示的物品
     public UserInfo(String username,String name) {
         this.username= username;
         this.name = name;

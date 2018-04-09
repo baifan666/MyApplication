@@ -66,10 +66,6 @@ public class RegActivity extends Activity {
                 new_psd1 = new_psd1_edit.getText().toString();
                 phone = phone_edit.getText().toString();
                 name =name_edit.getText().toString();
-                // Toast.makeText(getApplicationContext(), new_act+"
-                // "+new_psd1+" "+sex+" "+phone,
-                // Toast.LENGTH_SHORT).show();
-
                 // 账户不能为空
                 if (TextUtils.isEmpty(new_act)) {
                     AlertDialog.Builder dialog = new AlertDialog.Builder(RegActivity.this);
@@ -227,8 +223,6 @@ public class RegActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-
-                HttpURLConnection connection = null;
                 try {
                     String a2 = URLEncoder.encode(a, "UTF-8"); // 中文转译！
                     String s2 = URLEncoder.encode(s, "UTF-8"); // 中文转译！
