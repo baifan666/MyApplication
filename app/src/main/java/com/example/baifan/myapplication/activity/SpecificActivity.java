@@ -55,12 +55,11 @@ public class SpecificActivity extends Activity {
     private ImageView back,share;
     private TextView username,publishtime,title,content,price,location,mobile;
     private EditText usermobile;
-    private String account,path1,path2,url1,url2,result,buyermobile;
+    private String account,path1,path2,url1="",url2="",result,buyermobile;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
     private final int ADD_SUCCEESS = 1;
     private final int SEARCHSELLERSCORE = 2;
-    private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private RatingBar ratingBar;
     private double score;
     private Dialog mDialog,mDialog1;
@@ -296,6 +295,8 @@ public class SpecificActivity extends Activity {
                 Intent intent = new Intent(SpecificActivity.this, ShareSelectActivity.class);
                 intent.putExtra("title",goodsInfo.getTitle().toString() ); // 向下一个界面传递信息
                 intent.putExtra("content",goodsInfo.getContent().toString() ); // 向下一个界面传递信息
+                intent.putExtra("url1",url1 ); // 向下一个界面传递信息
+                intent.putExtra("url2",url2 ); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });

@@ -265,7 +265,11 @@ public class MainActivity extends AppCompatActivity {
                                         //服务器连接成功，跳转
                                         RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                                        act = username.getText().toString();
+                                        if(TextUtils.isEmpty(username.getText().toString())) {
+                                            act = uname;
+                                        } else {
+                                            act = username.getText().toString();
+                                        }
                                         intent.putExtra("account", act);
                                         startActivity(intent);
                                     } else {
