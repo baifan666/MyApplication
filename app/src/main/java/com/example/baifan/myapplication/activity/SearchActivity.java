@@ -55,6 +55,7 @@ import android.net.Uri;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
+import com.example.baifan.myapplication.model.MessageInfo;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -121,7 +122,7 @@ public class SearchActivity extends Activity implements
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders,wodefabu,shouchuwupin;
-    private ImageView game1,game2,game3,search,huihua;
+    private ImageView game1,game2,game3,search,huihua,message;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -148,6 +149,8 @@ public class SearchActivity extends Activity implements
 
     private int scrollPos; //滑动以后的可见的第一条数据
     private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -494,6 +497,17 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, MySellsActivity.class);
+                intent.putExtra("username",account); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
+
+        message = (ImageView)findViewById(R.id.top_message);
+        message.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, MessageActivity.class);
                 intent.putExtra("username",account); // 向下一个界面传递信息
                 startActivity(intent);
             }

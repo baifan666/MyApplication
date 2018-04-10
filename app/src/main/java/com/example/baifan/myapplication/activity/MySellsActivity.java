@@ -219,7 +219,7 @@ public class MySellsActivity extends Activity {
                         }else if ("ordertime".equals(nodeName)) {
                             String ordertimeStr = parse.nextText();
                             result +="订单时间" + ordertimeStr +", ";
-                            ordertime = ordertimeStr;
+                            ordertime = ordertimeStr.substring(0,ordertimeStr.length()-2);
                         }else if ("buyerid".equals(nodeName)) {
                             String buyeridStr = parse.nextText();
                             result +="买家" + buyeridStr +", ";
@@ -231,7 +231,7 @@ public class MySellsActivity extends Activity {
                         }else if ("finishtime".equals(nodeName)) {
                             String finishtimeStr = parse.nextText();
                             result +="完成时间" + finishtimeStr +", ";
-                            finishtime = finishtimeStr;
+                            finishtime = finishtimeStr.substring(0,finishtimeStr.length()-2);
                         }else if ("buyermobile".equals(nodeName)) {
                             String buyermobileStr = parse.nextText();
                             result +="买家联系方式" + buyermobileStr +", ";

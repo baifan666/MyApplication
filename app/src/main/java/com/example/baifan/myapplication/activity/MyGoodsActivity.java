@@ -84,8 +84,6 @@ public class MyGoodsActivity extends Activity {
         });
     }
 
-
-
     private void myreadAll(String username) {
         final String acc = username;
         new Thread(new Runnable() {

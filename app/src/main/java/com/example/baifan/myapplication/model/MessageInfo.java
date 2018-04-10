@@ -43,4 +43,11 @@ public class MessageInfo implements Serializable {
     public void setMessageid(String messageid) {
         this.messageid = messageid;
     }
+    public MessageInfo(String username,String messagetime,String content,int isdeleted,String messageid) {
+        this.content = content;
+        this.isdeleted = isdeleted;
+        this.username = username;
+        this.messageid = messageid;
+        this.messagetime = messagetime;
+    }
 }
