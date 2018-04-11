@@ -149,11 +149,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class BaseUiListener implements IUiListener {
-
-
         //这个类需要实现三个方法 onComplete（）：登录成功需要做的操作写在这里
-        // onError onCancel 方法具体内容自己搜索
-
+        // onError onCancel
         public void onComplete(Object response) {
             //Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
             try {
@@ -172,15 +169,13 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             /**到此已经获得OpneID以及其他你想获得的内容了
-             QQ登录成功了，我们还想获取一些QQ的基本信息，比如昵称，头像什么的，这个时候怎么办？
-             sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，我么可以通过这个类拿到这些信息
+             QQ登录成功了
+             sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，可以通过这个类拿到这些信息
              如何得到这个UserInfo类呢？  获取详细信息的UserInfo ，返回的信息参看下面地址：
              http://wiki.open.qq.com/wiki/%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF#1._Tencent.E7.B1.BB.E7.9A.84request.E6.88.96requestAsync.E6.8E.A5.E5.8F.A3.E7.AE.80.E4.BB.8B
              */
-
             QQToken qqToken = mTencent.getQQToken();
             UserInfo info = new UserInfo(getApplicationContext(), qqToken);
-
             //    info.getUserInfo(new BaseUIListener(this,"get_simple_userinfo"));
             info.getUserInfo(new IUiListener() {
                 @Override
@@ -218,8 +213,6 @@ public class MainActivity extends AppCompatActivity {
         public void onCancel() {
             Toast.makeText(MainActivity.this, "onCancel", Toast.LENGTH_SHORT).show();
         }
-
-
     }
 
 

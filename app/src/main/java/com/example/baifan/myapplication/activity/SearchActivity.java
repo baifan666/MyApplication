@@ -932,8 +932,6 @@ public class SearchActivity extends Activity implements
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0x1 && resultCode == RESULT_OK) {
             if (data != null) {
-
-                ContentResolver resolver = getContentResolver();
                 try {
                     Uri uri = data.getData();
                     if(uri !=null) {

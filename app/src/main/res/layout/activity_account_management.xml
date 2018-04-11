@@ -39,8 +39,25 @@
         <LinearLayout style="@style/top_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/updatepassword"
+                android:drawableLeft="@drawable/xiugaimima"
                 android:clickable="true"
                 android:text="修改密码" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <View style="@style/bg_line"/>
+        <!-- 无圆角-->
+        <LinearLayout style="@style/mid_layout">
+            <TextView style="@style/usertext"
+                android:id="@+id/binding"
+                android:drawableLeft="@drawable/bangding"
+                android:clickable="true"
+                android:text="绑定QQ" />
+            <TextView
+                android:id="@+id/isbinding"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:text="未绑定" />
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
         <View style="@style/bg_line"/>
@@ -48,6 +65,7 @@
         <LinearLayout style="@style/bottom_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/exitapp"
+                android:drawableLeft="@drawable/tuichu"
                 android:clickable="true"
                 android:text="退出登陆" />
             <ImageView style="@style/img_arrow"/>
