@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -22,6 +21,7 @@ import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
+import com.tencent.connect.common.Constants;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
@@ -104,7 +104,6 @@ public class AccountManagementActivity extends Activity {
                 openidString = ((JSONObject) response).getString("openid");
                 //Toast.makeText(MainActivity.this, openidString, Toast.LENGTH_SHORT).show();
                 mTencent.setOpenId(openidString);
-                //saveUser("44", "text", "text", 1);
                 mTencent.setAccessToken(((JSONObject) response).getString("access_token"), ((JSONObject) response).getString("expires_in"));
                 Log.v("TAG", "-------------" + openidString);
                 //access_token= ((JSONObject) response).getString("access_token");
@@ -112,7 +111,7 @@ public class AccountManagementActivity extends Activity {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            /**到此已经获得OpneID以及其他你想获得的内容了
+            /**到此已经获得OpneID以及其他想获得的内容了
              QQ登录成功了
              sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，可以通过这个类拿到这些信息
              如何得到这个UserInfo类呢？  获取详细信息的UserInfo ，返回的信息参看下面地址：
@@ -331,6 +330,19 @@ public class AccountManagementActivity extends Activity {
             }
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Tencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
+
+        if(requestCode == Constants.REQUEST_API) {
+            if(resultCode == Constants.REQUEST_LOGIN) {
+                Tencent.handleResultData(data, new BaseUiListener());
+            }
         }
     }
 }
