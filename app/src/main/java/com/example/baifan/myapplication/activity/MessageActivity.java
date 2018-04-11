@@ -12,7 +12,6 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.MessageAdapter;
@@ -72,6 +71,11 @@ public class MessageActivity extends Activity {
             }
         });
         refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
+        refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
+        refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
+        refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
+        refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
@@ -105,7 +109,6 @@ public class MessageActivity extends Activity {
     }
 
     private void parserXml(String xmlData) {
-        String result = "";
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
@@ -121,28 +124,26 @@ public class MessageActivity extends Activity {
                 String nodeName = parse.getName();
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        // 从数据库读取3个参数
-                        if ("messageid".equals(nodeName)) {
-                            messageid = parse.nextText();
-                        } else if ("username".equals(nodeName)) {
+                        // 从数据库读取5个参数
+                        if ("username".equals(nodeName)) {
                             username = parse.nextText();
-                        } else if ("messagetime".equals(nodeName)) {
+                        }else if ("messagetime".equals(nodeName)) {
                             String messagetimeStr = parse.nextText();
                             messagetime = messagetimeStr.substring(0,messagetimeStr.length()-2);
-                        } else if ("content".equals(nodeName)) {
+                        }else if ("content".equals(nodeName)) {
                             content = parse.nextText();
                         }else if ("isdeleted".equals(nodeName)) {
                             String isdeletedStr = parse.nextText();
                             isdeleted = Integer.parseInt(isdeletedStr);
+                        }else if ("messageid".equals(nodeName)) {
+                            messageid = parse.nextText();
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        result += " \n ";
                         Log.d("end_tag", "节点结束");
                         // 添加数据
                         MessageInfo info = new MessageInfo(username,messagetime,content,isdeleted,messageid);
                         messageData.add(info);
-                        Toast.makeText(MessageActivity.this, messagetime+content, Toast.LENGTH_SHORT).show();
                         break;
                     default:
                         break;
@@ -152,7 +153,6 @@ public class MessageActivity extends Activity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.d("resultStr", result);
     }
 
     Handler handler = new Handler() {
@@ -164,9 +164,9 @@ public class MessageActivity extends Activity {
                     String response = (String) msg.obj;
                     messageData.clear();
                     parserXml(response);
-//                    if(messageData.size() == 0){
-//                        listMessage.setEmptyView(findViewById(R.id.myText));
-//                    }
+                    if(messageData.size() == 0){
+                        listMessage.setEmptyView(findViewById(R.id.myText));
+                    }
                     messageAdapter = new MessageAdapter(MessageActivity.this, R.layout.message_item, messageData);
                     listMessage.setAdapter(messageAdapter);
                     refreshLayout.finishRefresh();//结束刷新

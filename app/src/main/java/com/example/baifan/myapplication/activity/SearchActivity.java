@@ -55,7 +55,6 @@ import android.net.Uri;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
-import com.example.baifan.myapplication.model.MessageInfo;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -122,7 +121,7 @@ public class SearchActivity extends Activity implements
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders,wodefabu,shouchuwupin;
-    private ImageView game1,game2,game3,search,huihua,message;
+    private ImageView tzgg,game1,game2,game3,search,huihua,message;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -512,6 +511,16 @@ public class SearchActivity extends Activity implements
                 startActivity(intent);
             }
         });
+
+        tzgg = (ImageView)tab03.findViewById(R.id.tongzhigonggao);
+        tzgg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, NoticeActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 
@@ -626,8 +635,7 @@ public class SearchActivity extends Activity implements
                     parserXml2(response2);
                     num = goodsdata.size();
                     if(num == num1) {
-                        refreshLayout.setNoMoreData(true);
-                       // refreshLayout.finishLoadMoreWithNoMoreData();//显示全部加载完成，并不再触发加载更事件
+                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更事件
                     }
                     goodsadapter = new GoodsAdapter(SearchActivity.this, R.layout.goods_item, goodsdata);
                     _listGoods.setAdapter(goodsadapter);

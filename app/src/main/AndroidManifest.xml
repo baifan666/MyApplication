@@ -250,7 +250,9 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity android:name=".activity.BindingActivity" />
         <activity android:name=".activity.BindingRegActivity" />
-        <activity android:name=".activity.MessageActivity"></activity>
+        <activity android:name=".activity.MessageActivity" />
+        <activity android:name=".activity.NoticeActivity" />
+        <activity android:name=".activity.NoticeSpecificActivity"></activity>
     </application>
 
 </manifest>
