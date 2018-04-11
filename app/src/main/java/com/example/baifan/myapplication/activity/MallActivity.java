@@ -36,6 +36,7 @@ public class MallActivity extends Activity {
     private ImageView back,change,duihuanjilu;
     private String coins;
     private String username;
+    private int flag = 0;   //用来标记是否是管理员到此页面
     // 物品显示列表
     private ArrayList<PrizeInfo> prizedata =new ArrayList<PrizeInfo>();
     private GridView gridprize;
@@ -54,6 +55,7 @@ public class MallActivity extends Activity {
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         coins = intent.getStringExtra("coins");
+        flag = intent.getIntExtra("flag",0);     //为1表面是管理员进入此页面
         back = (ImageView)findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,28 +73,40 @@ public class MallActivity extends Activity {
         gridprize = (GridView)findViewById(R.id.gridprize);
         listprize = (ListView)findViewById(R.id.listprize);
 
-        searchPrize();  //从服务度读取全部奖品信息
+        searchPrize();  //从服务端读取全部奖品信息
         mDialog = DialogUtils.createLoadingDialog(MallActivity.this, "加载中...");
         gridprize.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 PrizeInfo prizeInfo = prizedata.get(position);
-                Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
-                intent.putExtra("prizeInfo",prizeInfo); // 向下一个界面传递信息
-                intent.putExtra("username",username);
-                intent.putExtra("coins",coins);
-                startActivity(intent);
+                if(flag !=1) {
+                    Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
+                    intent.putExtra("prizeInfo", prizeInfo); // 向下一个界面传递信息
+                    intent.putExtra("username", username);
+                    intent.putExtra("coins", coins);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(MallActivity.this, AlterPrizeActivity.class);
+                    intent.putExtra("prizeInfo", prizeInfo); // 向下一个界面传递信息
+                    startActivity(intent);
+                }
             }
         });
         listprize.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 PrizeInfo prizeInfo = prizedata.get(i);
-                Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
-                intent.putExtra("prizeInfo",prizeInfo); // 向下一个界面传递信息
-                intent.putExtra("username",username);
-                intent.putExtra("coins",coins);
-                startActivity(intent);
+                if(flag !=1) {
+                    Intent intent = new Intent(MallActivity.this, PrizeSpecificActivity.class);
+                    intent.putExtra("prizeInfo", prizeInfo); // 向下一个界面传递信息
+                    intent.putExtra("username", username);
+                    intent.putExtra("coins", coins);
+                    startActivity(intent);
+                }else {
+                    Intent intent = new Intent(MallActivity.this, AlterPrizeActivity.class);
+                    intent.putExtra("prizeInfo", prizeInfo); // 向下一个界面传递信息
+                    startActivity(intent);
+                }
             }
         });
         refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);

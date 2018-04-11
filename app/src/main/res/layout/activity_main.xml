@@ -94,7 +94,7 @@
                 android:gravity="center"
                 android:paddingLeft="10dip"
                 android:text="登陆"
-                android:textColor="#ffffff" />
+                android:textColor="#000000" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"

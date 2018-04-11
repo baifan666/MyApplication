@@ -96,7 +96,10 @@ public class ManagerActivity extends AppCompatActivity {
         scgl.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent=new Intent();
+                intent.setClass(ManagerActivity.this, MallActivity.class);
+                intent.putExtra("flag",1);
+                startActivity(intent);
             }
         });
         xzsp = (TextView)findViewById(R.id.xzsp);

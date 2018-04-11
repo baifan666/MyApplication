@@ -252,7 +252,8 @@
         <activity android:name=".activity.BindingRegActivity" />
         <activity android:name=".activity.MessageActivity" />
         <activity android:name=".activity.NoticeActivity" />
-        <activity android:name=".activity.NoticeSpecificActivity"></activity>
+        <activity android:name=".activity.NoticeSpecificActivity" />
+        <activity android:name=".activity.AlterPrizeActivity"></activity>
     </application>
 
 </manifest>

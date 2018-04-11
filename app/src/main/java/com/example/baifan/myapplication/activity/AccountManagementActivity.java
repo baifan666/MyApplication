@@ -131,9 +131,6 @@ public class AccountManagementActivity extends Activity {
                         Log.v("UserInfo",o.toString());
                         String path = ((JSONObject) o).getString("figureurl_qq_2");
                         selectOpenid(openidString);
-//                        Intent intent1 = new Intent(MainActivity.this,MainActivity.class);
-//                        startActivity(intent1);
-//                        finish();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
