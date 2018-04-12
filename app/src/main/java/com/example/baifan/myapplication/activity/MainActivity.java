@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private  CheckBox iv;
     private TextView reg;
     private String act, pasd;
-    private String usertoken,result,tuichu,openidString,uname,upassword;
+    private String usertoken,result,tuichu,openidString,uname,upassword,headurl,urlpath;   //urlpath存储QQ登陆获取到的头像连接，headurl存储服务器读出的头像连接
     private int flag;
     private CheckBox rememberPass,autologin;
     private SharedPreferences pref;
@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
             String account=pref.getString("account","");
             String password=pref.getString("password","");
             flag = pref.getInt("flag",0);
+            headurl = pref.getString("headurl","");
             username.setText(account);
             userpassword.setText(password);
             rememberPass.setChecked(true);
@@ -176,20 +177,16 @@ public class MainActivity extends AppCompatActivity {
              */
             QQToken qqToken = mTencent.getQQToken();
             UserInfo info = new UserInfo(getApplicationContext(), qqToken);
-            //    info.getUserInfo(new BaseUIListener(this,"get_simple_userinfo"));
             info.getUserInfo(new IUiListener() {
                 @Override
                 public void onComplete(Object o) {
                     //用户信息获取到了
                     try {
                         Log.v("用户名", ((JSONObject) o).getString("nickname"));
-                        Log.v("用户姓名", ((JSONObject) o).getString("gender"));
+                        Log.v("用户性别", ((JSONObject) o).getString("gender"));
                         Log.v("UserInfo",o.toString());
-                        String path = ((JSONObject) o).getString("figureurl_qq_2");
+                        urlpath = ((JSONObject) o).getString("figureurl_qq_2");
                         selectOpenid(openidString);
-//                        Intent intent1 = new Intent(MainActivity.this,MainActivity.class);
-//                        startActivity(intent1);
-//                        finish();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -206,12 +203,12 @@ public class MainActivity extends AppCompatActivity {
         }
         @Override
         public void onError(UiError uiError) {
-            Toast.makeText(MainActivity.this, "onError", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "授权失败", Toast.LENGTH_SHORT).show();
         }
 
         @Override
         public void onCancel() {
-            Toast.makeText(MainActivity.this, "onCancel", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "取消登陆", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -228,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
                         String response = (String) msg.obj;
                         parserXml(response);
                         if(result.equals("succeessful")) {
-                           // Toast.makeText(MainActivity.this, usertoken, Toast.LENGTH_SHORT).show();
                             RongIM.connect(usertoken, new RongIMClient.ConnectCallback() {
                                 @Override
                                 public void onTokenIncorrect() {
@@ -244,6 +240,7 @@ public class MainActivity extends AppCompatActivity {
                                         editor.putString("account",username.getText().toString());
                                         editor.putString("password",userpassword.getText().toString());
                                         editor.putString("usertoken",usertoken);
+                                        editor.putString("headurl",headurl);
                                         editor.putInt("flag",flag);
                                         if(autologin.isChecked()) {
                                             editor.putBoolean("autologin",true);
@@ -256,22 +253,24 @@ public class MainActivity extends AppCompatActivity {
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
+                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
-                                        if(TextUtils.isEmpty(username.getText().toString())) {
-                                            act = uname;
-                                        } else {
+                                        if(TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
                                             act = username.getText().toString();
+                                        } else {
+                                            act = uname;
                                         }
                                         intent.putExtra("account", act);
+                                        intent.putExtra("headurl",headurl);
                                         startActivity(intent);
                                     } else {
                                         Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
-                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(SERVER_ADDRESS+"/HeadPortrait/boy.png")));
+                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
                                         Intent intent = new Intent(MainActivity.this, ManagerActivity.class);
                                         act = username.getText().toString();
                                         intent.putExtra("account", act);
+                                        intent.putExtra("headurl",headurl);
                                         startActivity(intent);
                                     }
                                 }
@@ -300,11 +299,12 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case 2:
                         String response1 = (String) msg.obj;
-                        parserXml1(response1);
+                        parserXml(response1);
                         if("null".equals(uname)) {
                             Toast.makeText(MainActivity.this,"该qq号还未绑定平台账户，正在跳转绑定页面···", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(MainActivity.this, BindingActivity.class);
                             intent.putExtra("openid", openidString);
+                            intent.putExtra("headurl", urlpath);
                             startActivity(intent);
                         }else {
                             mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
@@ -375,64 +375,29 @@ public class MainActivity extends AppCompatActivity {
                 String nodeName = parse.getName();
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        // 从数据库读取3个参数
                         if ("flag".equals(nodeName)) {
                             String flagStr = parse.nextText();
                             flag = Integer.parseInt(flagStr);
-                            Log.d("flag", String.valueOf(flag));
                         }
                         if ("token".equals(nodeName)) {
                             String tokenStr = parse.nextText();
                             usertoken = tokenStr;
-                            Log.d("token", usertoken);
                         }
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
-                            Log.d("result", result);
                         }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
-                        break;
-                    default:
-                        break;
-                }
-                eventType = parse.next();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void parserXml1(String xmlData) {
-        try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser parse = factory.newPullParser(); // 生成解析器
-            parse.setInput(new StringReader(xmlData)); // 添加xml数据
-            int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
-
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                String nodeName = parse.getName();
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
-                        // 从数据库读取3个参数
                         if ("username".equals(nodeName)) {
                             String unameStr = parse.nextText();
                             uname = unameStr;
-                            Log.d("uname", uname);
                         }
                         if ("userpassword".equals(nodeName)) {
                             String upasswordStr = parse.nextText();
                             upassword = upasswordStr;
-                            Log.d("upassword", upassword);
                         }
-                        if ("token".equals(nodeName)) {
-                            String tokenStr = parse.nextText();
-                            usertoken = tokenStr;
-                            Log.d("token", usertoken);
-                        }
+                        if ("headurl".equals(nodeName)) {
+                        String headurlStr = parse.nextText();
+                        headurl = headurlStr;
+                    }
                         break;
                     case XmlPullParser.END_TAG:
                         Log.d("end_tag", "节点结束");

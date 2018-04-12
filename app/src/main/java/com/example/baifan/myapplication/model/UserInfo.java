@@ -10,8 +10,15 @@ public class UserInfo {
     private String name;  //昵称
     private String mobile;  //手机号
     private String coins;  //金币
-    private String head_url;  //头像
+    private String headurl;  //头像
     private String openid;   //第三方登陆qq唯一标识
+    public String getHeadurl() {
+        return headurl;
+    }
+
+    public void setHeadurl(String headurl) {
+        this.headurl = headurl;
+    }
     public String getUsername() {
         return username;
     }
@@ -62,6 +69,6 @@ public class UserInfo {
     public UserInfo(String username,String name) {
         this.username= username;
         this.name = name;
-        this.head_url = "http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png";
+        this.headurl = "http://111.231.101.251:8080/fuwuduan/HeadPortrait/boy.png";
     }
 }

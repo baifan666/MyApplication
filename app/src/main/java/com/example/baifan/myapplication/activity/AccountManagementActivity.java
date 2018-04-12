@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -33,11 +34,13 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 
+import io.rong.imkit.RongIM;
+
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class AccountManagementActivity extends Activity {
     private TextView exitapp,updatepassword,binding,isbinding;
-    private String account,uname;
+    private String account,uname,headurl;
     private ImageView back;
     private Dialog mDialog;
     private String openid,openidString,result;
@@ -129,7 +132,7 @@ public class AccountManagementActivity extends Activity {
                         Log.v("用户名", ((JSONObject) o).getString("nickname"));
                         Log.v("用户姓名", ((JSONObject) o).getString("gender"));
                         Log.v("UserInfo",o.toString());
-                        String path = ((JSONObject) o).getString("figureurl_qq_2");
+                        headurl = ((JSONObject) o).getString("figureurl_qq_2");
                         selectOpenid(openidString);
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -221,14 +224,15 @@ public class AccountManagementActivity extends Activity {
         }).start();
     }
 
-    private void setOpenid(String username1,String openid1) {
+    private void setOpenid(String username1,String openid1,String headurl1) {
         final String username2 = username1;
         final String openid2 = openid1;
+        final String headurl2 = headurl1;
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
                 String url = SERVER_ADDRESS+"/setOpenid.jsp?username=" + username2 +
-                        "&openid="+ openid2;
+                        "&openid="+ openid2 +"&headurl="+ headurl2;
                 Message msg = new Message();
                 msg.what = SET_OPENID;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -260,7 +264,7 @@ public class AccountManagementActivity extends Activity {
                             Toast.makeText(AccountManagementActivity.this,"该qq号已被其他账户绑定！请切换qq号", Toast.LENGTH_SHORT).show();
                         }else {
                             mDialog = DialogUtils.createLoadingDialog(AccountManagementActivity.this, "绑定中...");
-                            setOpenid(account,openidString);
+                            setOpenid(account,openidString,headurl);
                         }
                         break;
                     case SET_OPENID:
@@ -268,7 +272,11 @@ public class AccountManagementActivity extends Activity {
                         parserXml(response2);
                         if("succeessful".equals(result)) {
                             Toast.makeText(AccountManagementActivity.this, "绑定成功", Toast.LENGTH_SHORT).show();
+                            RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(account, account, Uri.parse(headurl)));
                             DialogUtils.closeDialog(mDialog);
+                            Intent intent=new Intent();
+                            intent.putExtra("headurl",headurl);
+                            AccountManagementActivity.this.setResult(RESULT_OK, intent);// 设置回传数据。
                             finish();
                         }else {
                             DialogUtils.closeDialog(mDialog);

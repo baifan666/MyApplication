@@ -5,6 +5,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.baidu.mapapi.SDKInitializer;
+import com.example.baifan.myapplication.utils.MyConversationBehaviorListener;
 import com.tencent.smtt.sdk.QbSdk;
 
 import io.rong.imkit.RongIM;
@@ -24,6 +25,10 @@ public class App extends Application {
         mContext = getApplicationContext();
         SDKInitializer.initialize(getApplicationContext());
         RongIM.init(this);//初始化
+        /**
+         * 设置会话列表界面操作的监听器。
+         */
+        RongIM.setConversationClickListener(new MyConversationBehaviorListener());
         RongIM.getInstance().setMessageAttachedUserInfo(true);
         initTBS();
 

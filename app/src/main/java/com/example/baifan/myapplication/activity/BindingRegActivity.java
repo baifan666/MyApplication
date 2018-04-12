@@ -34,7 +34,7 @@ import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRE
 public class BindingRegActivity extends Activity {
     private ImageView back;
     private Dialog mDialog;
-    private String openid;
+    private String openid,headurl;
     private String new_act, new_psd1, new_psd2, phone,name;
     private EditText new_act_edit, new_psd1_edit, new_psd2_edit, phone_edit,name_edit;
     private Button reg;
@@ -47,6 +47,7 @@ public class BindingRegActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         openid = intent.getStringExtra("openid");
+        headurl = intent.getStringExtra("headurl");
         new_act_edit = (EditText) findViewById(R.id.new_act); // 用户名
         new_psd1_edit = (EditText) findViewById(R.id.new_psd1); // 密码
         new_psd2_edit = (EditText) findViewById(R.id.new_psd2); // 确认密码
@@ -135,7 +136,7 @@ public class BindingRegActivity extends Activity {
                 }
                 else {
                     mDialog = DialogUtils.createLoadingDialog(BindingRegActivity.this, "注册中...");
-                    addQQCUser(new_act, new_psd1, name, phone,openid);
+                    addQQCUser(new_act, new_psd1, name, phone,openid,headurl);
                 }
             }
         });
@@ -216,12 +217,13 @@ public class BindingRegActivity extends Activity {
         return false;
     }
 
-    private void addQQCUser(String aa, String pp, String ss, String celll,String openid1) {
+    private void addQQCUser(String aa, String pp, String ss, String celll,String openid1,String headurl1) {
         final String a = aa; // 进程中不能传入变量 一定要为常量final
         final String p = pp;
         final String s = ss;
         final String cell = celll;
         final String openid2 = openid1;
+        final String headurl2 = headurl1;
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
@@ -230,7 +232,7 @@ public class BindingRegActivity extends Activity {
                     String s2 = URLEncoder.encode(s, "UTF-8"); // 中文转译！
                     // 打开链接
                     String url = SERVER_ADDRESS+"/addQQUser.jsp?account=" + a2 + "&password="
-                            + p + "&name=" + s2 + "&phone=" + cell+ "&openid="+openid2;
+                            + p + "&name=" + s2 + "&phone=" + cell+ "&openid="+ openid2 + "&headurl="+ headurl2;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = 1;

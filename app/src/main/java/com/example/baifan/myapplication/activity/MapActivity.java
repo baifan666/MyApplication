@@ -87,8 +87,7 @@ public class MapActivity extends Activity {
                 PoiInfo poi = poiInfos.get(i);
                 Intent intent=new Intent();
                 intent.putExtra("address",poi.address);
-                MapActivity.this.setResult(RESULT_OK, intent);// 设置回传数据。resultCode值是1，这个值在主窗口将用来区分回传数据的来源，以做不同的处理
-                //startActivity(intent);
+                MapActivity.this.setResult(RESULT_OK, intent);// 设置回传数据。
                 finish();
             }
         });

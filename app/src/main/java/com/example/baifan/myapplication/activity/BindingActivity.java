@@ -33,7 +33,7 @@ import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRE
 public class BindingActivity extends Activity {
     private ImageView back;
     private EditText username, userpassword;
-    private String act, psd,openid,useropenid,result;
+    private String act, psd,openid,useropenid,result,headurl;
     private Button binding;
     private TextView reg;
     private Dialog mDialog;
@@ -49,6 +49,7 @@ public class BindingActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         openid = intent.getStringExtra("openid");
+        headurl = intent.getStringExtra("headurl");
         username = (EditText)findViewById(R.id.username);
         userpassword = (EditText)findViewById(R.id.userpassword);
         back=(ImageView)findViewById(R.id.backImg); //返回
@@ -88,6 +89,7 @@ public class BindingActivity extends Activity {
             public void onClick(View view) {
                 Intent intent = new Intent(BindingActivity.this, BindingRegActivity.class);
                 intent.putExtra("openid", openid);
+                intent.putExtra("headurl", headurl);
                 startActivity(intent);
             }
         });
@@ -108,14 +110,15 @@ public class BindingActivity extends Activity {
         }).start();
     }
 
-    private void setOpenid(String username1,String openid1) {
+    private void setOpenid(String username1,String openid1,String headurl1) {
         final String username2 = username1;
         final String openid2 = openid1;
+        final String headurl2 = headurl1;
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
                 String url = SERVER_ADDRESS+"/setOpenid.jsp?username=" + username2 +
-                        "&openid="+ openid2;
+                        "&openid="+ openid2 +"&headurl="+ headurl2;
                 Message msg = new Message();
                 msg.what = SET_OPENID;
                 msg.obj = HttpUtils.connection(url).toString();
@@ -128,7 +131,6 @@ public class BindingActivity extends Activity {
     private void whetherRegister(String account2, String password2) {
         final String account = account2; // 进程中不能传入变量 一定要为常量final
         final String password = password2;
-
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
@@ -168,9 +170,9 @@ public class BindingActivity extends Activity {
                         break;
                     case ISRIGHT:
                         String response1 = (String) msg.obj;
-                        parserXml1(response1);
+                        parserXml(response1);
                         if("succeessful".equals(result)) {
-                            setOpenid(act,openid);
+                            setOpenid(act,openid,headurl);
                         }else {
                             DialogUtils.closeDialog(mDialog);
                             android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(BindingActivity.this);
@@ -187,7 +189,7 @@ public class BindingActivity extends Activity {
                         break;
                     case SET_OPENID:
                         String response2 = (String) msg.obj;
-                        parserXml1(response2);
+                        parserXml(response2);
                         if("succeessful".equals(result)) {
                             Toast.makeText(BindingActivity.this, "绑定成功", Toast.LENGTH_SHORT).show();
                             DialogUtils.closeDialog(mDialog);
@@ -232,33 +234,6 @@ public class BindingActivity extends Activity {
                             useropenid = useropenidStr;
                             Log.d("openid", useropenid);
                         }
-                        break;
-                    case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
-                        break;
-                    default:
-                        break;
-                }
-                eventType = parse.next();
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-    }
-
-    private void parserXml1(String xmlData) {
-        try {
-            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
-            XmlPullParser parse = factory.newPullParser(); // 生成解析器
-            parse.setInput(new StringReader(xmlData)); // 添加xml数据
-            int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
-
-            while (eventType != XmlPullParser.END_DOCUMENT) {
-                String nodeName = parse.getName();
-                switch (eventType) {
-                    case XmlPullParser.START_TAG:
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
                             Log.d("result", result);

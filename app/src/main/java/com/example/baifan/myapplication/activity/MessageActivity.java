@@ -120,6 +120,7 @@ public class MessageActivity extends Activity {
             String messagetime = "";
             String content = "";
             int isdeleted = 0;
+            int isread = 0;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
@@ -137,12 +138,14 @@ public class MessageActivity extends Activity {
                             isdeleted = Integer.parseInt(isdeletedStr);
                         }else if ("messageid".equals(nodeName)) {
                             messageid = parse.nextText();
+                        }else if ("isread".equals(nodeName)) {
+                            isread = Integer.parseInt(parse.nextText());
                         }
                         break;
                     case XmlPullParser.END_TAG:
                         Log.d("end_tag", "节点结束");
                         // 添加数据
-                        MessageInfo info = new MessageInfo(username,messagetime,content,isdeleted,messageid);
+                        MessageInfo info = new MessageInfo(username,messagetime,content,isdeleted,messageid,isread);
                         messageData.add(info);
                         break;
                     default:

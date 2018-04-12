@@ -3,7 +3,6 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -35,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -55,6 +55,7 @@ import android.net.Uri;
 
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
+import com.bumptech.glide.Glide;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -75,6 +76,7 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
@@ -116,6 +118,8 @@ public class SearchActivity extends Activity implements
     private final int ADD_SUCCEESS = 5;
     private final int DISMISS = 6;
     private final int READALL = 7;
+    private final int SEARCH_SELLER_SCORE = 8;
+    private final int SEARCH_BUYER_SCORE = 9;
 
     private UpdataInfo info;
     private String localVersion;
@@ -149,8 +153,10 @@ public class SearchActivity extends Activity implements
     private int scrollPos; //滑动以后的可见的第一条数据
     private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
 
-
-
+    private String headurl;  //用户头像链接
+    private CircleImageView head;
+    private RatingBar buyerRatingBar,sellerRatingBar;
+    private double buyerscore,sellerscore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -165,12 +171,11 @@ public class SearchActivity extends Activity implements
         mDialog = DialogUtils.createLoadingDialog(SearchActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
-
-
+        headurl = intent.getStringExtra("headurl");
+        Toast.makeText(getApplicationContext(), headurl,Toast.LENGTH_SHORT).show();
         initView();
         initViewPage();
         initEvent();
-
         refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
@@ -336,6 +341,15 @@ public class SearchActivity extends Activity implements
             }
         });
 
+        head = (CircleImageView)tab04.findViewById(R.id.head);
+        Glide.with(getApplicationContext()).load(headurl)
+                .error(R.drawable.error)//图片加载失败后，显示的图片
+                .into(head);
+        buyerRatingBar = (RatingBar)tab04.findViewById(R.id.buyerRatingBar);
+        sellerRatingBar = (RatingBar)tab04.findViewById(R.id.sellerRatingBar);
+        searchSellerScore(account);
+        searchBuyerScore(account);
+
         // 设置默认图片为加号
         Bitmap bp = BitmapFactory.decodeResource(getResources(), R.drawable.ic_addpic);
         data.add(bp);
@@ -457,7 +471,7 @@ public class SearchActivity extends Activity implements
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, AccountManagementActivity.class);
                 intent.putExtra("username",account); // 向下一个界面传递信息
-                startActivity(intent);
+                startActivityForResult(intent,0x3);
             }
         });
         jinbishangcheng = (TextView)tab04.findViewById(R.id.jinbishangcheng);
@@ -643,6 +657,56 @@ public class SearchActivity extends Activity implements
                     refreshLayout.finishRefresh();//结束刷新
                     _listGoods .setSelectionFromTop(scrollPos, scrollTop);
                     refreshLayout.finishLoadMore();//结束加载
+                    break;
+                case SEARCH_SELLER_SCORE:
+                    String response1 = (String) msg.obj;
+                    parserXml1(response1);
+                    if ("succeessful".equals(result)) {
+                        if(sellerscore == 0) {
+                            sellerRatingBar.setRating(5);
+                        }else {
+                            sellerRatingBar.setRating((float)sellerscore);
+                        }
+                    }else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SearchActivity.this);
+                        dialog.setTitle("This is a warnining!");
+                        dialog.setMessage("当前网络状况不好，请稍后再试！");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    result = "";
+                    break;
+                case SEARCH_BUYER_SCORE:
+                    String response3 = (String) msg.obj;
+                    parserXml3(response3);
+                    if ("succeessful".equals(result)) {
+                        if(buyerscore == 0) {
+                            buyerRatingBar.setRating(5);
+                        }else {
+                            buyerRatingBar.setRating((float)buyerscore);
+                        }
+                    }else {
+                        AlertDialog.Builder dialog = new AlertDialog.Builder(SearchActivity.this);
+                        dialog.setTitle("This is a warnining!");
+                        dialog.setMessage("当前网络状况不好，请稍后再试！");
+                        dialog.setCancelable(false);
+                        dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                finish();
+                            }
+                        });
+                        dialog.show();
+                    }
+                    result = "";
+                    break;
+                default:
                     break;
             }
         }
@@ -974,8 +1038,14 @@ public class SearchActivity extends Activity implements
                 if (bundle != null) {
                     //处理代码在此地
                     location.setText(bundle.getString("address"));// 得到子窗口ChildActivity的回传数据
-//                    Toast.makeText(SearchActivity.this, bundle.getString("address"),
-//                            Toast.LENGTH_LONG).show();
+                }
+            }
+        }else if (requestCode == 0x3 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    //处理代码在此地
+                   headurl = bundle.getString("headurl");// 得到子窗口ChildActivity的回传数据
                 }
             }
         }
@@ -1090,6 +1160,36 @@ public class SearchActivity extends Activity implements
         // 2）解析数据：xml-->ArrayList
     }
 
+    private void searchSellerScore(String username) {
+        final String un = username;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = SERVER_ADDRESS+"/searchSellerScore.jsp?username=" + un;
+                Message msg = new Message();
+                msg.what = SEARCH_SELLER_SCORE;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
+    private void searchBuyerScore(String username) {
+        final String un = username;
+        new Thread(new Runnable() { // 开启子线程
+            @Override
+            public void run() {
+                String url = SERVER_ADDRESS+"/searchUserScore.jsp?username=" + un;
+                Message msg = new Message();
+                msg.what = SEARCH_BUYER_SCORE;
+                msg.obj = HttpUtils.connection(url).toString();
+                handler.sendMessage(msg);
+                // Handler
+            }
+        }).start();
+    }
+
     private void parserXml2(String xmlData) {
         String result = "";
         try {
@@ -1158,7 +1258,6 @@ public class SearchActivity extends Activity implements
                             result += "地址2" + path2Str + ", ";
                             path2 = path2Str;
                         }
-
                         break;
                     case XmlPullParser.END_TAG:
                         result += " \n ";
@@ -1176,6 +1275,76 @@ public class SearchActivity extends Activity implements
             ex.printStackTrace();
         }
         Log.d("resultStr", result);
+    }
+
+    private void parserXml1(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("count".equals(nodeName)) {
+                            String scoreStr = parse.nextText();
+                            sellerscore = Double.parseDouble(scoreStr);
+                        }
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    private void parserXml3(String xmlData) {
+        try {
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parse = factory.newPullParser(); // 生成解析器
+            parse.setInput(new StringReader(xmlData)); // 添加xml数据
+            int eventType = parse.getEventType();
+            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
+            Log.d("xmlStr", str);
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                String nodeName = parse.getName();
+                switch (eventType) {
+                    case XmlPullParser.START_TAG:
+                        // 从数据库读取2个参数
+                        if ("count".equals(nodeName)) {
+                            String scoreStr = parse.nextText();
+                            buyerscore = Double.parseDouble(scoreStr);
+                        }
+                        if ("result".equals(nodeName)) {
+                            result = parse.nextText();
+                            Log.d("result", result);
+                        }
+                        break;
+                    case XmlPullParser.END_TAG:
+                        Log.d("end_tag", "节点结束");
+                        break;
+                    default:
+                        break;
+                }
+                eventType = parse.next();
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     private void initUnreadCountListener() {
@@ -1243,7 +1412,7 @@ public class SearchActivity extends Activity implements
         public void onCountChanged(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
-                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
+ //               new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
  //               new QBadgeView(SearchActivity.this).bindTarget(huihua).hide(true);
 //                mUnreadCount.setVisibility(View.GONE);
             } else if (count > 0 && count < 100) {
@@ -1256,23 +1425,6 @@ public class SearchActivity extends Activity implements
 //                mUnreadCount.setText("···");
             }
         }
-//setText
-//        @Override
-//        public void onMessageIncreased(int count) {
-//            Log.e("SearchActivity", "count:" + count);
-//            if (count == 0) {
-//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
-////                mUnreadCount.setVisibility(View.GONE);
-//            } else if (count > 0 && count < 100) {
-//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
-////               mUnreadCount.setVisibility(View.VISIBLE);
-////                mUnreadCount.setText(count + "");
-//           } else {
-//                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText("99+");
-////                mUnreadCount.setVisibility(View.VISIBLE);
-////                mUnreadCount.setText("···");
-//          }
-//        }
     };
 
     public RongIMClient.ConnectionStatusListener mConnectionStatusListener = new RongIMClient.ConnectionStatusListener() {

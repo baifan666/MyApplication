@@ -12,6 +12,7 @@ public class MessageInfo implements Serializable {
     private String content;
     private int isdeleted;
     private String messageid;
+    private int isread;
 
     public String getUsername() {
         return username;
@@ -43,11 +44,18 @@ public class MessageInfo implements Serializable {
     public void setMessageid(String messageid) {
         this.messageid = messageid;
     }
-    public MessageInfo(String username,String messagetime,String content,int isdeleted,String messageid) {
+    public int getIsread() {
+        return isread;
+    }
+    public void setIsread(int isread) {
+        this.isread = isread;
+    }
+    public MessageInfo(String username,String messagetime,String content,int isdeleted,String messageid,int isread) {
         this.content = content;
         this.isdeleted = isdeleted;
         this.username = username;
         this.messageid = messageid;
         this.messagetime = messagetime;
+        this.isread = isread;
     }
 }
