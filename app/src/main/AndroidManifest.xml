@@ -253,7 +253,8 @@
         <activity android:name=".activity.MessageActivity" />
         <activity android:name=".activity.NoticeActivity" />
         <activity android:name=".activity.NoticeSpecificActivity" />
-        <activity android:name=".activity.AlterPrizeActivity"></activity>
+        <activity android:name=".activity.AlterPrizeActivity" />
+        <activity android:name=".activity.UserActivity"></activity>
     </application>
 
 </manifest>

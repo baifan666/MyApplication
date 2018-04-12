@@ -20,6 +20,7 @@ import android.widget.*;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.tencent.tauth.IUiListener;
@@ -254,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
                                         RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
+                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo("SYSTEM", "系统消息", Uri.parse(SERVER_ADDRESS+"/HeadPortrait/system.png")));
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                         if(TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
                                             act = username.getText().toString();

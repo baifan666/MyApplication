@@ -44,7 +44,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.io.File;
@@ -56,6 +58,7 @@ import android.net.Uri;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.bumptech.glide.Glide;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -157,6 +160,8 @@ public class SearchActivity extends Activity implements
     private CircleImageView head;
     private RatingBar buyerRatingBar,sellerRatingBar;
     private double buyerscore,sellerscore;
+
+    private QBadgeView qBadgeView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -166,16 +171,21 @@ public class SearchActivity extends Activity implements
         ExitApplication.getInstance().addActivity(this);
         PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
                 "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
-
         initUnreadCountListener();
         mDialog = DialogUtils.createLoadingDialog(SearchActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         headurl = intent.getStringExtra("headurl");
-        Toast.makeText(getApplicationContext(), headurl,Toast.LENGTH_SHORT).show();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+        //获取当前时间
+        Date date = new Date(System.currentTimeMillis());
+        String str = simpleDateFormat.format(date)+"登陆成功";
+        Log.e("SSSS",str);
+        AddMessageUtils.addMessage(account,str);
         initView();
         initViewPage();
         initEvent();
+
         refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
@@ -321,6 +331,8 @@ public class SearchActivity extends Activity implements
         });
 
         huihua = (ImageView) findViewById(R.id.top_huihua);
+        qBadgeView = new QBadgeView(SearchActivity.this);
+        qBadgeView.bindTarget(huihua);
         huihua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1404,6 +1416,7 @@ public class SearchActivity extends Activity implements
                     //RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
             }
         }, 500);
+
     }
 
 
@@ -1412,17 +1425,11 @@ public class SearchActivity extends Activity implements
         public void onCountChanged(int count) {
             Log.e("SearchActivity", "count:" + count);
             if (count == 0) {
- //               new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
- //               new QBadgeView(SearchActivity.this).bindTarget(huihua).hide(true);
-//                mUnreadCount.setVisibility(View.GONE);
+                qBadgeView.setBadgeNumber(count);
             } else if (count > 0 && count < 100) {
-                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeNumber(count);
-//               mUnreadCount.setVisibility(View.VISIBLE);
-//                mUnreadCount.setText(count + "");
+                qBadgeView.setBadgeNumber(count);
             } else {
-                new QBadgeView(SearchActivity.this).bindTarget(huihua).setBadgeText("99+");
-//                mUnreadCount.setVisibility(View.VISIBLE);
-//                mUnreadCount.setText("···");
+                qBadgeView.setBadgeText("99+");
             }
         }
     };
@@ -1439,6 +1446,7 @@ public class SearchActivity extends Activity implements
                 case CONNECTING://连接中。
                     break;
                 case NETWORK_UNAVAILABLE://网络不可用
+                    Toast.makeText(getApplicationContext(), "当前网络不可用，请检查网络",Toast.LENGTH_SHORT).show();
                     break;
                 case KICKED_OFFLINE_BY_OTHER_CLIENT://用户账户在其他设备登录，本机会被踢掉线
                     AlertDialog.Builder builder = new AlertDialog.Builder(SearchActivity.this);

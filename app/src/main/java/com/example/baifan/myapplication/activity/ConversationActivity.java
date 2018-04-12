@@ -27,11 +27,10 @@ public class ConversationActivity extends FragmentActivity {
         title = (TextView)findViewById(R.id.title);
         //会话界面 对方id
         String targetId = getIntent().getData().getQueryParameter("targetId");
-        title.setText("与" + targetId + "聊天中");
-        //对方 昵称
-//        String title = getIntent().getData().getQueryParameter("title");
-//        if (!TextUtils.isEmpty(title)){
-//            setTitle("与" + title + "聊天中");
-//        }
+        if(!"SYSTEM".equals(targetId)) {
+            title.setText("与" + targetId + "聊天中");
+        }else {
+            title.setText("系统消息");
+        }
     }
 }

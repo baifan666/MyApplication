@@ -1,9 +1,14 @@
 package com.example.baifan.myapplication.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
 
+
+import com.example.baifan.myapplication.activity.AccountManagementActivity;
+import com.example.baifan.myapplication.activity.SearchActivity;
+import com.example.baifan.myapplication.activity.UserActivity;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.model.Conversation;
@@ -28,6 +33,11 @@ public class MyConversationBehaviorListener implements RongIM.ConversationClickL
         String imid = userInfo.getUserId();
         // if (Integer.parseInt(imid.substring(2)) != ((TeacherApp) context).getTeacher().id) {
         Toast.makeText(context,imid,Toast.LENGTH_LONG).show();
+        Intent intent=new Intent();
+        intent.setClass(context, UserActivity.class);
+        intent.putExtra("username",userInfo.getUserId()); // 向下一个界面传递信息
+        intent.putExtra("headurl",userInfo.getPortraitUri()); // 向下一个界面传递信息
+        context.startActivity(intent);
         // }
         return true;
     }
