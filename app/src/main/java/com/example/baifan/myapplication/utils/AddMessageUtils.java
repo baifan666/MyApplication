@@ -1,8 +1,5 @@
 package com.example.baifan.myapplication.utils;
 
-import android.os.Message;
-
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 

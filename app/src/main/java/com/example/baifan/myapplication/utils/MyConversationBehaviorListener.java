@@ -30,15 +30,11 @@ public class MyConversationBehaviorListener implements RongIM.ConversationClickL
      */
     @Override
     public boolean onUserPortraitClick(Context context, Conversation.ConversationType conversationType, UserInfo userInfo, String s) {
-        String imid = userInfo.getUserId();
-        // if (Integer.parseInt(imid.substring(2)) != ((TeacherApp) context).getTeacher().id) {
-        Toast.makeText(context,imid,Toast.LENGTH_LONG).show();
-        Intent intent=new Intent();
-        intent.setClass(context, UserActivity.class);
-        intent.putExtra("username",userInfo.getUserId()); // 向下一个界面传递信息
-        intent.putExtra("headurl",userInfo.getPortraitUri()); // 向下一个界面传递信息
+        Toast.makeText(context,userInfo.getPortraitUri().toString(),Toast.LENGTH_LONG).show();
+        Intent intent=new Intent(context, UserActivity.class);
+        intent.putExtra("username","111"); // 向下一个界面传递信息
+        intent.putExtra("headurl",userInfo.getPortraitUri().toString()); // 向下一个界面传递信息
         context.startActivity(intent);
-        // }
         return true;
     }
 

@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.baifan.myapplication.R;
@@ -29,6 +30,8 @@ public class UserActivity extends Activity {
         Intent intent = new Intent();
         username = intent.getStringExtra("username");
         headurl = intent.getStringExtra("headurl");
+        Toast.makeText(UserActivity.this,username,Toast.LENGTH_LONG).show();
+        Toast.makeText(UserActivity.this,headurl,Toast.LENGTH_LONG).show();
         back=(ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -38,7 +41,6 @@ public class UserActivity extends Activity {
         });
         head = (CircleImageView)findViewById(R.id.head);
         Glide.with(getApplicationContext()).load(headurl)
-                .error(R.drawable.error)//图片加载失败后，显示的图片
                 .into(head);
     }
 }

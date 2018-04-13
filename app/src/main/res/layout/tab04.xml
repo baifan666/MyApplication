@@ -19,19 +19,19 @@
         <de.hdodenhof.circleimageview.CircleImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/head"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="2dp"
             android:src="@drawable/jiazaizhong"
             app:civ_border_color="#FF000000"/>
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:orientation="vertical" >
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal" >
                 <TextView
                     android:id="@+id/tv1"
@@ -62,7 +62,7 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal" >
                 <TextView
                     android:id="@+id/tv2"
@@ -91,6 +91,13 @@
                     />
             </LinearLayout>
         </LinearLayout>
+        <ImageView
+            android:id="@+id/weather"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/weather" />
     </LinearLayout>
 
     <LinearLayout style="@style/wrap_layout" >

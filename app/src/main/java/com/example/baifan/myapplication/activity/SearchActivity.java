@@ -128,7 +128,7 @@ public class SearchActivity extends Activity implements
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders,wodefabu,shouchuwupin;
-    private ImageView tzgg,game1,game2,game3,search,huihua,message;
+    private ImageView tzgg,game1,game2,game3,search,huihua,message,weather;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -180,7 +180,6 @@ public class SearchActivity extends Activity implements
         //获取当前时间
         Date date = new Date(System.currentTimeMillis());
         String str = simpleDateFormat.format(date)+"登陆成功";
-        Log.e("SSSS",str);
         AddMessageUtils.addMessage(account,str);
         initView();
         initViewPage();
@@ -544,6 +543,15 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, NoticeActivity.class);
+                startActivity(intent);
+            }
+        });
+        weather = (ImageView)tab04.findViewById(R.id.weather);
+        weather.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(SearchActivity.this, WeatherActivity.class);
                 startActivity(intent);
             }
         });

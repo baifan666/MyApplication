@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -36,6 +37,7 @@ import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.baidu.mapapi.search.poi.OnGetPoiSearchResultListener;
 import com.baidu.mapapi.search.poi.PoiCitySearchOption;
 import com.baidu.mapapi.search.poi.PoiDetailResult;
+import com.baidu.mapapi.search.poi.PoiDetailSearchOption;
 import com.baidu.mapapi.search.poi.PoiIndoorResult;
 import com.baidu.mapapi.search.poi.PoiResult;
 import com.baidu.mapapi.search.poi.PoiSearch;
@@ -51,7 +53,7 @@ public class MapActivity extends Activity {
     private MapView myMapView = null;//地图控件
     private BaiduMap myBaiduMap;//百度地图对象
     public LocationClient mLocationClient;
-    public BDLocationListener myListener = new MyLocationListener();
+    public BDAbstractLocationListener myListener = new MyLocationListener();
     private LatLng latLng,ll;
     private PoiSearch mPoiSearch;
     private ArrayList<PoiInfo> poiInfos = new ArrayList<PoiInfo>();
@@ -151,6 +153,7 @@ public class MapActivity extends Activity {
                 if (poiResult != null && poiResult.error == PoiResult.ERRORNO.NO_ERROR) {
                     MyOverLay overlay = new MyOverLay(myBaiduMap, mPoiSearch);//这传入search对象，因为一般搜索到后，点击时方便发出详细搜索
                     //设置数据,这里只需要一步，
+
                     overlay.setData(poiResult);
                     //添加到地图
                     overlay.addToMap();
@@ -158,6 +161,11 @@ public class MapActivity extends Activity {
                     overlay.zoomToSpan();//计算工具
                     //设置标记物的点击监听事件
                     myBaiduMap.setOnMarkerClickListener(overlay);
+                    poiInfos.clear();
+                    poiInfos = (ArrayList<PoiInfo>) poiResult.getAllPoi();
+                    adapter = new PoiListAdapter(MapActivity.this,R.layout.local_item, poiInfos);
+                    iv_item.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
                 } else {
                     Toast.makeText(getApplication(), "搜索不到你需要的信息！", Toast.LENGTH_SHORT).show();
                 }
@@ -173,6 +181,7 @@ public class MapActivity extends Activity {
                     Toast.makeText(getApplication(), poiDetailResult.getName() + ": "
                                     + poiDetailResult.getAddress(),
                             Toast.LENGTH_LONG).show();
+
                 }
             }
             //获得POI室内检索结果
@@ -192,6 +201,8 @@ public class MapActivity extends Activity {
                 PoiCitySearchOption poiCity = new PoiCitySearchOption();
                 poiCity.keyword(keyword.getText().toString()).city(city.getText().toString());//这里还能设置显示的个数，默认显示10个
                 mPoiSearch.searchInCity(poiCity);//执行搜索，搜索结束后，在搜索监听对象里面的方法会被回调
+                //mPoiSearch.searchPoiDetail(new PoiDetailSearchOption().poiUid(keyword.getText().toString()));
+
             }
         });
     }
@@ -259,7 +270,7 @@ public class MapActivity extends Activity {
     }
 
     //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
-    public class MyLocationListener implements BDLocationListener {
+    public class MyLocationListener extends BDAbstractLocationListener {
 
         @Override
         public void onReceiveLocation(BDLocation location) {
