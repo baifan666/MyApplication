@@ -45,11 +45,39 @@
             android:id="@+id/head"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginLeft="10dp"
             android:layout_marginTop="2dp"
             android:src="@drawable/jiazaizhong"
             app:civ_border_color="#FF000000"/>
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:orientation="horizontal" >
+        <TextView
+            android:id="@+id/tv1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_gravity="center"
+            android:textColor="#040404"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="16dp"
+            android:text="买家分值："
+            />
+        <RatingBar
+            android:id="@+id/buyerRatingBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="2dp"
+            android:layout_marginLeft="2dp"
+            style="?android:attr/ratingBarStyleSmall"
+            android:numStars="5"
+            android:max="255"
+            android:progress="255"
+            android:stepSize="0.5"
+            />
+        </LinearLayout>
     </LinearLayout>
 
 

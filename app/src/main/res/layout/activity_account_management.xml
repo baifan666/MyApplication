@@ -61,6 +61,19 @@
             <ImageView style="@style/img_arrow"/>
         </LinearLayout>
         <View style="@style/bg_line"/>
+        <!-- 无圆角-->
+        <LinearLayout style="@style/mid_layout">
+            <TextView style="@style/usertext"
+                android:id="@+id/zhuangtai"
+                android:drawableLeft="@drawable/bangding"
+                android:clickable="true"
+                android:text="消息免打扰" />
+            <Switch style="@style/usertext"
+                android:id="@+id/isNotice" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <View style="@style/bg_line"/>
+
         <!-- 下圆角bottom_layout-->
         <LinearLayout style="@style/bottom_layout">
             <TextView style="@style/usertext"

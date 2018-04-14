@@ -29,6 +29,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.youth.banner.Banner;
@@ -41,7 +42,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
@@ -367,6 +370,14 @@ public class SpecificActivity extends Activity {
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                //获取当前时间
+                                Date date = new Date(System.currentTimeMillis());
+                                String str = simpleDateFormat.format(date)+"用户"+account+"购买了你的《"+goodsInfo.getTitle()+"》中的物品";
+                                //发送系统消息
+                                AddMessageUtils.addMessage(goodsInfo.getUsername(),str);
+                                String str1 = simpleDateFormat.format(date)+"你购买了《"+goodsInfo.getTitle()+"》中的物品";
+                                AddMessageUtils.addMessage(account,str1);
                                 // 购买成功后 跳转回首页
                                 Intent intent = new Intent(SpecificActivity.this, SearchActivity.class);
                                 intent.putExtra("account", account);

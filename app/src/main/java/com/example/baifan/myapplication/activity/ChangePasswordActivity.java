@@ -20,12 +20,15 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -167,6 +170,12 @@ public class ChangePasswordActivity extends Activity {
                             dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                    //获取当前时间
+                                    Date date = new Date(System.currentTimeMillis());
+                                    String str = simpleDateFormat.format(date)+"修改了密码，请确认是本人操作。";
+                                    //发送系统消息
+                                    AddMessageUtils.addMessage(username,str);
                                     Intent intent=new Intent();
                                     intent.setClass(ChangePasswordActivity.this, MainActivity.class);
                                     startActivity(intent);

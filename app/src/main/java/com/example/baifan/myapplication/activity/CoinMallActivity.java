@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -24,6 +25,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -237,6 +240,11 @@ public class CoinMallActivity extends Activity {
                             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                    //获取当前时间
+                                    Date date = new Date(System.currentTimeMillis());
+                                    String str = simpleDateFormat.format(date)+"签到成功";
+                                    AddMessageUtils.addMessage(username,str);
                                     searchSign(username);
                                     getCoins(username);
                                     mDialog = DialogUtils.createLoadingDialog(CoinMallActivity.this, "正在获取签到信息...");

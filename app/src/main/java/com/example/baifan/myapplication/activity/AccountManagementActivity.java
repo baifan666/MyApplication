@@ -12,7 +12,9 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +37,7 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 
 import io.rong.imkit.RongIM;
+import io.rong.imlib.RongIMClient;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -45,6 +48,7 @@ public class AccountManagementActivity extends Activity {
     private Dialog mDialog;
     private String openid,openidString,result;
     private Tencent mTencent;
+    private Switch isNotice;
     private final int GET_OPENID = 1;
     private final int SELECT_OPENID = 2;
     private final int SET_OPENID = 3;
@@ -57,44 +61,100 @@ public class AccountManagementActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         account = intent.getStringExtra("username");
-        back = (ImageView)findViewById(R.id.IV_back); //返回
+        back = (ImageView) findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
             }
         });
-        exitapp = (TextView)findViewById(R.id.exitapp);
+        isNotice = (Switch)findViewById(R.id.isNotice);
+        isNotice.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    new android.os.Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            RongIM.getInstance().setNotificationQuietHours("00:00:00", 1339, new RongIMClient.OperationCallback() {
+                                @Override
+                                public void onSuccess() {
+                                }
+
+                                @Override
+                                public void onError(RongIMClient.ErrorCode errorCode) {
+                                }
+                            });
+                        }
+                    });
+                }else {
+                    new android.os.Handler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            RongIM.getInstance().removeNotificationQuietHours(new RongIMClient.OperationCallback() {
+                                @Override
+                                public void onSuccess() {
+
+                                }
+
+                                @Override
+                                public void onError(RongIMClient.ErrorCode errorCode) {
+
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+
+        RongIM.getInstance().getNotificationQuietHours(new RongIMClient.GetNotificationQuietHoursCallback() {
+            @Override
+            public void onSuccess(String s, int i) {
+                if(i > 0) {
+                    isNotice.setChecked(true);
+                } else {
+                    isNotice.setChecked(false);
+                }
+            }
+            @Override
+            public void onError(RongIMClient.ErrorCode errorCode) {
+
+            }
+        });
+        exitapp = (TextView) findViewById(R.id.exitapp);
         exitapp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showDialog();
             }
         });
-        isbinding = (TextView)findViewById(R.id.isbinding);
-        updatepassword = (TextView)findViewById(R.id.updatepassword);
+        isbinding = (TextView) findViewById(R.id.isbinding);
+        updatepassword = (TextView) findViewById(R.id.updatepassword);
         updatepassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent=new Intent();
+                Intent intent = new Intent();
                 intent.setClass(AccountManagementActivity.this, ChangePasswordActivity.class);
-                intent.putExtra("username",account); // 向下一个界面传递信息
+                intent.putExtra("username", account); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });
         mDialog = DialogUtils.createLoadingDialog(AccountManagementActivity.this, "加载中...");
         getOpenid(account);
-        binding = (TextView)findViewById(R.id.binding);
+        binding = (TextView) findViewById(R.id.binding);
         //QQ第三方登录
-        mTencent = Tencent.createInstance("101466661",getApplicationContext());//将101466661为自己的AppID
+        mTencent = Tencent.createInstance("101466661", getApplicationContext());//将101466661为自己的AppID
         binding.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //get_simple_userinfo
-                mTencent.login(AccountManagementActivity.this,"all",new BaseUiListener());
+                mTencent.login(AccountManagementActivity.this, "all", new BaseUiListener());
             }
         });
     }
+
+
 
     private class BaseUiListener implements IUiListener {
         //这个类需要实现三个方法 onComplete（）：登录成功需要做的操作写在这里

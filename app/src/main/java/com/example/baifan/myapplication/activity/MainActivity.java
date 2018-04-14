@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.preference.PreferenceManager;
@@ -33,6 +34,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
@@ -63,6 +66,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
+            @Override
+            public io.rong.imlib.model.UserInfo getUserInfo(String arg0) {
+                io.rong.imlib.model.UserInfo customer = new io.rong.imlib.model.UserInfo("SYSTEM", "系统消息", Uri.parse(SERVER_ADDRESS+"/HeadPortrait/system.png"));
+                return customer;
+            }
+        }, true);
         Intent intent = getIntent();
         tuichu = intent.getStringExtra("exit");
 
@@ -253,9 +263,12 @@ public class MainActivity extends AppCompatActivity {
                                     Log.d("MainActivity", "--onSuccess--" + userid);
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
-                                        //服务器连接成功，跳转
                                         RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
-                                        RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo("SYSTEM", "系统消息", Uri.parse(SERVER_ADDRESS+"/HeadPortrait/system.png")));
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                        //获取当前时间
+                                        Date date = new Date(System.currentTimeMillis());
+                                        String str = simpleDateFormat.format(date)+"在"+ Build.MODEL +"登陆成功";
+                                        AddMessageUtils.addMessage(userid,str);
                                         Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                                         if(TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
                                             act = username.getText().toString();

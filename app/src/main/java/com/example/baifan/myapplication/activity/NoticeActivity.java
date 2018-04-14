@@ -43,7 +43,6 @@ public class NoticeActivity extends Activity {
     private final int READALL = 1;
     private final int GETNEXT = 2;
     private String firsturl = "/tzgg.htm";
-    private String page,num;
     private int scrollPos; //滑动以后的可见的第一条数据
     private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
     @Override
@@ -70,6 +69,7 @@ public class NoticeActivity extends Activity {
                 Intent intent = new Intent(NoticeActivity.this, NoticeSpecificActivity.class);
                 String NoticeUrl = ZAFU_ADDRESS+"/"+noticeInfo.getNoticeUrl();
                 intent.putExtra("NoticeUrl",NoticeUrl); // 向下一个界面传递信息
+                intent.putExtra("title",noticeInfo.getNoticeTitle()); // 向下一个界面传递信息
                 startActivity(intent);
             }
         });
@@ -189,7 +189,7 @@ public class NoticeActivity extends Activity {
                     break;
                 case GETNEXT:
                     if("0".equals(firsturl)) {
-                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更事件
+                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更多事件
                     }else {
                         getNotices();
                     }

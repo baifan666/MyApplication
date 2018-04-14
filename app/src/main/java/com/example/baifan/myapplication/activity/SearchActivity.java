@@ -44,9 +44,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.io.File;
@@ -58,7 +56,6 @@ import android.net.Uri;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.bumptech.glide.Glide;
-import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -128,7 +125,7 @@ public class SearchActivity extends Activity implements
     private String localVersion;
 
     private TextView cache,gengxin,deletecache,about,zhanghaoguanli,jinbishangcheng,fankui,myorders,wodefabu,shouchuwupin;
-    private ImageView tzgg,game1,game2,game3,search,huihua,message,weather;
+    private ImageView tzgg,game1,game2,game3,search,huihua,weather;
     private Button send_btn;
 
     private List<Bitmap> data = new ArrayList<Bitmap>();
@@ -176,11 +173,7 @@ public class SearchActivity extends Activity implements
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         headurl = intent.getStringExtra("headurl");
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
-        //获取当前时间
-        Date date = new Date(System.currentTimeMillis());
-        String str = simpleDateFormat.format(date)+"登陆成功";
-        AddMessageUtils.addMessage(account,str);
+
         initView();
         initViewPage();
         initEvent();
@@ -521,17 +514,6 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, MySellsActivity.class);
-                intent.putExtra("username",account); // 向下一个界面传递信息
-                startActivity(intent);
-            }
-        });
-
-        message = (ImageView)findViewById(R.id.top_message);
-        message.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent=new Intent();
-                intent.setClass(SearchActivity.this, MessageActivity.class);
                 intent.putExtra("username",account); // 向下一个界面传递信息
                 startActivity(intent);
             }

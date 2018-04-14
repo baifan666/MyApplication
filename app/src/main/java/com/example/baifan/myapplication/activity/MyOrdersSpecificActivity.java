@@ -28,6 +28,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.youth.banner.Banner;
@@ -38,7 +39,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
@@ -368,6 +371,15 @@ public class MyOrdersSpecificActivity extends Activity {
                             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                    //获取当前时间
+                                    Date date = new Date(System.currentTimeMillis());
+                                    String str = simpleDateFormat.format(date)+"用户"+orderSpecificInfo.getBuyerid()+"确认完成了你的《"+orderSpecificInfo.getTitle()+"》中的物品订单";
+                                    //发送系统消息
+                                    AddMessageUtils.addMessage(orderSpecificInfo.getUsername(),str);
+                                    String str1 = simpleDateFormat.format(date)+"你确认了《"+orderSpecificInfo.getTitle()+"》中的物品订单";
+                                    AddMessageUtils.addMessage(orderSpecificInfo.getBuyerid(),str1);
+
                                     Intent intent=new Intent();
                                     intent.setClass(MyOrdersSpecificActivity.this, MyOrdersActivity.class);
                                     intent.putExtra("username",orderSpecificInfo.getBuyerid()); // 向下一个界面传递信息
