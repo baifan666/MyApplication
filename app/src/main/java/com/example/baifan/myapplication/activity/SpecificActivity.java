@@ -58,7 +58,7 @@ public class SpecificActivity extends Activity {
     private ImageView back,share;
     private TextView username,publishtime,title,content,price,location,mobile;
     private EditText usermobile;
-    private String account,path1,path2,url1="",url2="",result,buyermobile;
+    private String account,path1,path2,url1="",url2="",result,buyermobile,headurl;
     private Button conversation,buy;
     private GoodsInfo goodsInfo;
     private final int ADD_SUCCEESS = 1;
@@ -77,6 +77,7 @@ public class SpecificActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
+        headurl = intent.getStringExtra("headurl");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
         username = (TextView) findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
@@ -381,6 +382,7 @@ public class SpecificActivity extends Activity {
                                 // 购买成功后 跳转回首页
                                 Intent intent = new Intent(SpecificActivity.this, SearchActivity.class);
                                 intent.putExtra("account", account);
+                                intent.putExtra("headurl",headurl);
                                 startActivity(intent);
                                 finish();
                             }

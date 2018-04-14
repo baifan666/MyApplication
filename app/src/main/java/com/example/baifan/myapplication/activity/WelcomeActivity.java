@@ -46,7 +46,11 @@ public class WelcomeActivity extends Activity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_welcome);
         checkUpdate();
-
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            //结束你的activity
+            finish();
+            return;
+        }
     }
 
     private void checkUpdate() {

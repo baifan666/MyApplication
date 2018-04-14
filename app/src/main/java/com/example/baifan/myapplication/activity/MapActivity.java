@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -71,6 +72,7 @@ public class MapActivity extends Activity {
         setContentView(R.layout.activity_map);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         back = (ImageView) findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override

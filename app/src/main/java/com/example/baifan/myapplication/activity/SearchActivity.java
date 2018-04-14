@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -212,6 +213,7 @@ public class SearchActivity extends Activity implements
                 Intent intent = new Intent(SearchActivity.this, SpecificActivity.class);
                 intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
                 intent.putExtra("account",account);
+                intent.putExtra("headurl", headurl);
                 startActivity(intent);
             }
         });
@@ -621,6 +623,7 @@ public class SearchActivity extends Activity implements
                                 // 物品新增成功后 跳转至界面
                                 Intent intent = new Intent(SearchActivity.this, SearchActivity.class);
                                 intent.putExtra("account", account);
+                                intent.putExtra("headurl", headurl);
                                 startActivity(intent);
                                 finish();
                             }
@@ -1069,6 +1072,7 @@ public class SearchActivity extends Activity implements
             adapter.notifyDataSetChanged();
         }
         initUnreadCountListener();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
     }
 
 

@@ -65,7 +65,7 @@
         <LinearLayout style="@style/mid_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/zhuangtai"
-                android:drawableLeft="@drawable/bangding"
+                android:drawableLeft="@drawable/setting"
                 android:clickable="true"
                 android:text="消息免打扰" />
             <Switch style="@style/usertext"

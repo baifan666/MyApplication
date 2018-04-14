@@ -38,7 +38,7 @@ public class SellOrderAdapter extends ArrayAdapter<OrderSpecificInfo> {
             view = convertView;
         }
         // 买家
-        TextView seller = ( TextView )view.findViewById(R.id.buyer);
+        TextView buyer = ( TextView )view.findViewById(R.id.buyer);
         // 购买时间
         TextView ordertime =( TextView )view.findViewById(R.id.ordertime);
         // 标题
@@ -47,7 +47,7 @@ public class SellOrderAdapter extends ArrayAdapter<OrderSpecificInfo> {
         TextView isfinish = (TextView)view.findViewById(R.id.isfinish);
         //订单金额
         TextView money = (TextView)view.findViewById(R.id.money);
-        seller.setText(info.getUsername());
+        buyer.setText(info.getBuyerid());
         ordertime.setText(info.getOrdertime());
         title.setText(info.getTitle());
         money.setText(String.valueOf(info.getPrice()));
