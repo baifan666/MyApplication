@@ -96,11 +96,6 @@ public class MainActivity extends AppCompatActivity {
             username.setText(account);
             userpassword.setText(password);
             rememberPass.setChecked(true);
-            if(isCheck) {
-                autologin.setChecked(true);
-                mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
-                whetherRegister(account, password);
-            }
         }
         iv = (CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
         iv.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -255,6 +250,8 @@ public class MainActivity extends AppCompatActivity {
                                         editor.putInt("flag",flag);
                                         if(autologin.isChecked()) {
                                             editor.putBoolean("autologin",true);
+                                        }else {
+                                            editor.putBoolean("autologin",false);
                                         }
                                     }else {
                                         editor.clear();

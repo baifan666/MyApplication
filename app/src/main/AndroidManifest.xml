@@ -255,7 +255,7 @@
         <activity android:name=".activity.NoticeSpecificActivity" />
         <activity android:name=".activity.AlterPrizeActivity" />
         <activity android:name=".activity.UserActivity" />
-        <activity android:name=".activity.WeatherActivity"></activity>
+        <activity android:name=".activity.WeatherActivity" />
     </application>
 
 </manifest>

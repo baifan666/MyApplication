@@ -297,15 +297,10 @@ public class MapActivity extends Activity {
 
                 if (location.getLocType() == BDLocation.TypeGpsLocation) {
                     // GPS定位结果
-                    Toast.makeText(MapActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
                 } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
                     // 网络定位结果
-                    Toast.makeText(MapActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
-
                 } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
                     // 离线定位结果
-                    Toast.makeText(MapActivity.this, location.getAddrStr(), Toast.LENGTH_SHORT).show();
-
                 } else if (location.getLocType() == BDLocation.TypeServerError) {
                     Toast.makeText(MapActivity.this, "服务器错误，请检查", Toast.LENGTH_SHORT).show();
                 } else if (location.getLocType() == BDLocation.TypeNetWorkException) {

@@ -35,7 +35,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     //github圆形imageview  https://github.com/hdodenhof/CircleImageView
-    compile 'org.jsoup:jsoup:1.11.2'    //jsoup
+    compile 'org.jsoup:jsoup:1.11.2'
+    //jsoup
     compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     //微信
     compile 'com.youth.banner:banner:1.4.10'
@@ -56,4 +57,5 @@ dependencies {
     implementation files('libs/httpmime-4.1.2.jar')
     implementation files('libs/pushservice-6.1.1.21.jar')
     implementation files('libs/open_sdk_r5990_lite.jar')
+    implementation project(':sticker')
 }

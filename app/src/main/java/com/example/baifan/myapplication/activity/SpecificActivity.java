@@ -22,6 +22,16 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDAbstractLocationListener;
+import com.baidu.location.BDLocation;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.mapapi.map.MapStatus;
+import com.baidu.mapapi.map.MapStatusUpdateFactory;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -56,7 +66,7 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 public class SpecificActivity extends Activity {
     private ImageView back,share;
-    private TextView username,publishtime,title,content,price,location,mobile;
+    private TextView username,publishtime,title,content,price,location,mobile,comment;
     private EditText usermobile;
     private String account,path1,path2,url1="",url2="",result,buyermobile,headurl;
     private Button conversation,buy;
@@ -67,7 +77,9 @@ public class SpecificActivity extends Activity {
     private double score;
     private Dialog mDialog,mDialog1;
     private Banner banner;
-    List<String> images= new ArrayList<String>();       //设置图片集合
+    private List<String> images= new ArrayList<String>();       //设置图片集合
+    public LocationClient mLocationClient;
+    public BDAbstractLocationListener myListener = new MyLocationListener();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,11 +91,11 @@ public class SpecificActivity extends Activity {
         account = intent.getStringExtra("account");
         headurl = intent.getStringExtra("headurl");
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
-        username = (TextView) findViewById(R.id.username);
+        username = (TextView)findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
-        publishtime = (TextView) findViewById(R.id.publish_time);
+        publishtime = (TextView)findViewById(R.id.publish_time);
         publishtime.setText(String.valueOf(goodsInfo.getPublish_time()));
-        title = (TextView) findViewById(R.id.title);
+        title = (TextView)findViewById(R.id.title);
         title.setText(String.valueOf(goodsInfo.getTitle()));
         title.setMovementMethod(ScrollingMovementMethod.getInstance());
         title.post(new Runnable() {
@@ -111,7 +123,7 @@ public class SpecificActivity extends Activity {
             }
         });
 
-        content = (TextView) findViewById(R.id.content);
+        content = (TextView)findViewById(R.id.content);
         content.setText(String.valueOf(goodsInfo.getContent()));
         content.setMovementMethod(ScrollingMovementMethod.getInstance());
         content.post(new Runnable() {
@@ -138,7 +150,7 @@ public class SpecificActivity extends Activity {
                 }
             }
         });
-        price = (TextView) findViewById(R.id.price);
+        price = (TextView)findViewById(R.id.price);
         price.setText(String.valueOf(goodsInfo.getPrice()));
         location = (TextView) findViewById(R.id.location);
         location.setText(String.valueOf(goodsInfo.getLocation()));
@@ -167,11 +179,11 @@ public class SpecificActivity extends Activity {
                 }
             }
         });
-        mobile = (TextView) findViewById(R.id.mobile);
+        mobile = (TextView)findViewById(R.id.mobile);
         mobile.setText(String.valueOf(goodsInfo.getMobile()));
         path1 = goodsInfo.getPath1().substring(goodsInfo.getPath1().lastIndexOf("/") + 1);
         path2 = goodsInfo.getPath2().substring(goodsInfo.getPath2().lastIndexOf("/") + 1);
-        ratingBar = (RatingBar) findViewById(R.id.ratingBar);
+        ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         searchSellerScore(goodsInfo.getUsername());
         if (!"".equals(path1)) {
             mDialog = DialogUtils.createLoadingDialog(SpecificActivity.this, "加载中...");
@@ -248,7 +260,7 @@ public class SpecificActivity extends Activity {
             }
         });
 
-        banner = (Banner) findViewById(R.id.banner);
+        banner = (Banner)findViewById(R.id.banner);
         //BannerConfig.NOT_INDICATOR	不显示指示器和标题	setBannerStyle
         //BannerConfig.CIRCLE_INDICATOR	显示圆形指示器	setBannerStyle
         //BannerConfig.NUM_INDICATOR	显示数字指示器	setBannerStyle
@@ -304,14 +316,74 @@ public class SpecificActivity extends Activity {
                 startActivity(intent);
             }
         });
+
+        comment = (TextView)findViewById(R.id.comment);
+        mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
+        //配置定位SDK参数
+        initLocation();
+        mLocationClient.registerLocationListener(myListener);    //注册监听函数
+        //开启定位
+        mLocationClient.start();
+
+
     }
+
+    //配置定位SDK参数
+    private void initLocation() {
+        LocationClientOption option = new LocationClientOption();
+        /**
+         * 设置定位模式 Battery_Saving 低功耗模式 Device_Sensors 仅设备(Gps)模式 Hight_Accuracy
+         * 高精度模式
+         /   */
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
+        );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
+        int span = 1000;
+        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);//可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);//可选，默认false，设置是否需要位置语义化结果，可以在BDLocation
+        // .getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);//可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);
+        option.setOpenGps(true); // 打开gps
+
+        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);//可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);//可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        mLocationClient.setLocOption(option);
+
+    }
+
+    //实现BDLocationListener接口,BDLocationListener为结果监听接口，异步获取定位结果
+    public class MyLocationListener extends BDAbstractLocationListener {
+
+        @Override
+        public void onReceiveLocation(BDLocation location) {
+            if (location.getLocType() == BDLocation.TypeGpsLocation) {
+                // GPS定位结果
+            } else if (location.getLocType() == BDLocation.TypeNetWorkLocation) {
+                // 网络定位结果
+            } else if (location.getLocType() == BDLocation.TypeOffLineLocation) {
+                // 离线定位结果
+            } else if (location.getLocType() == BDLocation.TypeServerError) {
+                Toast.makeText(SpecificActivity.this, "服务器错误，请检查", Toast.LENGTH_SHORT).show();
+            } else if (location.getLocType() == BDLocation.TypeNetWorkException) {
+                Toast.makeText(SpecificActivity.this, "网络错误，请检查", Toast.LENGTH_SHORT).show();
+            } else if (location.getLocType() == BDLocation.TypeCriteriaException) {
+                Toast.makeText(SpecificActivity.this, "手机模式错误，请检查是否飞行", Toast.LENGTH_SHORT).show();
+            }
+            String addr = location.getAddrStr();    //获取详细地址信息
+            comment.setText(addr);
+        }
+    }
+
+
     //设置错误监听
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(SpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-            }
             DialogUtils.closeDialog(mDialog);
             DialogUtils.closeDialog(mDialog1);
             // important to return false so the error placeholder can be placed

@@ -26,6 +26,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.youth.banner.Banner;
@@ -36,7 +37,9 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
@@ -318,6 +321,12 @@ public class MyGoodsSpecificActivity extends Activity {
                             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                    //获取当前时间
+                                    Date date = new Date(System.currentTimeMillis());
+                                    String str = simpleDateFormat.format(date)+"你删除了《"+goodsInfo.getTitle()+"》";
+                                    //发送系统消息
+                                    AddMessageUtils.addMessage(username.getText().toString(),str);
                                     Intent intent=new Intent();
                                    // intent.setClass(MyGoodsSpecificActivity.this, MyGoodsActivity.class);
                                     intent.putExtra("username",username.getText().toString());

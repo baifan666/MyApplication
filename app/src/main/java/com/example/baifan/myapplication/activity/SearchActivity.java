@@ -81,6 +81,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
 import io.rong.imlib.model.Conversation;
+import q.rorbin.badgeview.Badge;
 import q.rorbin.badgeview.QBadgeView;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
@@ -160,6 +161,8 @@ public class SearchActivity extends Activity implements
     private double buyerscore,sellerscore;
 
     private QBadgeView qBadgeView;
+
+    private String autoLogin;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -174,11 +177,15 @@ public class SearchActivity extends Activity implements
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         headurl = intent.getStringExtra("headurl");
-
+        autoLogin = intent.getStringExtra("autologin");
+        if("true".equals(autoLogin)) {
+            checkUpdate();
+        }else {
+            autoLogin = "false";
+        }
         initView();
         initViewPage();
         initEvent();
-
         refreshLayout = (RefreshLayout)tab01.findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
@@ -327,6 +334,12 @@ public class SearchActivity extends Activity implements
         huihua = (ImageView) findViewById(R.id.top_huihua);
         qBadgeView = new QBadgeView(SearchActivity.this);
         qBadgeView.bindTarget(huihua);
+        qBadgeView.setOnDragStateChangedListener(new Badge.OnDragStateChangedListener() {
+            @Override
+            public void onDragStateChanged(int dragState, Badge badge, View targetView) {
+                onDragOut();
+            }
+        });
         huihua.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -439,13 +452,7 @@ public class SearchActivity extends Activity implements
         gengxin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                try {
-                    localVersion = getVersionName();
-                    CheckVersionTask cv = new CheckVersionTask();
-                    new Thread(cv).start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                checkUpdate();
             }
         });
         deletecache=(TextView)tab04.findViewById(R.id.deletecache);
@@ -541,6 +548,15 @@ public class SearchActivity extends Activity implements
         });
     }
 
+    private void checkUpdate() {
+        try {
+            localVersion = getVersionName();
+            CheckVersionTask cv = new CheckVersionTask();
+            new Thread(cv).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /*
      * 获取当前程序的版本号
@@ -596,15 +612,19 @@ public class SearchActivity extends Activity implements
             super.handleMessage(msg);
             switch (msg.what) {
                 case UPDATA_NONEED:
-                    Toast.makeText(getApplicationContext(), "已是最新版本，不需要更新",Toast.LENGTH_SHORT).show();
+                    if("false".equals(autoLogin)) {
+                        Toast.makeText(getApplicationContext(), "已是最新版本，不需要更新",Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case UPDATA_CLIENT:
                     //对话框通知用户升级程序
                     showUpdataDialog();
                     break;
                 case GET_UNDATAINFO_ERROR:
-                    //服务器超时
-                    Toast.makeText(getApplicationContext(), "获取服务器更新信息失败", Toast.LENGTH_SHORT).show();
+                    if("false".equals(autoLogin)) {
+                        //服务器超时
+                        Toast.makeText(getApplicationContext(), "获取服务器更新信息失败", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case DOWN_ERROR:
                     //下载apk失败
@@ -1406,7 +1426,7 @@ public class SearchActivity extends Activity implements
                         }
                     }
                 });
-                     RongIM.getInstance().getRongIMClient().setConnectionStatusListener(mConnectionStatusListener);
+                     RongIM.getInstance().setConnectionStatusListener(mConnectionStatusListener);
                     //RongIM.getInstance().setOnReceiveUnreadCountChangedListener(mCountListener, conversationTypes);
             }
         }, 500);
@@ -1427,6 +1447,27 @@ public class SearchActivity extends Activity implements
             }
         }
     };
+
+    public void onDragOut() {
+        if (RongIM.getInstance() != null) {
+            List<Conversation> conversationList = RongIM.getInstance().getConversationList();
+            if (conversationList != null && conversationList.size() > 0) {
+                for (Conversation c : conversationList) {
+                    RongIM.getInstance().clearMessagesUnreadStatus(c.getConversationType(), c.getTargetId(), new RongIMClient.ResultCallback<Boolean>() {
+                        @Override
+                        public void onSuccess(Boolean aBoolean) {
+
+                        }
+
+                        @Override
+                        public void onError(RongIMClient.ErrorCode errorCode) {
+
+                        }
+                    });
+                }
+            }
+        }
+    }
 
     public RongIMClient.ConnectionStatusListener mConnectionStatusListener = new RongIMClient.ConnectionStatusListener() {
 
