@@ -231,7 +231,6 @@ public class SpecificActivity extends Activity {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 // 获取输入框的内容
-                                Toast.makeText(SpecificActivity.this, usermobile.getText().toString(), Toast.LENGTH_SHORT).show();
                                 if ("".equals(usermobile.getText().toString())) {
                                     AlertDialog.Builder dialog1 = new AlertDialog.Builder(SpecificActivity.this);
                                     dialog1.setTitle("This is a warnining!");
@@ -305,9 +304,6 @@ public class SpecificActivity extends Activity {
         share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                startActivityForResult(new Intent(SpecificActivity.this,
-//                        SelectPicPopupWindow.class), 0x1);
-//                startActivity(new Intent(SpecificActivity.this, ShareSelectActivity.class));
                 Intent intent = new Intent(SpecificActivity.this, ShareSelectActivity.class);
                 intent.putExtra("title",goodsInfo.getTitle().toString() ); // 向下一个界面传递信息
                 intent.putExtra("content",goodsInfo.getContent().toString() ); // 向下一个界面传递信息

@@ -21,6 +21,7 @@ import android.widget.*;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -34,11 +35,16 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import io.rong.imkit.RongIM;
 import io.rong.imlib.RongIMClient;
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
 import com.tencent.connect.common.Constants;
@@ -60,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
     private SharedPreferences.Editor editor;
     private Dialog mDialog;
     private Tencent mTencent;
+    private byte[] data,key;
+    private BASE64Encoder base64Encoder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +102,15 @@ public class MainActivity extends AppCompatActivity {
             flag = pref.getInt("flag",0);
             headurl = pref.getString("headurl","");
             username.setText(account);
-            userpassword.setText(password);
+            try {
+                key = AES256Encryption.getKeyByPass();
+                BASE64Decoder base64decoder = new BASE64Decoder();
+                data = base64decoder.decodeBuffer(password);
+                data = AES256Encryption.decrypt(data, key);// 调用解密方法
+                userpassword.setText(new String(data));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             rememberPass.setChecked(true);
         }
         iv = (CheckBox)findViewById(R.id.iv_hide) ;   //显示、隐藏密码
@@ -139,7 +155,15 @@ public class MainActivity extends AppCompatActivity {
                     dialog.show();
                 } else {
                     mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
-                    whetherRegister(act, pasd);
+                    try {
+                        key = AES256Encryption.getKeyByPass();
+                        // 加密
+                        data = AES256Encryption.encrypt(pasd.getBytes(), key);
+                        base64Encoder = new BASE64Encoder();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    whetherRegister(act, base64Encoder.encode(data));
                 }
             }
         });
@@ -165,16 +189,12 @@ public class MainActivity extends AppCompatActivity {
                 //如果你不知道你能获得什么，看一下下面的LOG
                 Log.v("----TAG--", "-------------" + response.toString());
                 openidString = ((JSONObject) response).getString("openid");
-                //Toast.makeText(MainActivity.this, openidString, Toast.LENGTH_SHORT).show();
                 mTencent.setOpenId(openidString);
-                //saveUser("44", "text", "text", 1);
                 mTencent.setAccessToken(((JSONObject) response).getString("access_token"), ((JSONObject) response).getString("expires_in"));
-                Log.v("TAG", "-------------" + openidString);
-                //access_token= ((JSONObject) response).getString("access_token");
-                //expires_in = ((JSONObject) response).getString("expires_in");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
             /**到此已经获得OpneID以及其他你想获得的内容了
              QQ登录成功了
              sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，可以通过这个类拿到这些信息
@@ -218,9 +238,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-
     private Handler handler;
 
     {
@@ -244,7 +261,7 @@ public class MainActivity extends AppCompatActivity {
                                     if(rememberPass.isChecked()){
                                         editor.putBoolean("remember_password",true);
                                         editor.putString("account",username.getText().toString());
-                                        editor.putString("password",userpassword.getText().toString());
+                                        editor.putString("password",base64Encoder.encode(data));
                                         editor.putString("usertoken",usertoken);
                                         editor.putString("headurl",headurl);
                                         editor.putInt("flag",flag);
@@ -337,12 +354,17 @@ public class MainActivity extends AppCompatActivity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
-                Message msg = new Message();
-                msg.what = 1;
-                msg.obj = HttpUtils.connection(url).toString();
-                handler.sendMessage(msg);
-                // Handler
+                try {
+                    String account1 = URLEncoder.encode(account, "UTF-8");
+                    String password1 = URLEncoder.encode(password, "UTF-8");
+                    String url = SERVER_ADDRESS + "/dengLu.jsp?account=" + account1 + "&password=" + password1;
+                    Message msg = new Message();
+                    msg.what = 1;
+                    msg.obj = HttpUtils.connection(url).toString();
+                    handler.sendMessage(msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

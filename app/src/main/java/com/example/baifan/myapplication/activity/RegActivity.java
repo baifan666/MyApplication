@@ -40,8 +40,10 @@ public class RegActivity extends Activity {
     private String new_act, new_psd1, new_psd2, phone,name;
     private EditText new_act_edit, new_psd1_edit, new_psd2_edit, phone_edit,name_edit;
     private ImageView back;
-    private Button test,test1,register;
+    private Button register;
     private Dialog mDialog;
+    private BASE64Encoder base64Encoder;
+    private byte[] data,key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,36 +62,6 @@ public class RegActivity extends Activity {
             @Override
             public void onClick(View view) {
                 finish();
-            }
-        });
-        test = (Button)findViewById(R.id.test);
-        test1 = (Button)findViewById(R.id.test1);
-        test.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    byte[] key = AES256Encryption.getKeyByPass();
-                    // 加密
-                    byte[] data = AES256Encryption.encrypt(new_act_edit.getText().toString().getBytes(), key);
-                    BASE64Encoder base64Encoder = new BASE64Encoder();
-                    new_act_edit.setText(base64Encoder.encode(data));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        test1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try {
-                    byte[] key = AES256Encryption.getKeyByPass();
-                    BASE64Decoder base64decoder = new BASE64Decoder();
-                    byte[] data = base64decoder.decodeBuffer(new_act_edit.getText().toString());
-                    data = AES256Encryption.decrypt(data, key);// 调用解密方法
-                    new_act_edit.setText(new String(data));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
             }
         });
 
@@ -169,7 +141,15 @@ public class RegActivity extends Activity {
                 }
                 else {
                     mDialog = DialogUtils.createLoadingDialog(RegActivity.this, "注册中...");
-                    addClient(new_act, new_psd1, name, phone);
+                    try {
+                        key = AES256Encryption.getKeyByPass();
+                        // 加密
+                        data = AES256Encryption.encrypt(new_act_edit.getText().toString().getBytes(), key);
+                        base64Encoder = new BASE64Encoder();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    addClient(new_act, base64Encoder.encode(data), name, phone);
                 }
             }
         });
@@ -261,10 +241,11 @@ public class RegActivity extends Activity {
             public void run() {
                 try {
                     String a2 = URLEncoder.encode(a, "UTF-8"); // 中文转译！
+                    String p2 = URLEncoder.encode(p, "UTF-8"); // 中文转译！
                     String s2 = URLEncoder.encode(s, "UTF-8"); // 中文转译！
                     // 打开链接
                     String url = SERVER_ADDRESS+"/addUser.jsp?account=" + a2 + "&password="
-                            + p + "&name=" + s2 + "&phone=" + cell;
+                            + p2 + "&name=" + s2 + "&phone=" + cell;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = 1;

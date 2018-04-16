@@ -61,7 +61,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <EditText
+        <com.example.baifan.myapplication.utils.MaxLengthEditText
             android:drawableLeft="@drawable/yonghuming"
             android:id="@+id/new_act"
             android:layout_width="match_parent"
@@ -70,6 +70,7 @@
             android:layout_marginRight="15dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/bg_edittext"
+            android:maxLength="15"
             android:hint="请输入用户名"
             android:padding="10dp"
             android:singleLine="true"
@@ -150,30 +151,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:layout_marginTop="12dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/btn_green"
             android:text="注册"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/test"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/btn_green"
-            android:text="测试加密"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-        <Button
-            android:id="@+id/test1"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/btn_green"
-            android:text="测试解密"
             android:textSize="20dp"
             android:textStyle="bold" />
     </LinearLayout>

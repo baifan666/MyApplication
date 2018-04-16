@@ -35,8 +35,10 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.File;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -350,12 +352,17 @@ public class WelcomeActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
-                Message msg = new Message();
-                msg.what = LOGIN;
-                msg.obj = HttpUtils.connection(url).toString();
-                handler.sendMessage(msg);
-                // Handler
+                try {
+                    String account1 = URLEncoder.encode(account, "UTF-8");
+                    String password1 = URLEncoder.encode(password, "UTF-8");
+                    String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account1+ "&password=" + password1;
+                    Message msg = new Message();
+                    msg.what = LOGIN;
+                    msg.obj = HttpUtils.connection(url).toString();
+                    handler.sendMessage(msg);
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }

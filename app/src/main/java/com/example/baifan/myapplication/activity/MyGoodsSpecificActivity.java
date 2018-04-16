@@ -49,7 +49,7 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 public class MyGoodsSpecificActivity extends Activity {
     private ImageView back;
-    private TextView username,publishtime,title,content,price,location,mobile;
+    private TextView username,publishtime,title,content,price,location,mobile,issell;
     private String path1,path2,url1,url2,goodsid;
     private Button shanchu,xiugai;
     private GoodsInfo goodsInfo;
@@ -68,6 +68,7 @@ public class MyGoodsSpecificActivity extends Activity {
         Intent intent = getIntent();
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
         goodsid = goodsInfo.getId();
+        issell = (TextView)findViewById(R.id.issell);
         username = (TextView)findViewById(R.id.username);
         username.setText(goodsInfo.getUsername());
         publishtime = (TextView)findViewById(R.id.publish_time);
@@ -163,7 +164,13 @@ public class MyGoodsSpecificActivity extends Activity {
                 showDialog();
             }
         });
+
         xiugai = (Button)findViewById(R.id.xiugai);
+        if("1".equals(goodsInfo.getDeleted())) {
+            issell.setText("发布物品已售出");
+            shanchu.setEnabled(false);
+            xiugai.setEnabled(false);
+        }
         xiugai.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

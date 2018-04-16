@@ -1,6 +1,7 @@
 package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,15 +21,21 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
+import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import sun.misc.BASE64Encoder;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -40,6 +47,9 @@ public class ChangePasswordActivity extends Activity {
     private CheckBox iv1,iv2,iv3;
     private ImageView back;
     private Button btn_cancel,btn_confirm;
+    private byte[] data,key;
+    private BASE64Encoder base64Encoder;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,7 +126,16 @@ public class ChangePasswordActivity extends Activity {
                 old = oldpassword.getText().toString();
                 new1 = newpassword1.getText().toString();
                 new2 = newpassword2.getText().toString();
-                whetherRegister(username, old);
+                try {
+                    key = AES256Encryption.getKeyByPass();
+                    // 加密
+                    data = AES256Encryption.encrypt(old.getBytes(), key);
+                    base64Encoder = new BASE64Encoder();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                mDialog = DialogUtils.createLoadingDialog(ChangePasswordActivity.this, "修改中...");
+                whetherRegister(username, base64Encoder.encode(data));
             }
         });
     }
@@ -143,8 +162,17 @@ public class ChangePasswordActivity extends Activity {
                                 });
                                 dialog.show();
                             }else {
-                                changePassword(username,new1);
+                                try {
+                                    key = AES256Encryption.getKeyByPass();
+                                    // 加密
+                                    data = AES256Encryption.encrypt(new1.getBytes(), key);
+                                    base64Encoder = new BASE64Encoder();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                changePassword(username,base64Encoder.encode(data));
                             }
+                            DialogUtils.closeDialog(mDialog);
                         }
                         else {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(ChangePasswordActivity.this);
@@ -158,6 +186,7 @@ public class ChangePasswordActivity extends Activity {
                             });
                             dialog.show();
                         }
+                        DialogUtils.closeDialog(mDialog);
                         break;
                     case 2:
                         String response1 = (String) msg.obj;
@@ -183,6 +212,7 @@ public class ChangePasswordActivity extends Activity {
                             });
                             dialog.show();
                         }
+                        DialogUtils.closeDialog(mDialog);
                         break;
                     default:
                         break;
@@ -214,12 +244,18 @@ public class ChangePasswordActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
-                Message msg = new Message();
-                msg.what = 1;
-                msg.obj = HttpUtils.connection(url).toString();
-                handler.sendMessage(msg);
-                // Handler
+                try {
+                    String account1 = URLEncoder.encode(account, "UTF-8");
+                    String password1 = URLEncoder.encode(password, "UTF-8");
+                    String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account1+ "&password=" + password1;
+                    Message msg = new Message();
+                    msg.what = 1;
+                    msg.obj = HttpUtils.connection(url).toString();
+                    handler.sendMessage(msg);
+                    // Handler
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
