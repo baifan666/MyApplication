@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -29,6 +30,9 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 
+import sun.misc.BASE64Decoder;
+import sun.misc.BASE64Encoder;
+
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class RegActivity extends Activity {
@@ -36,6 +40,7 @@ public class RegActivity extends Activity {
     private String new_act, new_psd1, new_psd2, phone,name;
     private EditText new_act_edit, new_psd1_edit, new_psd2_edit, phone_edit,name_edit;
     private ImageView back;
+    private Button test,test1,register;
     private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,38 @@ public class RegActivity extends Activity {
                 finish();
             }
         });
-        Button register = (Button) findViewById(R.id.register); //注册按钮
+        test = (Button)findViewById(R.id.test);
+        test1 = (Button)findViewById(R.id.test1);
+        test.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    byte[] key = AES256Encryption.getKeyByPass();
+                    // 加密
+                    byte[] data = AES256Encryption.encrypt(new_act_edit.getText().toString().getBytes(), key);
+                    BASE64Encoder base64Encoder = new BASE64Encoder();
+                    new_act_edit.setText(base64Encoder.encode(data));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        test1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    byte[] key = AES256Encryption.getKeyByPass();
+                    BASE64Decoder base64decoder = new BASE64Decoder();
+                    byte[] data = base64decoder.decodeBuffer(new_act_edit.getText().toString());
+                    data = AES256Encryption.decrypt(data, key);// 调用解密方法
+                    new_act_edit.setText(new String(data));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        register = (Button) findViewById(R.id.register); //注册按钮
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
