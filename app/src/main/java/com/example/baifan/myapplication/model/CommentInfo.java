@@ -12,7 +12,7 @@ public class CommentInfo {
     private String local;
     private String content;
     private String commenttime;
-    private String replayed;
+    private String replyed;
 
     public String getCommentid() {
         return commentid;
@@ -56,16 +56,16 @@ public class CommentInfo {
     public void setCommenttime(String commenttime) {
         this.commenttime = commenttime;
     }
-    public String getReplayed() {
-        return replayed;
+    public String getReplyed() {
+        return replyed;
     }
-    public void setReplayed(String replayed) {
-        this.replayed = replayed;
+    public void setReplyed(String replyed) {
+        this.replyed = replyed;
     }
 
     public CommentInfo( String commentid,String username,String goodsid,
                         String headurl,String local,String content,
-                        String commenttime,String replayed) {
+                        String commenttime,String replyed) {
         this.commentid = commentid;
         this.username = username;
         this.goodsid = goodsid;
@@ -73,6 +73,6 @@ public class CommentInfo {
         this.local = local;
         this.content = content;
         this.commenttime = commenttime;
-        this.replayed = replayed;
+        this.replyed = replyed;
     }
 }

@@ -265,9 +265,6 @@ public class MyGoodsSpecificActivity extends Activity {
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(MyGoodsSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-            }
             DialogUtils.closeDialog(mDialog);
             DialogUtils.closeDialog(mDialog1);
             // important to return false so the error placeholder can be placed

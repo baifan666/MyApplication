@@ -226,21 +226,16 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-                    <TextView
+                    android:orientation="horizontal"
+                    android:gravity="right">
+                    <ImageView
                         android:id="@+id/comment"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawableLeft="@drawable/mobile"
-                        android:layout_marginLeft="10dp"
+                        android:layout_width="66dp"
+                        android:layout_height="36dp"
                         android:layout_marginTop="4dp"
                         android:layout_marginRight="10dp"
                         android:layout_marginBottom="2dp"
-                        android:textSize="16dp"
-                        android:singleLine="false"
-                        android:layout_gravity="center"
-                        android:autoLink="phone"
-                        android:text="评论"/>
+                        android:background="@drawable/comment"/>
                 </LinearLayout>
             </LinearLayout>
         </ScrollView>

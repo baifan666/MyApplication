@@ -68,7 +68,6 @@ public class PrizeAdapter extends ArrayAdapter<PrizeInfo>{
         TextView number = ( TextView )view.findViewById(R.id.number);
 
        Glide.with(context).load(url).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
-               .listener( requestListener )
                .error(R.drawable.error)//图片加载失败后，显示的图片
                .into(img);
         prizename.setText(info.getPrizename());
@@ -77,19 +76,4 @@ public class PrizeAdapter extends ArrayAdapter<PrizeInfo>{
         Log.d("resultStr", info.getPictureurl()+info.getPrizename());
         return view;
     }
-    //设置错误监听
-    private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
-        @Override
-        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(context,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-            }
-            // important to return false so the error placeholder can be placed
-            return false;
-        }
-        @Override
-        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            return false;
-        }
-    };
 }

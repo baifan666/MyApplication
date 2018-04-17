@@ -35,34 +35,35 @@
                 android:layout_marginTop="4dp">
                 <!--昵称-->
                 <TextView
-                    android:id="@+id/iam_tv_reply"
+                    android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:text="1314****0201"
                     android:textColor="#000"
-                    android:textSize="12dp"/>
+                    android:textSize="14dp"/>
                 <!--回复两字-->
                 <TextView
-                    android:id="@+id/iam_tv_huifu"
+                    android:id="@+id/tv_huifu"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:text=""
                     android:textColor="#f11414"
-                    android:textSize="12dp"/>
+                    android:textSize="14dp"/>
                 <!--回复了谁-->
                 <TextView
-                    android:id="@+id/iam_tv_replyed"
+                    android:id="@+id/tousername"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
-                    android:text="张三"
+                    android:text="   "
                     android:textColor="#0b0b0b"
-                    android:textSize="12dp"/>
+                    android:textSize="14dp"/>
+
             </LinearLayout>
 
             <LinearLayout
@@ -72,18 +73,18 @@
                 android:layout_marginTop="4dp">
                 <!--位置-->
                 <TextView
-                    android:id="@+id/iam_tv_local"
+                    android:id="@+id/local"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="4dp"
                     android:layout_marginTop="4dp"
                     android:text="浙江农林大学"
                     android:textColor="#c6c4c4"
-                    android:textSize="8dp"/>
+                    android:textSize="10dp"/>
             </LinearLayout>
             <!--评论内容-->
             <TextView
-                android:id="@+id/iam_tv_content"
+                android:id="@+id/content"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
@@ -93,17 +94,33 @@
                 android:minLines="1"
                 android:text="呀呀呀呀呀，真不错"
                 android:textColor="#000"
-                android:textSize="12dp"/>
+                android:textSize="16dp"/>
             <!--评论时间-->
-            <TextView
-                android:id="@+id/iam_tv_time"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="2dp">
+            <TextView
+                android:id="@+id/commenttime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:layout_marginLeft="4dp"
-                android:layout_marginTop="4dp"
                 android:text="2016-05-26 11:56:36"
                 android:textColor="#c6c4c4"
-                android:textSize="8dp"/>
+                android:textSize="10dp"/>
+            <!--删除评论-->
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="4dp"
+                android:focusable="false"
+                android:gravity="right"
+                android:scaleType="fitXY"/>
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>

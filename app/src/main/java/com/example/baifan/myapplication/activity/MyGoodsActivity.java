@@ -132,6 +132,7 @@ public class MyGoodsActivity extends Activity {
             String location = "";
             String path1 = "";
             String path2 = "";
+            String deleted = "";
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 result += nodeName;
@@ -179,14 +180,17 @@ public class MyGoodsActivity extends Activity {
                             String path2Str = parse.nextText();
                             result += "地址2" + path2Str + ", ";
                             path2 = path2Str;
+                        }else if ("deleted".equals(nodeName)) {
+                            String deletedStr = parse.nextText();
+                            result += "标记" + deletedStr + ", ";
+                            deleted = deletedStr;
                         }
-
                         break;
                     case XmlPullParser.END_TAG:
                         result += " \n ";
                         Log.d("end_tag", "节点结束");
                         // 添加数据
-                        GoodsInfo info = new GoodsInfo(id, username, title, publish_time, content, price, mobile, location, path1, path2);
+                        GoodsInfo info = new GoodsInfo(id, username, title, publish_time, content, price, mobile, location, path1, path2, deleted);
                         goodsdata.add(info);
                         break;
                     default:

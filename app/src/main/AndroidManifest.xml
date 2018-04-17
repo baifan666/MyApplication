@@ -256,6 +256,7 @@
         <activity android:name=".activity.AlterPrizeActivity" />
         <activity android:name=".activity.UserActivity" />
         <activity android:name=".activity.WeatherActivity" />
+        <activity android:name=".activity.CommentActivity"></activity>
     </application>
 
 </manifest>

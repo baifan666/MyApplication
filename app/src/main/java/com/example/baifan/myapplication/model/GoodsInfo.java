@@ -108,7 +108,23 @@ public class GoodsInfo implements Serializable {
 
     // 对应列表中显示的物品
     public GoodsInfo(String id, String username,String title,String publish_time,String content,
-                double price, String mobile, String location, String path1,String path2) {
+                double price, String mobile, String location, String path1,String path2,String deleted) {
+        this.id = id;
+        this.username= username;
+        this.title = title;
+        this.publish_time = publish_time;
+        this.content = content;
+        this.price = price;
+        this.mobile = mobile;
+        this.location = location;
+        this.path1 = path1;
+        this.path2 = path2;
+        this.deleted = deleted;
+    }
+
+    // 对应列表中显示的物品
+    public GoodsInfo(String id, String username,String title,String publish_time,String content,
+                     double price, String mobile, String location, String path1,String path2) {
         this.id = id;
         this.username= username;
         this.title = title;

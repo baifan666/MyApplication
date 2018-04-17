@@ -26,12 +26,6 @@ import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
-import com.baidu.mapapi.map.MapStatus;
-import com.baidu.mapapi.map.MapStatusUpdateFactory;
-import com.baidu.mapapi.map.MarkerOptions;
-import com.baidu.mapapi.map.MyLocationData;
-import com.baidu.mapapi.map.OverlayOptions;
-import com.baidu.mapapi.model.LatLng;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -65,8 +59,8 @@ import static com.youth.banner.BannerConfig.CIRCLE_INDICATOR;
 
 
 public class SpecificActivity extends Activity {
-    private ImageView back,share;
-    private TextView username,publishtime,title,content,price,location,mobile,comment;
+    private ImageView back,share,comment;
+    private TextView username,publishtime,title,content,price,location,mobile;
     private EditText usermobile;
     private String account,path1,path2,url1="",url2="",result,buyermobile,headurl;
     private Button conversation,buy;
@@ -313,7 +307,16 @@ public class SpecificActivity extends Activity {
             }
         });
 
-        comment = (TextView)findViewById(R.id.comment);
+        comment = (ImageView) findViewById(R.id.comment);
+        comment.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SpecificActivity.this, CommentActivity.class);
+                intent.putExtra("account",account); // 向下一个界面传递信息
+                intent.putExtra("goodsid",goodsInfo.getId()); // 向下一个界面传递信息
+                startActivity(intent);
+            }
+        });
         mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
         //配置定位SDK参数
         initLocation();
@@ -371,7 +374,6 @@ public class SpecificActivity extends Activity {
                 Toast.makeText(SpecificActivity.this, "手机模式错误，请检查是否飞行", Toast.LENGTH_SHORT).show();
             }
             String addr = location.getAddrStr();    //获取详细地址信息
-            comment.setText(addr);
         }
     }
 
