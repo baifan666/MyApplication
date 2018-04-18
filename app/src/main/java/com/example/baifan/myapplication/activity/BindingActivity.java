@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -27,6 +28,10 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
+import sun.misc.BASE64Encoder;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -40,6 +45,9 @@ public class BindingActivity extends Activity {
     private final int GET_USEROPENID = 1;
     private final int ISRIGHT = 2;
     private final int SET_OPENID = 3;
+    private byte[] data,key;
+    private BASE64Encoder base64Encoder;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -134,12 +142,17 @@ public class BindingActivity extends Activity {
         new Thread(new Runnable() { // 开启子线程
             @Override
             public void run() {
-                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account+ "&password=" + password;
+                try {
+                    String account1 = URLEncoder.encode(account, "UTF-8");
+                    String password1 = URLEncoder.encode(password, "UTF-8");
+                String url = SERVER_ADDRESS+"/dengLu.jsp?account=" + account1+ "&password=" + password1;
                 Message msg = new Message();
                 msg.what = ISRIGHT;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
-                // Handler
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
             }
         }).start();
     }
@@ -152,8 +165,16 @@ public class BindingActivity extends Activity {
                     case GET_USEROPENID:
                         String response = (String) msg.obj;
                         parserXml(response);
+                        try {
+                            key = AES256Encryption.getKeyByPass();
+                            // 加密
+                            data = AES256Encryption.encrypt(psd.getBytes(), key);
+                            base64Encoder = new BASE64Encoder();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                         if ("0".equals(useropenid)) {
-                            whetherRegister(act,psd);
+                            whetherRegister(act,base64Encoder.encode(data));
                         }else {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(BindingActivity.this);
                             dialog.setTitle("This is a warnining!");

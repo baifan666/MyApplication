@@ -75,20 +75,18 @@
     <LinearLayout
         android:id="@+id/am_ll_liuyan"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_height="48dp"
+
         android:background="#F0F3F6"
         android:orientation="horizontal">
         <!-- 输入框 -->
         <EditText
-            android:id="@+id/am_et_msg"
+            android:id="@+id/content"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
             android:layout_weight="1"
             android:background="#FFFFFF"
             android:gravity="center_vertical"
@@ -98,11 +96,10 @@
             android:minHeight="40dp" />
         <!-- 留言按钮 -->
         <Button
-            android:id="@+id/am_b_save"
+            android:id="@+id/add"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_gravity="bottom"
-            android:layout_marginBottom="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/btn_green"
             android:text="评论"

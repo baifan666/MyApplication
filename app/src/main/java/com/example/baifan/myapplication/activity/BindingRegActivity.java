@@ -18,6 +18,7 @@ import android.widget.ImageView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -29,6 +30,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 
+import sun.misc.BASE64Encoder;
+
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class BindingRegActivity extends Activity {
@@ -38,6 +41,8 @@ public class BindingRegActivity extends Activity {
     private String new_act, new_psd1, new_psd2, phone,name;
     private EditText new_act_edit, new_psd1_edit, new_psd2_edit, phone_edit,name_edit;
     private Button reg;
+    private BASE64Encoder base64Encoder;
+    private byte[] data,key;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +141,15 @@ public class BindingRegActivity extends Activity {
                 }
                 else {
                     mDialog = DialogUtils.createLoadingDialog(BindingRegActivity.this, "注册中...");
-                    addQQCUser(new_act, new_psd1, name, phone,openid,headurl);
+                    try {
+                        key = AES256Encryption.getKeyByPass();
+                        // 加密
+                        data = AES256Encryption.encrypt(new_act_edit.getText().toString().getBytes(), key);
+                        base64Encoder = new BASE64Encoder();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    addQQCUser(new_act, base64Encoder.encode(data), name, phone,openid,headurl);
                 }
             }
         });

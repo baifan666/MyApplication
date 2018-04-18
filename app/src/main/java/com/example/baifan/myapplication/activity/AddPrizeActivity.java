@@ -301,10 +301,6 @@ public class AddPrizeActivity extends Activity {
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-//                                // 物品新增成功后 跳转至界面
-//                                Intent intent = new Intent(AlterGoodsActivity.this, SearchActivity.class);
-//                                intent.putExtra("account", account);
-//                                startActivity(intent);
                                 finish();
                             }
                         });

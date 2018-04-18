@@ -261,7 +261,11 @@ public class MainActivity extends AppCompatActivity {
                                     if(rememberPass.isChecked()){
                                         editor.putBoolean("remember_password",true);
                                         editor.putString("account",username.getText().toString());
-                                        editor.putString("password",base64Encoder.encode(data));
+                                        if(TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
+                                            editor.putString("password",base64Encoder.encode(data));
+                                        } else {
+                                            editor.putString("password",upassword);
+                                        }
                                         editor.putString("usertoken",usertoken);
                                         editor.putString("headurl",headurl);
                                         editor.putInt("flag",flag);
