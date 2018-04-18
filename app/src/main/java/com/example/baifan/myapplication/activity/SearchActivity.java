@@ -19,6 +19,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +58,7 @@ import android.net.Uri;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.bumptech.glide.Glide;
+import com.example.baifan.myapplication.common.Config;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -176,6 +178,7 @@ public class SearchActivity extends Activity implements
         mDialog = DialogUtils.createLoadingDialog(SearchActivity.this, "加载中...");
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
+        Config.setU(account);
         headurl = intent.getStringExtra("headurl");
         autoLogin = intent.getStringExtra("autologin");
         if("true".equals(autoLogin)) {
@@ -975,8 +978,6 @@ public class SearchActivity extends Activity implements
         mSettingImg.setImageResource(R.drawable.wode);
     }
 
-
-
     @Override
     public void onBackPressed() {
         if(isback){
@@ -989,7 +990,6 @@ public class SearchActivity extends Activity implements
             isback=true;
         }
     }
-
 
     /*
          * Dialog对话框提示用户删除操作 position为删除图片位置

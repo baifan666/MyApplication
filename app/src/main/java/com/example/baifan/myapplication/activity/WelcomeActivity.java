@@ -85,11 +85,7 @@ public class WelcomeActivity extends Activity {
         }else {
             checkUpdate();
         }
-        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
-            //结束你的activity
-            finish();
-            return;
-        }
+
     }
 
     private void checkUpdate() {

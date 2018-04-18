@@ -36,11 +36,10 @@
 
 
     <com.scwang.smartrefresh.layout.SmartRefreshLayout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="8"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
         android:background="#F0F3F6"
         app:srlPrimaryColor="@color/colorPrimary"
         app:srlAccentColor="@android:color/white"
@@ -62,7 +61,7 @@
             <TextView
                 android:id="@+id/myText"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="20dp"
                 android:text="暂无评论"/>
@@ -72,19 +71,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
     </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+
     <LinearLayout
         android:id="@+id/am_ll_liuyan"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="1"
-        android:background="#CCCCCC"
+        android:background="#F0F3F6"
         android:orientation="horizontal">
         <!-- 输入框 -->
         <EditText
             android:id="@+id/am_et_msg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="bottom"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
@@ -95,16 +95,17 @@
             android:inputType="textMultiLine"
             android:maxLength="100"
             android:maxLines="6"
-            android:minHeight="40dp"/>
-    <!-- 留言按钮 -->
-    <Button
-        android:id="@+id/am_b_save"
-        android:layout_width="80dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center_vertical"
-        android:layout_marginRight="10dp"
-        android:background="@drawable/btn_green"
-        android:text="评论"
-        android:textColor="#000000"/>
-</LinearLayout>
+            android:minHeight="40dp" />
+        <!-- 留言按钮 -->
+        <Button
+            android:id="@+id/am_b_save"
+            android:layout_width="80dp"
+            android:layout_height="40dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_green"
+            android:text="评论"
+            android:textColor="#000000" />
+    </LinearLayout>
 </LinearLayout>
