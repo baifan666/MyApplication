@@ -56,8 +56,8 @@ public class MainActivity extends AppCompatActivity {
     private EditText username, userpassword;
     private Button btnlogin;
     private ImageView qq_login;
-    private  CheckBox iv;
-    private TextView reg;
+    private CheckBox iv;
+    private TextView reg,forget;
     private String act, pasd;
     private String usertoken,result,tuichu,openidString,uname,upassword,headurl,urlpath;   //urlpath存储QQ登陆获取到的头像连接，headurl存储服务器读出的头像连接
     private int flag;
@@ -68,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private Tencent mTencent;
     private byte[] data,key;
     private BASE64Encoder base64Encoder;
+    private int isQQLogin = 0;  //是否qq登陆，标记，qq登陆置为1
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
         boolean isCheck = pref.getBoolean("autologin",false);
         if("0".equals(tuichu)) {
             isCheck = false;
+            editor.putBoolean("autologin",false);
+            autologin.setChecked(false);
         }
         if(isRemenber){
             //将账号和密码都设置到文本中
@@ -177,6 +180,16 @@ public class MainActivity extends AppCompatActivity {
                 mTencent.login(MainActivity.this,"all",new BaseUiListener());
             }
         });
+
+        forget = (TextView)findViewById(R.id.forget);
+        forget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent=new Intent();
+                intent.setClass(MainActivity.this, ForgetActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private class BaseUiListener implements IUiListener {
@@ -258,26 +271,45 @@ public class MainActivity extends AppCompatActivity {
                                 public void onSuccess(String userid) {
                                     DialogUtils.closeDialog(mDialog);
                                     editor=pref.edit();
-                                    if(rememberPass.isChecked()){
-                                        editor.putBoolean("remember_password",true);
-                                        editor.putString("account",username.getText().toString());
-                                        if(TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
-                                            editor.putString("password",base64Encoder.encode(data));
+                                    if(isQQLogin == 0 ) {
+                                        if (rememberPass.isChecked()) {
+                                            editor.putBoolean("remember_password", true);
+                                            editor.putString("account", username.getText().toString());
+                                            if (TextUtils.isEmpty(uname) || "null".equals(uname)) {   //uname为空说明是直接用账号名密码登陆
+                                                editor.putString("password", base64Encoder.encode(data));
+                                            } else {
+                                                editor.putString("password", upassword);
+                                            }
+                                            editor.putString("usertoken", usertoken);
+                                            editor.putString("headurl", headurl);
+                                            editor.putInt("flag", flag);
+                                            if (autologin.isChecked()) {
+                                                editor.putBoolean("autologin", true);
+                                            } else {
+                                                editor.putBoolean("autologin", false);
+                                            }
                                         } else {
-                                            editor.putString("password",upassword);
+                                            editor.clear();
                                         }
-                                        editor.putString("usertoken",usertoken);
-                                        editor.putString("headurl",headurl);
-                                        editor.putInt("flag",flag);
-                                        if(autologin.isChecked()) {
-                                            editor.putBoolean("autologin",true);
-                                        }else {
-                                            editor.putBoolean("autologin",false);
+                                        editor.apply();
+                                    }else if (isQQLogin == 1) {
+                                        if (rememberPass.isChecked()) {
+                                            editor.putBoolean("remember_password", true);
+                                            editor.putString("account", uname);
+                                            editor.putString("password", upassword);
+                                            editor.putString("usertoken", usertoken);
+                                            editor.putString("headurl", headurl);
+                                            editor.putInt("flag", flag);
+                                            if (autologin.isChecked()) {
+                                                editor.putBoolean("autologin", true);
+                                            } else {
+                                                editor.putBoolean("autologin", false);
+                                            }
+                                        } else {
+                                            editor.clear();
                                         }
-                                    }else {
-                                        editor.clear();
+                                        editor.apply();
                                     }
-                                    editor.apply();
                                     Log.d("MainActivity", "--onSuccess--" + userid);
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
@@ -329,6 +361,7 @@ public class MainActivity extends AppCompatActivity {
                             dialog.show();
                         }
                         result = "";
+                        isQQLogin = 0;
                         break;
                     case 2:
                         String response1 = (String) msg.obj;
@@ -341,6 +374,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }else {
                             mDialog = DialogUtils.createLoadingDialog(MainActivity.this, "登陆中...");
+                            isQQLogin = 1;
                             whetherRegister(uname, upassword);
                         }
                         break;

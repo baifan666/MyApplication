@@ -100,7 +100,7 @@ public class AlterGoodsActivity extends Activity {
         url2 = intent.getStringExtra("url2");
         path1 = intent.getStringExtra("path1");
         path2 = intent.getStringExtra("path2");
-        if(!"".equals(url1)) {
+        if(!TextUtils.isEmpty(url1)) {
             mDialog1 = DialogUtils.createLoadingDialog(AlterGoodsActivity.this, "加载中...");
             images.add(url1);
         }

@@ -76,6 +76,9 @@ public class NoticeSpecificActivity extends Activity {
                     if(TextUtils.isEmpty(elements.text())) {
                         elements = doc.select("#vsb_content > font > p");
                     }
+                    if(TextUtils.isEmpty(elements.text())) {
+                        elements = doc.select("#vsb_content > span > span > p");
+                    }
                     for (Element element : elements) {
                         str += element.text();
                         str +="\n";
