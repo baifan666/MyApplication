@@ -42,12 +42,12 @@ public class CommentAdapter extends ArrayAdapter<CommentInfo> {
         final CommentInfo info = getItem(position);
         // 获取视图
         View view;
-        if(convertView == null){
+//        if(convertView == null){
             view = LayoutInflater.from(getContext()).inflate(resourceId,null);
-        }
-        else{
-            view = convertView;
-        }
+//        }
+//        else {
+//            view = convertView;
+//        }
         // 头像
         CircleImageView head = ( CircleImageView )view.findViewById(R.id.head);
         // 评论人
@@ -64,13 +64,16 @@ public class CommentAdapter extends ArrayAdapter<CommentInfo> {
         TextView commenttime = (TextView)view.findViewById(R.id.commenttime);
         //删除
         ImageView delete = (ImageView)view.findViewById(R.id.delete);
-        if ((info.getUsername().toString()).equals(user)) {
-            delete.setImageResource(R.drawable.delete);
-        }
+
         Glide.with(context).load(info.getHeadurl()).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                 .error(R.drawable.error)//图片加载失败后，显示的图片
                 .into(head);
         username.setText(info.getUsername().toString());
+        if ((username.getText().toString()).equals(user)) {
+            delete.setImageResource(R.drawable.delete);
+        }else {
+            delete.setVisibility(View.GONE);
+        }
         if (TextUtils.isEmpty(info.getReplyed().toString())) {
             tousername.setText("");
             tv_huifu.setText("");
@@ -84,7 +87,7 @@ public class CommentAdapter extends ArrayAdapter<CommentInfo> {
         delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mOnItemDeleteListener.onDeleteClick(info.getCommentid().toString());
+                mOnItemDeleteListener.onDeleteClick(info.getCommentid());
             }
         });
 

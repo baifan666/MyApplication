@@ -30,7 +30,6 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.CommentAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.CommentInfo;
-import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -98,6 +97,7 @@ public class CommentActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 CommentInfo commentInfo = comentsdata.get(position);
                 if(username.equals(commentInfo.getUsername().toString())) {
+                    content.setHint("");
                 }else {
                     content.setHint("回复: "+commentInfo.getUsername().toString());
                     replyed = commentInfo.getUsername().toString();
@@ -135,6 +135,7 @@ public class CommentActivity extends Activity {
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                startrow = 0;
                 readAll(goodsid,startrow); //从服务端读取所有物品
                 commentAdapter.notifyDataSetChanged();
             }
@@ -145,6 +146,7 @@ public class CommentActivity extends Activity {
                 num1 = comentsdata.size();
                 startrow = startrow+10;
                 readAll(goodsid,startrow); //从服务端读取接下来的10个数据
+                commentAdapter.notifyDataSetChanged();
             }
         });
 

@@ -201,7 +201,6 @@ public class SearchActivity extends Activity implements
                 startrow = 0;
                 readAll(startrow); //从服务端读取所有物品
                 goodsadapter.notifyDataSetChanged();
-                //refreshlayout.finishRefresh(2000);
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
@@ -210,7 +209,6 @@ public class SearchActivity extends Activity implements
                 num1 = goodsdata.size();
                 startrow = startrow+10;
                 readAll(startrow); //从服务端读取接下来的10个数据
-                //refreshlayout.finishLoadmore(2000);
             }
         });
 
