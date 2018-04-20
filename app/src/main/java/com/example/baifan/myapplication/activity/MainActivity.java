@@ -312,7 +312,6 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
-                                        Toast.makeText(MainActivity.this, isQQLogin+";"+uname, Toast.LENGTH_SHORT).show();
                                         RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
                                         //获取当前时间

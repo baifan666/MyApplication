@@ -58,6 +58,7 @@ import android.net.Uri;
 import com.baidu.android.pushservice.PushConstants;
 import com.baidu.android.pushservice.PushManager;
 import com.bumptech.glide.Glide;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.common.Config;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
@@ -485,6 +486,7 @@ public class SearchActivity extends Activity implements
                 Intent intent=new Intent();
                 intent.setClass(SearchActivity.this, AccountManagementActivity.class);
                 intent.putExtra("username",account); // 向下一个界面传递信息
+                intent.putExtra("headurl",headurl);
                 startActivityForResult(intent,0x3);
             }
         });
@@ -754,8 +756,26 @@ public class SearchActivity extends Activity implements
         //当点确定按钮时从服务器上下载 新的apk 然后安装
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.i(TAG,"下载apk,更新");
-                downLoadApk();
+                if(App.getNetType() == 0) {
+                    AlertDialog.Builder builer1 = new AlertDialog.Builder(SearchActivity.this);
+                    builer1.setTitle("提醒");
+                    builer1.setMessage("当前处于非WIFI网络，点击更新将消耗流量，是否确定进行更新？");
+                    //当点确定按钮时
+                    builer1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            downLoadApk();
+                        }
+                    });
+                    //当点取消按钮时
+                    builer1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    AlertDialog dialog1 = builer1.create();
+                    dialog1.show();
+                }else {
+                    downLoadApk();
+                }
             }
         });
         //当点取消按钮时进行登录

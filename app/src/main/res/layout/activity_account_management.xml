@@ -62,6 +62,17 @@
         </LinearLayout>
         <View style="@style/bg_line"/>
         <!-- 无圆角-->
+        <LinearLayout style="@style/mid_layout"
+            android:id="@+id/unbund">
+            <TextView style="@style/usertext"
+                android:id="@+id/unbunding"
+                android:drawableLeft="@drawable/unbundling"
+                android:clickable="true"
+                android:text="解绑QQ" />
+            <ImageView style="@style/img_arrow"/>
+        </LinearLayout>
+        <View style="@style/bg_line"/>
+        <!-- 无圆角-->
         <LinearLayout style="@style/mid_layout">
             <TextView style="@style/usertext"
                 android:id="@+id/zhuangtai"

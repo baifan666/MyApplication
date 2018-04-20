@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,9 +43,10 @@ import io.rong.imlib.RongIMClient;
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
 public class AccountManagementActivity extends Activity {
-    private TextView exitapp,updatepassword,binding,isbinding;
-    private String account,uname,headurl;
+    private TextView exitapp,updatepassword,binding,isbinding,unbunding;
+    private String account,uname,headurl,urlpath;       //urlpath存放前一界面头像链接，headurl存放数据库查询头像链接
     private ImageView back;
+    private LinearLayout unbund;
     private Dialog mDialog;
     private String openid,openidString,result;
     private Tencent mTencent;
@@ -61,6 +63,7 @@ public class AccountManagementActivity extends Activity {
         ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         account = intent.getStringExtra("username");
+        urlpath = intent.getStringExtra("headurl");
         back = (ImageView) findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +144,10 @@ public class AccountManagementActivity extends Activity {
             }
         });
         mDialog = DialogUtils.createLoadingDialog(AccountManagementActivity.this, "加载中...");
-        getOpenid(account);
+        unbund = (LinearLayout)findViewById(R.id.unbund);
         binding = (TextView) findViewById(R.id.binding);
+        unbunding = (TextView)findViewById(R.id.unbunding);
+        getOpenid(account);
         //QQ第三方登录
         mTencent = Tencent.createInstance("101466661", getApplicationContext());//将101466661为自己的AppID
         binding.setOnClickListener(new View.OnClickListener() {
@@ -150,6 +155,29 @@ public class AccountManagementActivity extends Activity {
             public void onClick(View view) {
                 //get_simple_userinfo
                 mTencent.login(AccountManagementActivity.this, "all", new BaseUiListener());
+            }
+        });
+
+        unbunding.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                android.support.v7.app.AlertDialog.Builder dialog = new android.support.v7.app.AlertDialog.Builder(AccountManagementActivity.this);
+                dialog.setTitle("提示");
+                dialog.setMessage("确定要解除绑定吗?");
+                dialog.setCancelable(false);
+                dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        headurl = urlpath;
+                        setOpenid(account,"0",urlpath);
+                    }
+                });
+                //当点取消按钮时
+                dialog.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
             }
         });
     }
@@ -311,6 +339,7 @@ public class AccountManagementActivity extends Activity {
                         if("0".equals(openid)) {
                             isbinding.setText("未绑定");
                             binding.setEnabled(true);
+                            unbund.setVisibility(View.GONE);
                         }else {
                             isbinding.setText("已绑定");
                             binding.setEnabled(false);
@@ -331,7 +360,7 @@ public class AccountManagementActivity extends Activity {
                         String response2 = (String) msg.obj;
                         parserXml(response2);
                         if("succeessful".equals(result)) {
-                            Toast.makeText(AccountManagementActivity.this, "绑定成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(AccountManagementActivity.this, "操作成功", Toast.LENGTH_SHORT).show();
                             RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(account, account, Uri.parse(headurl)));
                             DialogUtils.closeDialog(mDialog);
                             Intent intent=new Intent();
@@ -344,7 +373,7 @@ public class AccountManagementActivity extends Activity {
                             dialog.setTitle("This is a warnining!");
                             dialog.setMessage("当前网络不稳定，请稍后再试");
                             dialog.setCancelable(false);
-                            dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            dialog.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                 }

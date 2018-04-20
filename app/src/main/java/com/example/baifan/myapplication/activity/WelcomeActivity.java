@@ -22,6 +22,7 @@ import android.view.Window;
 import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.UpdataInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -274,8 +275,26 @@ public class WelcomeActivity extends Activity {
         //当点确定按钮时从服务器上下载 新的apk 然后安装
         builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Log.i(TAG,"下载apk,更新");
-                downLoadApk();
+                if(App.getNetType() == 0) {
+                    AlertDialog.Builder builer1 = new AlertDialog.Builder(WelcomeActivity.this);
+                    builer1.setTitle("提醒");
+                    builer1.setMessage("当前处于非WIFI网络，点击更新将消耗流量，是否确定进行更新？");
+                    //当点确定按钮时
+                    builer1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            downLoadApk();
+                        }
+                    });
+                    //当点取消按钮时
+                    builer1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    });
+                    AlertDialog dialog1 = builer1.create();
+                    dialog1.show();
+                }else {
+                    downLoadApk();
+                }
             }
         });
         //当点取消按钮时进行登录

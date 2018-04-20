@@ -1,23 +1,34 @@
 package com.example.baifan.myapplication.application;
 
+import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.app.Application;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
-import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
+import android.os.Build;
+import android.provider.Settings;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.baifan.myapplication.R;
+import com.example.baifan.myapplication.activity.AccountManagementActivity;
 import com.example.baifan.myapplication.activity.MainActivity;
-import com.example.baifan.myapplication.activity.SearchActivity;
 import com.example.baifan.myapplication.common.Config;
 import com.example.baifan.myapplication.utils.AppFrontBackHelper;
 import com.example.baifan.myapplication.utils.MyConversationBehaviorListener;
+import com.example.baifan.myapplication.utils.NetBroadcastReceiver;
+import com.example.baifan.myapplication.utils.NetUtil;
 import com.tencent.smtt.sdk.QbSdk;
+
+import java.util.List;
 
 import io.rong.imkit.RongIM;
 
@@ -25,11 +36,22 @@ import io.rong.imkit.RongIM;
  * Created by baifan on 2018/2/13.
  */
 
-public class App extends Application {
+public class App extends Application implements NetBroadcastReceiver.NetChangeListener{
     private static Context mContext;
+    public static NetBroadcastReceiver.NetChangeListener listener;
+    private AlertDialog dialog = null;
+    private NetBroadcastReceiver netBroadcastReceiver;;
+    /**
+     * 网络类型
+     */
+    private static int netType;
 
     public static Context getContext() {
         return mContext;
+    }
+
+    public static int getNetType() {
+        return netType;
     }
 
     @Override
@@ -61,6 +83,124 @@ public class App extends Application {
             }
         });
 
+        String curProcessName = getProcessName(mContext, android.os.Process.myPid());
+        if(curProcessName != null && curProcessName.equalsIgnoreCase(mContext.getPackageName())){
+            //初始化主线程资源
+            listener = this;
+            //Android 7.0以上需要动态注册
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                //实例化IntentFilter对象
+                IntentFilter filter = new IntentFilter();
+                filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+                netBroadcastReceiver = new NetBroadcastReceiver();
+                //注册广播接收
+                registerReceiver(netBroadcastReceiver, filter);
+            }
+            checkNet();
+        }else{
+            //初始化其它进程的资源
+        }
+    }
+
+    /**
+     * 初始化时判断有没有网络
+     */
+    public boolean checkNet() {
+        this.netType = NetUtil.getNetWorkState(mContext);
+        if (!isNetConnect()) {
+            //网络异常，请检查网络
+            showNetDialog();
+
+        }
+        return isNetConnect();
+    }
+
+    /**
+     * 网络变化之后的类型
+     */
+    @Override
+    public void onChangeListener(int netMobile) {
+        this.netType = netMobile;
+        if (!isNetConnect()) {
+            showNetDialog();
+        } else {
+            hideNetDialog();
+        }
+    }
+
+    /*
+    * 弹出设置网络框
+    * 弹出对话框的步骤：
+    *  1.创建alertDialog的builder.
+    *  2.要给builder设置属性, 对话框的内容,样式,按钮
+    *  3.通过builder 创建一个对话框
+    *  4.对话框show()出来
+    */
+    private void showNetDialog() {
+        if (dialog == null) {
+            final AlertDialog.Builder builer = new AlertDialog.Builder(this);
+            builer.setTitle("提醒");
+            builer.setMessage("网络异常，请检查网络");
+            //当点确定按钮时
+            builer.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    hideNetDialog();
+                    Intent intent = new Intent(Settings.ACTION_WIFI_SETTINGS);
+                    startActivity(intent);
+                }
+            });
+            //当点取消按钮时
+            builer.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                }
+            });
+            dialog = builer.create();
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+            dialog.show();
+        } else {
+
+        }
+
+    }
+
+    /**
+     * 隐藏设置网络框
+     */
+    private void hideNetDialog() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
+        dialog = null;
+    }
+
+    /**
+     * 判断有无网络 。
+     *
+     * @return true 有网, false 没有网络.
+     */
+    public boolean isNetConnect() {
+        if (netType == 1) {
+            return true;
+        } else if (netType == 0) {
+            return true;
+        } else if (netType == -1) {
+            return false;
+        }
+        return false;
+    }
+
+    public static String getProcessName(Context cxt, int pid) {
+        ActivityManager am = (ActivityManager) cxt.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo procInfo : runningApps) {
+            if (procInfo.pid == pid) {
+                return procInfo.processName;
+            }
+        }
+        return null;
     }
 
     /**
@@ -118,4 +258,5 @@ public class App extends Application {
         // 把Notification传递给NotificationManager
         notificationManager.notify(0, notification);
     }
+
 }
