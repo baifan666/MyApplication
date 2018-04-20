@@ -92,11 +92,11 @@ public class MainActivity extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         userpassword = (EditText) findViewById(R.id.userpassword);
         boolean isRemenber = pref.getBoolean("remember_password",false);
-        boolean isCheck = pref.getBoolean("autologin",false);
+        editor=pref.edit();
         if("0".equals(tuichu)) {
-            isCheck = false;
             editor.putBoolean("autologin",false);
             autologin.setChecked(false);
+            editor.apply();
         }
         if(isRemenber){
             //将账号和密码都设置到文本中
@@ -305,14 +305,14 @@ public class MainActivity extends AppCompatActivity {
                                             } else {
                                                 editor.putBoolean("autologin", false);
                                             }
+                                            editor.apply();
                                         } else {
                                             editor.clear();
                                         }
-                                        editor.apply();
                                     }
-                                    Log.d("MainActivity", "--onSuccess--" + userid);
                                     if(0 == flag) {
                                         Toast.makeText(MainActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MainActivity.this, isQQLogin+";"+uname, Toast.LENGTH_SHORT).show();
                                         RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
                                         //获取当前时间
@@ -359,9 +359,9 @@ public class MainActivity extends AppCompatActivity {
                                 }
                             });
                             dialog.show();
+                            isQQLogin = 0;
                         }
                         result = "";
-                        isQQLogin = 0;
                         break;
                     case 2:
                         String response1 = (String) msg.obj;
@@ -487,9 +487,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         Tencent.onActivityResultData(requestCode, resultCode, data, new BaseUiListener());
-
         if(requestCode == Constants.REQUEST_API) {
             if(resultCode == Constants.REQUEST_LOGIN) {
                 Tencent.handleResultData(data, new BaseUiListener());

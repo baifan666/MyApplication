@@ -20,7 +20,6 @@ import android.widget.ImageView;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.utils.AES256Encryption;
-import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -28,8 +27,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import sun.misc.BASE64Encoder;
 
@@ -109,7 +106,7 @@ public class ForgetActivity extends Activity {
             public void run() {
                 String url = SERVER_ADDRESS+"/changePassword.jsp?account=" + account2+ "&newPassword=" + password2;
                 Message msg = new Message();
-                msg.what = 2;
+                msg.what = SET_PASSWORD;
                 msg.obj = HttpUtils.connection(url).toString();
                 handler.sendMessage(msg);
                 // Handler

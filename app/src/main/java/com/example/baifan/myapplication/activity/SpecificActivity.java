@@ -266,7 +266,7 @@ public class SpecificActivity extends Activity {
             @Override
             public void displayImage(Context context, Object path, ImageView imageView) {
                 String p = String.valueOf(path);
-                Glide.with(getApplicationContext()).load(p).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                Glide.with(getApplicationContext()).load(p).thumbnail(0.1f).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                         .listener(requestListener)
                         .error(R.drawable.error)//图片加载失败后，显示的图片
                         .into(imageView);
@@ -307,6 +307,8 @@ public class SpecificActivity extends Activity {
                 intent.putExtra("account",account); // 向下一个界面传递信息
                 intent.putExtra("goodsid",goodsInfo.getId()); // 向下一个界面传递信息
                 intent.putExtra("headurl",headurl);
+                intent.putExtra("title",goodsInfo.getTitle());
+                intent.putExtra("seller",goodsInfo.getUsername());
                 startActivity(intent);
             }
         });

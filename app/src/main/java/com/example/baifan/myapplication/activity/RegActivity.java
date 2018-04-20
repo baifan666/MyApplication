@@ -144,7 +144,7 @@ public class RegActivity extends Activity {
                     try {
                         key = AES256Encryption.getKeyByPass();
                         // 加密
-                        data = AES256Encryption.encrypt(new_act_edit.getText().toString().getBytes(), key);
+                        data = AES256Encryption.encrypt(new_psd1.getBytes(), key);
                         base64Encoder = new BASE64Encoder();
                     } catch (Exception e) {
                         e.printStackTrace();

@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -30,6 +31,7 @@ import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.CommentAdapter;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.CommentInfo;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -42,7 +44,9 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -52,7 +56,7 @@ public class CommentActivity extends Activity {
     private final int ADD_COMMENT = 3;
     private Dialog mDialog;
     private ImageView back;
-    private String username,goodsid,headurl,local,replyed = "";
+    private String username,goodsid,headurl,local,replyed = "",title,seller;
 
     // 物品显示列表
     private ArrayList<CommentInfo> comentsdata =new ArrayList<CommentInfo>();
@@ -79,6 +83,8 @@ public class CommentActivity extends Activity {
         username = intent.getStringExtra("account");
         goodsid = intent.getStringExtra("goodsid");
         headurl = intent.getStringExtra("headurl");
+        title = intent.getStringExtra("title");
+        seller = intent.getStringExtra("seller");
 
         mDialog = DialogUtils.createLoadingDialog(CommentActivity.this, "加载中...");
         back = (ImageView)findViewById(R.id.backImg); //返回
@@ -480,6 +486,22 @@ public class CommentActivity extends Activity {
                         dialog.setTitle("success");
                         dialog.setMessage("新增成功!");
                         dialog.setCancelable(false);
+                        if(!TextUtils.isEmpty(replyed)) {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                            //获取当前时间
+                            Date date = new Date(System.currentTimeMillis());
+                            String str = simpleDateFormat.format(date) +" "+username+ "在《" + title + "》中回复了你的评论,内容'"
+                                    +content.getText().toString()+"'";
+                            AddMessageUtils.addMessage(replyed, str);
+                        }
+                        if(!seller.equals(username)) {
+                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                            //获取当前时间
+                            Date date = new Date(System.currentTimeMillis());
+                            String str = simpleDateFormat.format(date) + " " + username + "评论了你的《" + title + "》发布，内容'"
+                                    + content.getText().toString() + "'";
+                            AddMessageUtils.addMessage(seller, str);
+                        }
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
