@@ -200,6 +200,7 @@ public class SearchActivity extends Activity implements
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 startrow = 0;
+                num1 = 0;
                 readAll(startrow); //从服务端读取所有物品
                 goodsadapter.notifyDataSetChanged();
             }

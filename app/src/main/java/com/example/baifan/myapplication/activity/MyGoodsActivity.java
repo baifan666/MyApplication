@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -44,6 +46,12 @@ public class MyGoodsActivity extends Activity {
     private ListView _listGoods;
     private RefreshLayout refreshLayout;
     private MyGoodsAdapter mygoodsadapter;
+
+    private int num = 0,num1 = 0;//用来记录comentsdata中的数据条数
+    private int startrow = 0;  //起初页面为第一页
+    private int scrollPos; //滑动以后的可见的第一条数据
+    private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +71,7 @@ public class MyGoodsActivity extends Activity {
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         _listGoods = (ListView)findViewById(R.id.listgoods);
-        myreadAll(username);//从服务端读取所有物品
+        myreadAll(username,startrow);//从服务端读取所有物品
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -73,31 +81,63 @@ public class MyGoodsActivity extends Activity {
                 startActivity(intent);
             }
         });
+        //给ListView设置监听器
+        _listGoods.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // scrollPos记录当前可见的List顶端的一行的位置
+                    scrollPos = _listGoods.getFirstVisiblePosition();
+                }
+                if (_listGoods != null) {
+                    View v=_listGoods .getChildAt(0);
+                    scrollTop=(v==null)?0:v.getTop();
+                }
+            }
 
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+        });
         refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
         refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
         refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
         refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
+        refreshLayout.setEnableLoadMoreWhenContentNotFull(false);//是否在列表不满一页时候开启上拉加载功能
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                myreadAll(username); //从服务端读取所有物品
+                startrow = 0;
+                num1 = 0;
+                myreadAll(username,startrow);//从服务端读取所有物品
+                mygoodsadapter.notifyDataSetChanged();
+            }
+        });
+
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                num1 = goodsdata.size();
+                startrow = startrow+10;
+                myreadAll(username,startrow); //从服务端读取接下来的10个数据
                 mygoodsadapter.notifyDataSetChanged();
             }
         });
     }
 
-    private void myreadAll(String username) {
-        final String acc = username;
+    private void myreadAll(String username1,int startrow1) {
+        final String acc = username1;
+        final int startrow2 = startrow1;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = SERVER_ADDRESS+"/myGoods.jsp?account="+acc1;
+                    String url = SERVER_ADDRESS+"/myGoods.jsp?account="+acc1+"&startrow="+startrow2;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;
@@ -211,14 +251,23 @@ public class MyGoodsActivity extends Activity {
             switch (msg.what) {
                 case MYREADALL:
                     String response2 = (String) msg.obj;
-                    goodsdata.clear();
+                    if(startrow == 0) {
+                        goodsdata.clear();
+                        refreshLayout.setNoMoreData(false);
+                    }
                     parserXml1(response2);
                     if(goodsdata.size() == 0){
                         _listGoods.setEmptyView(findViewById(R.id.myText));
                     }
+                    num = goodsdata.size();
+                    if(num == num1) {
+                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更多事件
+                    }
                     mygoodsadapter = new MyGoodsAdapter(MyGoodsActivity.this, R.layout.mygoods_item, goodsdata);
                     _listGoods.setAdapter(mygoodsadapter);
                     refreshLayout.finishRefresh();//结束刷新
+                    _listGoods .setSelectionFromTop(scrollPos, scrollTop);
+                    refreshLayout.finishLoadMore();//结束加载
                     DialogUtils.closeDialog(mDialog);
                     break;
             }

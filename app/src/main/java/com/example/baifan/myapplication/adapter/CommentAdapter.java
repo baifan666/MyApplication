@@ -66,6 +66,7 @@ public class CommentAdapter extends ArrayAdapter<CommentInfo> {
         ImageView delete = (ImageView)view.findViewById(R.id.delete);
 
         Glide.with(context).load(info.getHeadurl()).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                .dontAnimate()//防止设置placeholder导致第一次不显示网络图片,只显示默认图片的问题
                 .error(R.drawable.error)//图片加载失败后，显示的图片
                 .into(head);
         username.setText(info.getUsername().toString());

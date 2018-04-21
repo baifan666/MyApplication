@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.App;
+import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.UpdataInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -70,6 +71,8 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_welcome);
+        //将该Activity添加到ExitApplication实例中，
+        ExitApplication.getInstance().addActivity(this);
         RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
             @Override
             public io.rong.imlib.model.UserInfo getUserInfo(String arg0) {

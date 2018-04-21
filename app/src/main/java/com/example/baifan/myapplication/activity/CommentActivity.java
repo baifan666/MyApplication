@@ -137,11 +137,13 @@ public class CommentActivity extends Activity {
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
         refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
         refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
+        refreshLayout.setEnableLoadMoreWhenContentNotFull(false);//是否在列表不满一页时候开启上拉加载功能
         refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 startrow = 0;
+                num1 = 0;
                 readAll(goodsid,startrow); //从服务端读取所有物品
                 commentAdapter.notifyDataSetChanged();
             }
@@ -428,9 +430,12 @@ public class CommentActivity extends Activity {
                         refreshLayout.setNoMoreData(false);
                     }
                     parserXml1(response);
+                    if(comentsdata.size() == 0){
+                        _listcomments.setEmptyView(findViewById(R.id.myText));
+                    }
                     num = comentsdata.size();
                     if(num == num1) {
-                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更事件
+                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更多事件
                     }
                     commentAdapter = new CommentAdapter(CommentActivity.this, R.layout.comment_item, comentsdata,username);
                     _listcomments.setAdapter(commentAdapter);

@@ -9,6 +9,7 @@ import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -20,6 +21,7 @@ import com.example.baifan.myapplication.model.OrderSpecificInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
+import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import org.angmarch.views.NiceSpinner;
@@ -47,6 +49,10 @@ public class MyOrdersActivity extends Activity {
     private NiceSpinner niceSpinner;
     private Dialog mDialog;
     private RefreshLayout refreshLayout;
+    private int num = 0,num1 = 0;//用来记录comentsdata中的数据条数
+    private int startrow = 0;  //起初页面为第一页
+    private int scrollPos; //滑动以后的可见的第一条数据
+    private int scrollTop;//滑动以后的第一条item的可见部分距离top的像素值
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,24 +64,26 @@ public class MyOrdersActivity extends Activity {
         account = intent.getStringExtra("username");
         niceSpinner = (NiceSpinner) findViewById(R.id.nice_spinner);
         List<String> dataset = new LinkedList<>(Arrays.asList("全部", "进行中","已完成"));
-        myAll(account);
+        myAll(account,startrow);
         mDialog = DialogUtils.createLoadingDialog(MyOrdersActivity.this, "加载中...");
         niceSpinner.attachDataSource(dataset);
         niceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                startrow = 0;
+                num1 = 0;
                 switch (i) {
                     case 0:
                         isfinish = "";
-                        myAll(account);
+                        myAll(account,startrow);
                         break;
                     case 1:
                         isfinish = "0";
-                        myreadAll(account,isfinish);
+                        myreadAll(account,isfinish,startrow);
                         break;
                     case 2:
                         isfinish = "1";
-                        myreadAll(account,isfinish);
+                        myreadAll(account,isfinish,startrow);
                         break;
                 }
             }
@@ -103,20 +111,54 @@ public class MyOrdersActivity extends Activity {
                 startActivity(intent);
             }
         });
+        //给ListView设置监听器
+        _listOrders.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView absListView, int i) {
+                if (i == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    // scrollPos记录当前可见的List顶端的一行的位置
+                    scrollPos = _listOrders.getFirstVisiblePosition();
+                }
+                if (_listOrders != null) {
+                    View v=_listOrders .getChildAt(0);
+                    scrollTop=(v==null)?0:v.getTop();
+                }
+            }
 
+            @Override
+            public void onScroll(AbsListView absListView, int i, int i1, int i2) {
+
+            }
+        });
         refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
         refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
         refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
         refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
         refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
+        refreshLayout.setEnableLoadMoreWhenContentNotFull(false);//是否在列表不满一页时候开启上拉加载功能
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
+                startrow = 0;
+                num1 = 0;
                 if("".equals(isfinish)) {
-                    myAll(account);
+                    myAll(account,startrow);
                 }else {
-                    myreadAll(account,isfinish);
+                    myreadAll(account,isfinish,startrow);
+                }
+                myorderadapter.notifyDataSetChanged();
+            }
+        });
+        refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore(RefreshLayout refreshLayout) {
+                num1 = orderdata.size();
+                startrow = startrow+10;
+                if("".equals(isfinish)) {
+                    myAll(account,startrow);   //从服务端读取接下来的10个数据
+                }else {
+                    myreadAll(account,isfinish,startrow); //从服务端读取接下来的10个数据
                 }
                 myorderadapter.notifyDataSetChanged();
             }
@@ -130,15 +172,24 @@ public class MyOrdersActivity extends Activity {
             switch (msg.what) {
                 case MYREADALL:
                     String response2 = (String) msg.obj;
-                    orderdata.clear();
+                    if(startrow == 0) {
+                        orderdata.clear();
+                        refreshLayout.setNoMoreData(false);
+                    }
                     parserXml1(response2);
                     if (orderdata.size() == 0) {
                         _listOrders.setEmptyView(findViewById(R.id.myText));
+                    }
+                    num = orderdata.size();
+                    if(num == num1) {
+                        refreshLayout.setNoMoreData(true);//显示全部加载完成，并不再触发加载更多事件
                     }
                     myorderadapter = new MyOrderAdapter(MyOrdersActivity.this, R.layout.orders_item, orderdata);
                     _listOrders.setAdapter(myorderadapter);
                     DialogUtils.closeDialog(mDialog);
                     refreshLayout.finishRefresh();//结束刷新
+                    _listOrders .setSelectionFromTop(scrollPos, scrollTop);
+                    refreshLayout.finishLoadMore();//结束加载
                     break;
             }
         }
@@ -259,16 +310,17 @@ public class MyOrdersActivity extends Activity {
         Log.d("resultStr", result);
     }
 
-    private void myreadAll(String username,String isfinish) {
-        final String acc = username;
-        final String is = isfinish;
+    private void myreadAll(String username1,String isfinish1,int startrow1) {
+        final String acc = username1;
+        final String is = isfinish1;
+        final int startrow2 = startrow1;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1+"&isfinish="+is;
+                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1+"&isfinish="+is+"&startrow="+startrow2;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;
@@ -283,15 +335,16 @@ public class MyOrdersActivity extends Activity {
         // 2）解析数据：xml-->ArrayList
     }
 
-    private void myAll(String username) {
-        final String acc = username;
+    private void myAll(String username1,int startrow1) {
+        final String acc = username1;
+        final int startrow2 = startrow1;
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     String acc1 = URLEncoder.encode(acc, "UTF-8");
                     // 打开链接
-                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1;
+                    String url = SERVER_ADDRESS+"/myOrders.jsp?account="+acc1+"&startrow="+startrow2;
                     // 发送消息
                     Message msg = new Message();
                     msg.what = MYREADALL;
