@@ -48,6 +48,12 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:orientation="vertical">
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:id="@+id/myProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="5px"
+            />
         <com.tencent.smtt.sdk.WebView
             android:id="@+id/tbsContent"
             android:layout_width="match_parent"

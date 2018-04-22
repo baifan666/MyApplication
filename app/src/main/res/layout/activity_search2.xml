@@ -2,14 +2,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <scut.carson_ho.searchview.SearchView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/search_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:textSizeSearch="5dp"
+        app:textSizeSearch="6dp"
         app:textColorSearch="#3F51B5"
         app:textHintSearch="输入查询关键字"
         app:searchBlockHeight="150"

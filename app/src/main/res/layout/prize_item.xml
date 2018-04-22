@@ -11,14 +11,14 @@
         android:scaleType="fitXY"/>
     <TextView
         android:id="@+id/prizename"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
-        android:layout_gravity="center"
+        android:gravity="center"
         android:textColor="#040404"
         android:ellipsize="end"
         android:singleLine="true"
-        android:textSize="20dp"
+        android:textSize="16dp"
         android:text="奖品名称"
         />
     <LinearLayout

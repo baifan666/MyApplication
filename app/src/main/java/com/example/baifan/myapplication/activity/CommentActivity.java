@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -157,12 +156,21 @@ public class CommentActivity extends Activity {
                 commentAdapter.notifyDataSetChanged();
             }
         });
+        mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
+        //配置定位SDK参数
+        initLocation();
+        mLocationClient.registerLocationListener(myListener);    //注册监听函数
+        //开启定位
+        mLocationClient.start();
 
         content = (EditText) findViewById(R.id.content);
         addcomment = (Button)findViewById(R.id.add);
+
         addcomment.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View view) {
+
                 if(TextUtils.isEmpty(content.getHint())) {
                     replyed = "";
                 }
@@ -185,12 +193,7 @@ public class CommentActivity extends Activity {
             }
         });
 
-        mLocationClient = new LocationClient(getApplicationContext());     //声明LocationClient类
-        //配置定位SDK参数
-        initLocation();
-        mLocationClient.registerLocationListener(myListener);    //注册监听函数
-        //开启定位
-        mLocationClient.start();
+
     }
 
     //配置定位SDK参数

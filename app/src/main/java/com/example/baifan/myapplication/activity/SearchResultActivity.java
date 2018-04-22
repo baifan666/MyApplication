@@ -35,8 +35,8 @@ public class SearchResultActivity extends Activity {
     private final int SEARCH = 1;
 
     private ImageView back;
-    private String guanjianzi;
-
+    private String guanjianzi,account,headurl;
+    private RefreshLayout refreshLayout;
     // 物品显示列表
     private ArrayList<GoodsInfo> goodsdata =new ArrayList<GoodsInfo>();
     private ListView _listGoods;
@@ -59,8 +59,10 @@ public class SearchResultActivity extends Activity {
 
         Intent intent = getIntent();
         guanjianzi = intent.getStringExtra("guanjianzi");
+        account = intent.getStringExtra("account");
+        headurl = intent.getStringExtra("headurl");
+
         _listGoods = (ListView)findViewById(R.id.listgoods);
-        _listGoods.setEmptyView(findViewById(R.id.myText));
         search(guanjianzi);//查询
         _listGoods.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -68,25 +70,28 @@ public class SearchResultActivity extends Activity {
                 GoodsInfo goodsInfo = goodsdata.get(position);
                 Intent intent = new Intent(SearchResultActivity.this, SpecificActivity.class);
                 intent.putExtra("goodsInfo",goodsInfo); // 向下一个界面传递信息
+                intent.putExtra("account",account);
+                intent.putExtra("headurl", headurl);
                 startActivity(intent);
             }
         });
-        RefreshLayout refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
+        refreshLayout.setDisableContentWhenRefresh(true);//是否在刷新的时候禁止列表的操作
+        refreshLayout.setDisableContentWhenLoading(true);//是否在加载的时候禁止列表的操作
+        refreshLayout.setFooterHeight(80);//Footer标准高度（显示上拉高度>=标准高度 触发加载）
+        refreshLayout.setEnableAutoLoadMore(false);//是否启用列表惯性滑动到底部时自动加载更多
+        refreshLayout.setEnableScrollContentWhenLoaded(false);//是否在加载完成时滚动列表显示新的内容
+        refreshLayout.setEnableLoadMoreWhenContentNotFull(false);//是否在列表不满一页时候开启上拉加载功能
+        refreshLayout = (RefreshLayout)findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
                 search(guanjianzi);//查询
-                //   goodsadapter.refresh(goodsdata);
                 goodsadapter.notifyDataSetChanged();
-                refreshlayout.finishRefresh(2000);
             }
         });
-        refreshLayout.setOnLoadmoreListener(new OnLoadmoreListener() {
-            @Override
-            public void onLoadmore(RefreshLayout refreshlayout) {
-                refreshlayout.finishLoadmore(2000);
-            }
-        });
+
     }
 
     private void search(String sousuostr) {
@@ -209,7 +214,11 @@ public class SearchResultActivity extends Activity {
                     String response1 = (String) msg.obj;
                     goodsdata.clear();
                     parserXml1(response1);
+                    if(goodsdata.size() == 0){
+                        _listGoods.setEmptyView(findViewById(R.id.myText));
+                    }
                     goodsadapter = new GoodsAdapter(SearchResultActivity.this, R.layout.goods_item, goodsdata);
+                    refreshLayout.finishRefresh();
                     _listGoods.setAdapter(goodsadapter);
                     break;
             }

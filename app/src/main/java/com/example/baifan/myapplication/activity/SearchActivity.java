@@ -330,6 +330,8 @@ public class SearchActivity extends Activity implements
             public void onClick(View view) {
                 Intent i = new Intent();
                 i.setClass(SearchActivity.this, Search2Activity.class);
+                i.putExtra("account",account);
+                i.putExtra("headurl", headurl);
                 startActivity(i);
             }
         });
@@ -455,6 +457,7 @@ public class SearchActivity extends Activity implements
         gengxin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                autoLogin = "false";
                 checkUpdate();
             }
         });

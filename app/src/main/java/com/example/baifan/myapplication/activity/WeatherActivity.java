@@ -8,10 +8,12 @@ import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
@@ -32,6 +34,7 @@ public class WeatherActivity extends Activity {
     private String url = "https://xw.tianqi.qq.com";
     //private String url = "https://x5.tencent.com/tbs/sdk.html";
     private ImageView back,refresh;
+    private ProgressBar bar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,10 +46,19 @@ public class WeatherActivity extends Activity {
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         tbsContent = (com.tencent.smtt.sdk.WebView)findViewById(R.id.tbsContent);
+        bar = (ProgressBar)findViewById(R.id.myProgressBar);
+
         tbsContent.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
-
+                if (newProgress == 100) {
+                    bar.setVisibility(View.GONE);
+                } else {
+                    if (View.INVISIBLE == bar.getVisibility()) {
+                        bar.setVisibility(View.VISIBLE);
+                    }
+                    bar.setProgress(newProgress);
+                }
                 view.loadUrl("javascript:function setTop(){document.querySelector('#link-back').style.display=\"none\";}setTop();");
                 view.loadUrl("javascript:function setTop(){document.querySelector('#btn-share').style.display=\"none\";}setTop();");
                 super.onProgressChanged(view, newProgress);
@@ -62,6 +74,7 @@ public class WeatherActivity extends Activity {
         webSettings.setAppCachePath(appCachePath);
         webSettings.setAllowFileAccess(true);
         webSettings.setAppCacheEnabled(true);
+        webSettings.setSupportZoom(true);
         ConnectivityManager cm = (ConnectivityManager)getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = cm.getActiveNetworkInfo();
         if(info.isAvailable())
@@ -97,6 +110,35 @@ public class WeatherActivity extends Activity {
             }
 
         });
+        tbsContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        if(tbsContent.getScrollY() <= 0){
+                            //通知父控件不要干扰
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                        } else {
+                            //通知父控件不要干扰
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                        }
+                        break;
+                    case MotionEvent.ACTION_MOVE:
+                        if(tbsContent.getScrollY() <= 0){
+                            //通知父控件不要干扰
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
+                        } else {
+                            //通知父控件不要干扰
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                        }
+                        break;
+                    default:
+                        break;
+
+                }
+                return false;
+            }
+        });
 
         back = (ImageView)findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +151,7 @@ public class WeatherActivity extends Activity {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                bar.setVisibility(View.VISIBLE);
                 tbsContent.reload();
             }
         });
