@@ -134,12 +134,9 @@ public class Evaluate2Activity extends Activity {
                             dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    //Toast.makeText(EvaluateActivity.this, "", Toast.LENGTH_SHORT).show();
-
-//                                    Intent intent=new Intent();
-//                                    intent.setClass(EvaluateActivity.this, MyOrdersSpecificActivity.class);
-//                                    intent.putExtra("username",orderSpecificInfo.getBuyerid()); // 向下一个界面传递信息
-//                                    startActivity(intent);
+                                    Intent intent=new Intent();
+                                    intent.putExtra("return","return");
+                                    Evaluate2Activity.this.setResult(RESULT_OK, intent);// 设置回传数据。
                                     finish();
                                 }
                             });

@@ -25,6 +25,7 @@ import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.PrizeInfo;
+import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
 
@@ -35,6 +36,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
 
@@ -76,8 +79,9 @@ public class PrizeSpecificActivity extends Activity {
         prizecoins.setText(String.valueOf(prizeInfo.getPrizecoins()));
         number = (TextView)findViewById(R.id.number);
         number.setText("剩余可兑换数量"+String.valueOf(prizeInfo.getNumber())+"个");
+        duihuan = (Button)findViewById(R.id.duihuan);
         if(prizeInfo.getNumber() == 0) {
-            number.setEnabled(false);
+            duihuan.setEnabled(false);
         }
         path = prizeInfo.getPictureurl().substring(prizeInfo.getPictureurl().lastIndexOf("/")+1);
         url = SERVER_ADDRESS+"/prize/"+path;
@@ -86,7 +90,6 @@ public class PrizeSpecificActivity extends Activity {
                 .listener( requestListener )
                 .error(R.drawable.error)//图片加载失败后，显示的图片
                 .into(img);
-        duihuan = (Button)findViewById(R.id.duihuan);
         if(Integer.parseInt(coins) >= prizeInfo.getPrizecoins()) {
             duihuan.setEnabled(true);
         } else {
@@ -258,9 +261,18 @@ public class PrizeSpecificActivity extends Activity {
                         dialog.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // 注册成功后 跳转至登录界面
-                                //Intent intent = new Intent(PrizeSpecificActivity.this, MainActivity.class);
-                                //startActivity(intent);
+                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");// HH:mm:ss
+                                //获取当前时间
+                                Date date = new Date(System.currentTimeMillis());
+                                String str = simpleDateFormat.format(date)+"你兑换了"+prizeInfo.getPrizename()+",扣除金币"+prizeInfo.getPrizecoins()+"个";
+                                //发送系统消息
+                                AddMessageUtils.addMessage(username,str);
+                                if((prizeInfo.getNumber())-1 == 0) {
+                                    number.setText("剩余可兑换数量0个");
+                                    duihuan.setEnabled(false);
+                                }else {
+                                    number.setText("剩余可兑换数量"+String.valueOf(prizeInfo.getNumber()-1)+"个");
+                                }
                             }
                         });
                         dialog.show();

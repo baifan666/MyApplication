@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
 import android.widget.RatingBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -33,12 +34,13 @@ import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRE
 
 public class UserActivity extends Activity {
     private ImageView back;
-    private Dialog mDialog;
     private String username,headurl,result;
     private double buyerscore;
     private CircleImageView head;
     private RatingBar buyerRatingBar;
     private final int SEARCH_USER_SCORE = 1;
+    private TextView tv_username;
+    private Dialog mDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +48,7 @@ public class UserActivity extends Activity {
         setContentView(R.layout.activity_user);
         //将该Activity添加到ExitApplication实例中，
         ExitApplication.getInstance().addActivity(this);
+        mDialog = DialogUtils.createLoadingDialog(UserActivity.this, "加载中...");
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         headurl = intent.getStringExtra("headurl");
@@ -56,6 +59,8 @@ public class UserActivity extends Activity {
                 finish();
             }
         });
+        tv_username = (TextView)findViewById(R.id.tv_username);
+        tv_username.setText(username);
         head = (CircleImageView)findViewById(R.id.head);
         Glide.with(getApplicationContext()).load(headurl)
                 .error(R.drawable.error)
@@ -107,6 +112,7 @@ public class UserActivity extends Activity {
                         dialog.show();
                     }
                     result = "";
+                    DialogUtils.closeDialog(mDialog);
                     break;
                 default:
                     break;
@@ -120,8 +126,6 @@ public class UserActivity extends Activity {
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
@@ -137,7 +141,6 @@ public class UserActivity extends Activity {
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
                         break;
                     default:
                         break;
@@ -148,5 +151,4 @@ public class UserActivity extends Activity {
             ex.printStackTrace();
         }
     }
-
 }

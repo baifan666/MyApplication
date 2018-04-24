@@ -86,6 +86,7 @@
                         android:textSize="16dp"
                         android:singleLine="false"
                         android:scrollbars="vertical"
+                        android:textIsSelectable="true"
                         android:text="内容"/>
                 </LinearLayout>
                 <LinearLayout
@@ -99,6 +100,7 @@
                         android:layout_marginLeft="10dp"
                         android:layout_marginTop="5dp"
                         android:drawableStart="@drawable/goumaizhe"
+                        android:textIsSelectable="true"
                         android:textSize="14dp"
                         android:textStyle="bold"
                         android:textColor="#ff7373"
@@ -122,6 +124,7 @@
                         android:textSize="16dp"
                         android:singleLine="false"
                         android:layout_gravity="center"
+                        android:textIsSelectable="true"
                         android:autoLink="phone"
                         android:text="联系方式"/>
                     <TextView
@@ -182,6 +185,7 @@
                         android:layout_marginTop="2dp"
                         android:layout_marginRight="10dp"
                         android:textSize="16dp"
+                        android:textIsSelectable="true"
                         android:singleLine="false"
                         android:layout_gravity="center"
                         android:scrollbars="vertical"
@@ -205,6 +209,7 @@
                         android:textSize="14dp"
                         android:layout_marginTop="12dp"
                         android:layout_marginLeft="10dp"
+                        android:textIsSelectable="true"
                         android:singleLine="false"
                         android:layout_gravity="center"
                         android:text="订单编号："/>

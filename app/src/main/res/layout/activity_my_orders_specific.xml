@@ -59,6 +59,7 @@
                     android:drawableStart="@drawable/maijia"
                     android:textSize="14dp"
                     android:textStyle="bold"
+                    android:textIsSelectable="true"
                     android:textColor="#ff7373"
                     android:text="发布用户"/>
             </LinearLayout>
@@ -78,6 +79,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="2dp"
                     android:textSize="16dp"
+                    android:textIsSelectable="true"
                     android:singleLine="false"
                     android:layout_gravity="center"
                     android:autoLink="phone"
@@ -89,6 +91,7 @@
                     android:textSize="15dp"
                     android:paddingTop="1dp"
                     android:paddingRight="10dp"
+                    android:textIsSelectable="true"
                     android:textColor="#7eb6ff"
                     android:gravity="right"
                     android:text="订单状态"/>
@@ -108,6 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:textIsSelectable="true"
                     android:layout_marginTop="8dp"
                     android:scrollbars="vertical"
                     android:singleLine="false"
@@ -135,6 +139,7 @@
                     android:drawableLeft="@drawable/miaoshu"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:textIsSelectable="true"
                     android:layout_marginTop="4dp"
                     android:textSize="16dp"
                     android:singleLine="false"
@@ -158,6 +163,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
+                    android:textIsSelectable="true"
                     android:textColor="#ff0000"
                     android:textSize="16dp"
                     android:singleLine="false"
@@ -179,6 +185,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/location"
                     android:layout_marginLeft="10dp"
+                    android:textIsSelectable="true"
                     android:layout_marginTop="2dp"
                     android:layout_marginRight="10dp"
                     android:textSize="16dp"
@@ -205,6 +212,7 @@
                     android:textSize="14dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginLeft="10dp"
+                    android:textIsSelectable="true"
                     android:singleLine="false"
                     android:layout_gravity="center"
                     android:text="订单编号："/>

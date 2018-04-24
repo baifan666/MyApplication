@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -184,7 +185,7 @@ public class MySellsSpecificActivity extends Activity {
                 i.putExtra("seller",orderSpecificInfo.getUsername());
                 //传递订单编号
                 i.putExtra("orderid",orderSpecificInfo.getOrderid());
-                startActivity(i);
+                startActivityForResult(i, 0x1);
             }
         });
 
@@ -363,4 +364,22 @@ public class MySellsSpecificActivity extends Activity {
             return false;
         }
     };
+
+    // 响应startActivityForResult
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0x1 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    //处理代码在此地
+                    if(!TextUtils.isEmpty(bundle.getString("return"))) {// 得到子窗口ChildActivity的回传数据
+                        evaluate.setText("已评价");
+                        evaluate.setEnabled(false);
+                    }
+                }
+            }
+        }
+    }
+
 }

@@ -8,9 +8,14 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -59,7 +64,6 @@ public class MyOrdersSpecificActivity extends Activity {
     private String result;
     private int isEvaluate = 0;
     private Dialog mDialog,mDialog1,mDialog2;
-    private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private final int FINISHORDER = 1;
     private final int SEARCHBUYEREVALUATE = 2;
     private Banner banner;
@@ -190,7 +194,7 @@ public class MyOrdersSpecificActivity extends Activity {
                     i.putExtra("buyer",orderSpecificInfo.getBuyerid());
                     //传递订单编号
                     i.putExtra("orderid",orderSpecificInfo.getOrderid());
-                    startActivity(i);
+                    startActivityForResult(i, 0x1);
                 }
             }
         });
@@ -468,13 +472,10 @@ public class MyOrdersSpecificActivity extends Activity {
         }).start();
     }
 
-    //设置错误监听
+    //设置图片加载监听
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(MyOrdersSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-            }
             DialogUtils.closeDialog(mDialog1);
             DialogUtils.closeDialog(mDialog2);
             return false;
@@ -486,5 +487,22 @@ public class MyOrdersSpecificActivity extends Activity {
             return false;
         }
     };
+
+    // 响应startActivityForResult
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+       if (requestCode == 0x1 && resultCode == RESULT_OK) {
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                if (bundle != null) {
+                    //处理代码在此地
+                    if(!TextUtils.isEmpty(bundle.getString("return"))) {// 得到子窗口ChildActivity的回传数据
+                        finish.setText("已评价");
+                        finish.setEnabled(false);
+                    }
+                }
+            }
+        }
+    }
 
 }

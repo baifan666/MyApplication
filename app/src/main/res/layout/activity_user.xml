@@ -48,6 +48,19 @@
             android:layout_marginTop="2dp"
             android:src="@drawable/jiazaizhong"
             app:civ_border_color="#FF000000"/>
+
+        <TextView
+            android:id="@+id/tv_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:text="用户页"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="40dp"
