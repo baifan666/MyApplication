@@ -27,6 +27,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
+import java.net.URLEncoder;
 
 import sun.misc.BASE64Encoder;
 
@@ -36,7 +37,7 @@ public class ForgetActivity extends Activity {
     private ImageView back;
     private EditText et_username,et_phone;
     private Button btn_ok;
-    private String username,mobile,result;
+    private String username,mobile,result,newPassword;
     private Dialog mDialog;
     private byte[] data,key;
     private BASE64Encoder base64Encoder;
@@ -128,10 +129,11 @@ public class ForgetActivity extends Activity {
                                 // 加密
                                 data = AES256Encryption.encrypt("123456".getBytes(), key);
                                 base64Encoder = new BASE64Encoder();
+                                newPassword = URLEncoder.encode(base64Encoder.encode(data), "UTF-8");
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }
-                            changePassword(et_username.getText().toString(),base64Encoder.encode(data));
+                            changePassword(et_username.getText().toString(),newPassword);
                         } else {
                             AlertDialog.Builder dialog = new AlertDialog.Builder(ForgetActivity.this);
                             dialog.setTitle("This is a warnining!");

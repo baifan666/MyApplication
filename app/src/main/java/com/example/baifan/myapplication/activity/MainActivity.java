@@ -88,7 +88,14 @@ public class MainActivity extends AppCompatActivity {
         rememberPass = (CheckBox)findViewById(R.id.cb_passworda);
         autologin = (CheckBox)findViewById(R.id.cb_logina);
         pref= PreferenceManager.getDefaultSharedPreferences(this);
-
+        autologin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b) {
+                    rememberPass.setChecked(true);
+                }
+            }
+        });
         username = (EditText) findViewById(R.id.username);
         userpassword = (EditText) findViewById(R.id.userpassword);
         boolean isRemenber = pref.getBoolean("remember_password",false);
@@ -170,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         //QQ第三方登录
         mTencent = Tencent.createInstance("101466661",getApplicationContext());//将101466661为自己的AppID
         qq_login = (ImageView)findViewById(R.id.qq_login);

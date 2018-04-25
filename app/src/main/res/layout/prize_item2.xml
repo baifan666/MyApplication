@@ -41,6 +41,8 @@
             android:drawableLeft="@drawable/jinbi"
             android:textSize="20dp"
             android:paddingTop="2dp"
+            android:ellipsize="end"
+            android:singleLine="true"
             android:textColor="#ff5959"
             android:text="金币数"/>
         <TextView

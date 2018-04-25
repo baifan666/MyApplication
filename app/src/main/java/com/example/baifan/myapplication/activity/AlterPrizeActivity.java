@@ -80,7 +80,7 @@ public class AlterPrizeActivity extends Activity {
         prizeInfo = (PrizeInfo) intent.getSerializableExtra("prizeInfo");
         prizeurl = prizeInfo.getPictureurl();
         prizeurl1 = prizeurl.substring(prizeurl.lastIndexOf("/")+1);
-        prizeurl2 = SERVER_ADDRESS+"/prize/"+path;
+        prizeurl2 = SERVER_ADDRESS+"/prize/"+prizeurl1;
         prizeid = prizeInfo.getPrizeid();
         prizename = (EditText)findViewById(R.id.prizename);
         prizename.setText(prizeInfo.getPrizename());
