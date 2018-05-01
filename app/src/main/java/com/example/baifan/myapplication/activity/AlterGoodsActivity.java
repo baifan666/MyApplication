@@ -34,7 +34,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.Adapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -81,8 +81,8 @@ public class AlterGoodsActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_alter_goods);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         Intent intent = getIntent();
         goodsid = intent.getStringExtra("goodsid");
@@ -502,5 +502,11 @@ public class AlterGoodsActivity extends Activity {
             return false;
         }
     };
-
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

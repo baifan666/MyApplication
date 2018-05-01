@@ -19,7 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.*;
 
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
@@ -73,8 +73,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
             @Override
             public io.rong.imlib.model.UserInfo getUserInfo(String arg0) {
@@ -201,14 +201,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private class BaseUiListener implements IUiListener {
-        //这个类需要实现三个方法 onComplete（）：登录成功需要做的操作写在这里
-        // onError onCancel
         public void onComplete(Object response) {
-            //Toast.makeText(MainActivity.this, "登录成功", Toast.LENGTH_SHORT).show();
             try {
-                //获得的数据是JSON格式的，获得你想获得的内容
-                //如果你不知道你能获得什么，看一下下面的LOG
-                Log.v("----TAG--", "-------------" + response.toString());
+                //获得的数据是JSON格式
                 openidString = ((JSONObject) response).getString("openid");
                 mTencent.setOpenId(openidString);
                 mTencent.setAccessToken(((JSONObject) response).getString("access_token"), ((JSONObject) response).getString("expires_in"));
@@ -219,8 +214,6 @@ public class MainActivity extends AppCompatActivity {
             /**到此已经获得OpneID以及其他你想获得的内容了
              QQ登录成功了
              sdk给我们提供了一个类UserInfo，这个类中封装了QQ用户的一些信息，可以通过这个类拿到这些信息
-             如何得到这个UserInfo类呢？  获取详细信息的UserInfo ，返回的信息参看下面地址：
-             http://wiki.open.qq.com/wiki/%E8%8E%B7%E5%8F%96%E7%94%A8%E6%88%B7%E4%BF%A1%E6%81%AF#1._Tencent.E7.B1.BB.E7.9A.84request.E6.88.96requestAsync.E6.8E.A5.E5.8F.A3.E7.AE.80.E4.BB.8B
              */
             QQToken qqToken = mTencent.getQQToken();
             UserInfo info = new UserInfo(getApplicationContext(), qqToken);
@@ -229,9 +222,6 @@ public class MainActivity extends AppCompatActivity {
                 public void onComplete(Object o) {
                     //用户信息获取到了
                     try {
-                        Log.v("用户名", ((JSONObject) o).getString("nickname"));
-                        Log.v("用户性别", ((JSONObject) o).getString("gender"));
-                        Log.v("UserInfo",o.toString());
                         urlpath = ((JSONObject) o).getString("figureurl_qq_2");
                         selectOpenid(openidString);
                     } catch (JSONException e) {
@@ -260,7 +250,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Handler handler;
-
     {
         handler = new Handler() {
             public void handleMessage(Message msg) {
@@ -335,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                                         intent.putExtra("account", act);
                                         intent.putExtra("headurl",headurl);
                                         startActivity(intent);
+                                        finish();
                                     } else {
                                         Toast.makeText(MainActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
                                         //服务器连接成功，跳转
@@ -344,6 +334,7 @@ public class MainActivity extends AppCompatActivity {
                                         intent.putExtra("account", act);
                                         intent.putExtra("headurl",headurl);
                                         startActivity(intent);
+                                        finish();
                                     }
                                 }
 
@@ -434,7 +425,7 @@ public class MainActivity extends AppCompatActivity {
         if(isback){
             isback=false;
             // 结束所有Activity
-            ExitApplication.getInstance().exit();
+            App.getInstance().exit();
         }else{
             Toast.makeText(MainActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             isback=true;
@@ -500,5 +491,13 @@ public class MainActivity extends AppCompatActivity {
                 Tencent.handleResultData(data, new BaseUiListener());
             }
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

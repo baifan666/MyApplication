@@ -209,12 +209,12 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="6"
-                    android:textSize="14dp"
+                    android:textSize="10dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginLeft="10dp"
                     android:textIsSelectable="true"
                     android:singleLine="false"
-                    android:layout_gravity="center"
+                    android:layout_gravity="top"
                     android:text="订单编号："/>
 
                 <Button

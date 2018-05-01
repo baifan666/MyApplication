@@ -24,7 +24,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -53,7 +53,6 @@ public class MyGoodsSpecificActivity extends Activity {
     private String path1,path2,url1,url2,goodsid;
     private Button shanchu,xiugai;
     private GoodsInfo goodsInfo;
-    private int flag1 = 0,flag2 = 0; //图片加载标记，0是加载中，1加载成功，2加载失败
     private Dialog mDialog,mDialog1;
     private Banner banner;
     private List<String> images= new ArrayList<String>();       //设置图片集合
@@ -63,8 +62,8 @@ public class MyGoodsSpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_my_goods_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         goodsInfo = (GoodsInfo) intent.getSerializableExtra("goodsInfo");
         goodsid = goodsInfo.getId();
@@ -376,4 +375,11 @@ public class MyGoodsSpecificActivity extends Activity {
         }).start();
     }
 
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

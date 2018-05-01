@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.NoticeAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.NoticeInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -50,8 +50,8 @@ public class NoticeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_notice);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,7 +171,7 @@ public class NoticeActivity extends Activity {
         }).start();
     }
 
-    Handler handler = new Handler() {
+        Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
@@ -199,4 +199,12 @@ public class NoticeActivity extends Activity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

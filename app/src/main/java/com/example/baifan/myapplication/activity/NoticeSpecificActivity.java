@@ -3,28 +3,18 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.graphics.PixelFormat;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.text.method.ScrollingMovementMethod;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.adapter.NoticeAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
-import com.example.baifan.myapplication.model.NoticeInfo;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.utils.DialogUtils;
-import com.tencent.smtt.sdk.WebSettings;
-import com.tencent.smtt.sdk.WebView;
-import com.tencent.smtt.sdk.WebViewClient;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -36,7 +26,6 @@ import static com.example.baifan.myapplication.common.ServerAddress.ZAFU_ADDRESS
 public class NoticeSpecificActivity extends Activity {
     private ImageView back;
     private String NoticeUrl,str;
-    private com.tencent.smtt.sdk.WebView tbsContent;
     private final int READALL = 1;
     private TextView content,title,url;
     private Dialog mDialog;
@@ -46,8 +35,8 @@ public class NoticeSpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_notice_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         intent = getIntent();
         NoticeUrl = intent.getStringExtra("NoticeUrl");
         content = (TextView) findViewById(R.id.content);
@@ -110,4 +99,12 @@ public class NoticeSpecificActivity extends Activity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

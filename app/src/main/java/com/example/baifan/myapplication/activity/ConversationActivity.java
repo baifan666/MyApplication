@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -33,8 +33,8 @@ public class ConversationActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conversation);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         back = (ImageView) findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,4 +103,12 @@ public class ConversationActivity extends FragmentActivity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

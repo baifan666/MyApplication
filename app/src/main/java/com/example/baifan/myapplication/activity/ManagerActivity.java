@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.UpdataInfo;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DownLoadManager;
@@ -39,14 +39,14 @@ public class ManagerActivity extends AppCompatActivity {
     private final int UPDATA_NONEED = 0;
     private final int UPDATA_CLIENT = 1;
     private final int GET_UNDATAINFO_ERROR = 2;
-    private final int SDCARD_NOMOUNTED = 3;
+    //private final int SDCARD_NOMOUNTED = 3;
     private final int DOWN_ERROR = 4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_manager);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
 
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
@@ -292,11 +292,18 @@ public class ManagerActivity extends AppCompatActivity {
         if(isback){
             isback=false;
             // 结束所有Activity
-            ExitApplication.getInstance().exit();
+            App.getInstance().exit();
         }else{
             Toast.makeText(ManagerActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             isback=true;
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

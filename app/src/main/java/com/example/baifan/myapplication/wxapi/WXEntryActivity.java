@@ -21,8 +21,6 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory;
 
 public class WXEntryActivity extends AppCompatActivity implements IWXAPIEventHandler {
 
-    public  int WX_LOGIN = 1;
-
     private IWXAPI iwxapi;
     @Override
     protected void onCreate(Bundle savedInstanceState) {

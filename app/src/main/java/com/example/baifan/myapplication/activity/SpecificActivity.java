@@ -25,7 +25,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -71,8 +71,9 @@ public class SpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
+
         Intent intent = getIntent();
         account = intent.getStringExtra("account");
         headurl = intent.getStringExtra("headurl");
@@ -260,13 +261,13 @@ public class SpecificActivity extends Activity {
         //设置自动轮播，默认为true
         banner.isAutoPlay(true);
         //设置轮播时间
-        banner.setDelayTime(3000);
+        banner.setDelayTime(3500);
         //自定义图片加载框架
         banner.setImageLoader(new ImageLoader() {
             @Override
             public void displayImage(Context context, Object path, ImageView imageView) {
                 String p = String.valueOf(path);
-                Glide.with(getApplicationContext()).load(p).thumbnail(0.1f).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
+                Glide.with(SpecificActivity.this).load(p).placeholder(R.drawable.jiazaizhong)//图片加载出来前，显示的图片
                         .listener(requestListener)
                         .error(R.drawable.error)//图片加载失败后，显示的图片
                         .into(imageView);
@@ -285,6 +286,7 @@ public class SpecificActivity extends Activity {
                 startActivity(intent);
             }
         });
+
 
         share = (ImageView) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
@@ -322,6 +324,7 @@ public class SpecificActivity extends Activity {
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
             DialogUtils.closeDialog(mDialog);
             DialogUtils.closeDialog(mDialog1);
+            banner.startAutoPlay();//开始轮播
             // important to return false so the error placeholder can be placed
             return false;
         }
@@ -549,5 +552,38 @@ public class SpecificActivity extends Activity {
             }
         }).start();
     }
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+            handler.removeCallbacks(null);
+        }
+        super.onDestroy();
+    }
 
+    @Override
+    public void finish() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+            handler.removeCallbacks(null);
+        }
+        share = null;
+        comment = null;
+        username = null;
+        publishtime = null;
+        title = null;
+        content = null;
+        price = null;
+        location = null;
+        mobile = null;
+        usermobile = null;
+        conversation = null;
+        buy = null;
+        goodsInfo = null;
+        ratingBar = null;
+        banner = null;
+        images = null;
+        Glide.get(SpecificActivity.this).clearMemory();
+        super.finish();
+    }
 }

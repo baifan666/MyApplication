@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.UserOpinionInfo;
 
 public class UserOpinionSpecificActivity extends Activity {
@@ -23,8 +23,8 @@ public class UserOpinionSpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_user_opinion_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         userOpinionInfo = (UserOpinionInfo) intent.getSerializableExtra("UserOpinionInfo");
 
@@ -79,4 +79,6 @@ public class UserOpinionSpecificActivity extends Activity {
         });
 
     }
+
+
 }

@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.MyGoodsAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -57,8 +57,8 @@ public class MyGoodsActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_my_goods);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         mDialog = DialogUtils.createLoadingDialog(MyGoodsActivity.this, "加载中...");
         back = (ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -292,5 +292,13 @@ public class MyGoodsActivity extends Activity {
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

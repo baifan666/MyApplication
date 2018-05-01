@@ -9,14 +9,13 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.utils.AES256Encryption;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -27,10 +26,8 @@ import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URLEncoder;
 
-import sun.misc.BASE64Decoder;
 import sun.misc.BASE64Encoder;
 
 import static com.example.baifan.myapplication.common.ServerAddress.SERVER_ADDRESS;
@@ -49,8 +46,8 @@ public class RegActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_reg);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
 
         new_act_edit = (EditText) findViewById(R.id.new_act); // 用户名
         new_psd1_edit = (EditText) findViewById(R.id.new_psd1); // 密码
@@ -202,18 +199,13 @@ public class RegActivity extends Activity {
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-
             String result = "";
             while (eventType != XmlPullParser.END_DOCUMENT) {
-
                 String nodeName = parse.getName();
-
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
-                            Log.d("whether", result);
                         }
                         if (result.equals("succeessful"))
                             return true;
@@ -257,5 +249,13 @@ public class RegActivity extends Activity {
                 }
             }
         }).start();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(_handler!=null){
+            _handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

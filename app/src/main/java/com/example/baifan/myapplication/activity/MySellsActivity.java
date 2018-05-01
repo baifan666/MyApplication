@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.SellOrderAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -59,8 +59,8 @@ public class MySellsActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_my_sells);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         account = intent.getStringExtra("username");
         niceSpinner = (NiceSpinner) findViewById(R.id.nice_spinner);
@@ -364,5 +364,13 @@ public class MySellsActivity extends Activity {
             }
         }).start();
         // 2）解析数据：xml-->ArrayList
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

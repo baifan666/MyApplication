@@ -8,13 +8,9 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -31,7 +27,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.OrderSpecificInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -73,8 +69,8 @@ public class MyOrdersSpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_my_orders_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         orderSpecificInfo = (OrderSpecificInfo) intent.getSerializableExtra("orderSpecificInfo");
         seller = (TextView)findViewById(R.id.seller);
@@ -254,7 +250,7 @@ public class MyOrdersSpecificActivity extends Activity {
                 //获取剪贴板管理器：
                 ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 // 创建普通字符型ClipData
-                ClipData mClipData = ClipData.newPlainText("Label", dingdanbianhao.getText().toString().substring(dingdanbianhao.getText().toString().length()-14));
+                ClipData mClipData = ClipData.newPlainText("Label", dingdanbianhao.getText().toString().substring(5));
                 // 将ClipData内容放到系统剪贴板里。
                 cm.setPrimaryClip(mClipData);
                 Toast.makeText(MyOrdersSpecificActivity.this, "订单号已复制成功！", Toast.LENGTH_LONG).show();
@@ -505,4 +501,11 @@ public class MyOrdersSpecificActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

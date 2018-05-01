@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -14,7 +13,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.MyDHJLAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.DHJLInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -49,8 +48,8 @@ public class RecordActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_record);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         flag = intent.getIntExtra("flag",0);
@@ -159,7 +158,6 @@ public class RecordActivity extends Activity {
     };
 
     private void parserXml(String xmlData) {
-        String result = "";
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
@@ -173,41 +171,25 @@ public class RecordActivity extends Activity {
             String dhtime = "";
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
-                result += nodeName;
-                result += ", ";
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        // 从数据库读取3个参数
                         if ("username".equals(nodeName)) {
-                            String usernameStr = parse.nextText();
-                            result += "用户为：" + usernameStr + ", ";
-                            username = usernameStr;
+                            username = parse.nextText();
                         } else if ("prizename".equals(nodeName)) {
-                            String prizenameStr = parse.nextText();
-                            result += "商品名称为：" + prizenameStr + ", ";
-                            prizename = prizenameStr;
+                            prizename = parse.nextText();
+
                         } else if ("dhtime".equals(nodeName)) {
                             String dhtimeStr = parse.nextText();
-                            result += "兑换时间为：" + dhtimeStr + ", ";
                             dhtime = dhtimeStr.substring(0,dhtimeStr.length()-2);
                         } else if ("mobile".equals(nodeName)) {
-                            String mobileStr = parse.nextText();
-                            result += "电话号码为：" + mobileStr + ", ";
-                            mobile = mobileStr;
+                            mobile = parse.nextText();
                         } else if ("address".equals(nodeName)) {
-                            String addressStr = parse.nextText();
-                            result += "地址为：" + addressStr + ", ";
-                            address = addressStr;
+                            address = parse.nextText();
                         } else if ("name".equals(nodeName)) {
-                            String nameStr = parse.nextText();
-                            result += "姓名为：" + nameStr + ", ";
-                            name = nameStr;
+                            name = parse.nextText();
                         }
-
                         break;
                     case XmlPullParser.END_TAG:
-                        result += " \n ";
-                        Log.d("end_tag", "节点结束");
                         // 添加数据
                         DHJLInfo info = new DHJLInfo(username,prizename,dhtime,mobile,
                                 address,name);
@@ -221,6 +203,13 @@ public class RecordActivity extends Activity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.d("resultStr", result);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

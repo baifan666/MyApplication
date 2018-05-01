@@ -16,7 +16,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.PrizeAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.PrizeInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -50,8 +50,8 @@ public class MallActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_mall);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
         coins = intent.getStringExtra("coins");
@@ -257,4 +257,12 @@ public class MallActivity extends Activity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

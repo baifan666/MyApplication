@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -16,7 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.utils.QQShareUtil;
 import com.example.baifan.myapplication.utils.WxShareAndLoginUtils;
 import com.tencent.tauth.IUiListener;
@@ -36,14 +35,15 @@ public class ShareSelectActivity extends Activity implements View.OnClickListene
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_share_select);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
+
         WindowManager m = getWindowManager();
         Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
         android.view.WindowManager.LayoutParams p = getWindow().getAttributes();
         p.width = (int) (d.getWidth() * 1.0); // 宽度设置为屏幕的1.0
         getWindow().setAttributes(p);
 
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
         intent = getIntent();
         title = intent.getStringExtra("title");
         content = intent.getStringExtra("content");
@@ -87,9 +87,6 @@ public class ShareSelectActivity extends Activity implements View.OnClickListene
                 WxShareAndLoginUtils.WxUrlShare(SERVER_ADDRESS+"/校园二手交易平台.png", title, content, bitmap, WxShareAndLoginUtils.WECHAT_MOMENT);
                 break;
             case R.id.pengyou:    // 分享到朋友
-//                WxShareAndLoginUtils.WxTextShare(title, WxShareAndLoginUtils.WECHAT_FRIEND);
-//                Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-//                WxShareAndLoginUtils.WxBitmapShare(bitmap,WxShareAndLoginUtils.WECHAT_MOMENT);
                 Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
                 WxShareAndLoginUtils.WxUrlShare(SERVER_ADDRESS+"/校园二手交易平台.png", title, content, bitmap1, WxShareAndLoginUtils.WECHAT_FRIEND);
                 break;
@@ -121,6 +118,7 @@ public class ShareSelectActivity extends Activity implements View.OnClickListene
         @Override
         public void onError(UiError arg0) {
             Toast.makeText(ShareSelectActivity.this, "分享失败", Toast.LENGTH_SHORT).show();
+            finish();
         }
     }
 

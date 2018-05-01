@@ -13,7 +13,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.R;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -27,7 +27,6 @@ public class Game2Activity extends Activity {
 
     com.tencent.smtt.sdk.WebView tbsContent;
     private String url = "http://h.4399.com/play/191873.htm";
-    //private String url = "http://www.baidu.com";
     private ImageView back;
     private RefreshLayout refreshLayout;
     @Override
@@ -35,8 +34,8 @@ public class Game2Activity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_game2);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
 
         getWindow().setFormat(PixelFormat.TRANSLUCENT);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE | WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -98,6 +97,14 @@ public class Game2Activity extends Activity {
                 refreshLayout.finishRefresh();//结束刷新
             }
         });
+
+        back=(ImageView)findViewById(R.id.IV_back); //返回
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 
 
@@ -108,5 +115,12 @@ public class Game2Activity extends Activity {
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void finish() {
+        // 当我们对Activity进行finish的时候，webview持有的页面并不会立即释放，如果页面中有在执行js等其他操作，仅仅进行finish是完全不够的。
+        tbsContent.loadUrl("about:blank");
+        super.finish();
     }
 }

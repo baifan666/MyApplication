@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -13,7 +12,7 @@ import android.widget.ListView;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.adapter.RankinglistAdapter;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.UserSignInfo;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.HttpUtils;
@@ -42,8 +41,8 @@ public class RankinglistActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_rankinglist);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         back=(ImageView)findViewById(R.id.backImg); //返回
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +101,6 @@ public class RankinglistActivity extends Activity {
     };
 
     private void parserXml(String xmlData) {
-        String result = "";
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
@@ -112,24 +110,17 @@ public class RankinglistActivity extends Activity {
             int signcount = 0;
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
-                result += nodeName;
-                result += ", ";
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
-                        // 从数据库读取3个参数
                         if ("username".equals(nodeName)) {
-                            String usernameStr = parse.nextText();
-                            result += "用户为：" + usernameStr + ", ";
-                            username = usernameStr;
+                            username = parse.nextText();
+
                         } else if ("signcount".equals(nodeName)) {
                             String signcountStr = parse.nextText();
-                            result += "连续签到天数为：" + signcountStr + ", ";
                             signcount = Integer.parseInt(signcountStr);
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        result += " \n ";
-                        Log.d("end_tag", "节点结束");
                         // 添加数据
                         UserSignInfo info = new UserSignInfo(username,signcount);
                         data.add(info);
@@ -142,6 +133,13 @@ public class RankinglistActivity extends Activity {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.d("resultStr", result);
+    }
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
     }
 }

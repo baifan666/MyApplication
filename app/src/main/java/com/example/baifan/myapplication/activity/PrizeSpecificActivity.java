@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -16,14 +15,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.model.PrizeInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
 import com.example.baifan.myapplication.utils.DialogUtils;
@@ -58,8 +56,8 @@ public class PrizeSpecificActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_prize_specific);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         mDialog = DialogUtils.createLoadingDialog(PrizeSpecificActivity.this, "加载中...");
         back = (ImageView)findViewById(R.id.IV_back); //返回
         back.setOnClickListener(new View.OnClickListener() {
@@ -147,9 +145,6 @@ public class PrizeSpecificActivity extends Activity {
     private RequestListener<String, GlideDrawable> requestListener = new RequestListener<String, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-            if(e.toString().contains("java.net.SocketTimeoutException")) {
-                Toast.makeText(PrizeSpecificActivity.this,"当前网络异常，请稍后点击图片重新加载",Toast.LENGTH_LONG).show();
-            }
             DialogUtils.closeDialog(mDialog);
             // important to return false so the error placeholder can be placed
             return false;
@@ -218,20 +213,15 @@ public class PrizeSpecificActivity extends Activity {
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
-
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
                     case XmlPullParser.START_TAG:
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
-                            Log.d("result", result);
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
                         break;
                     default:
                         break;
@@ -305,4 +295,12 @@ public class PrizeSpecificActivity extends Activity {
             }
         }
     };
+
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

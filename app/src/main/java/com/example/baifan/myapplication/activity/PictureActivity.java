@@ -9,7 +9,7 @@ import android.view.WindowManager;
 
 import com.bumptech.glide.Glide;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.github.chrisbanes.photoview.PhotoView;
 
 public class PictureActivity extends Activity {
@@ -20,15 +20,14 @@ public class PictureActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_picture);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
 
         WindowManager m = getWindowManager();
         Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
         android.view.WindowManager.LayoutParams p = getWindow().getAttributes();
         p.width = (int) (d.getWidth() * 1.0); // 宽度设置为屏幕的1.0
         getWindow().setAttributes(p);
-
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
         Intent intent = getIntent();
         url = intent.getStringExtra("url");
         photoView = (PhotoView)findViewById(R.id.large_image);
@@ -42,4 +41,6 @@ public class PictureActivity extends Activity {
             }
         });
     }
+
+
 }

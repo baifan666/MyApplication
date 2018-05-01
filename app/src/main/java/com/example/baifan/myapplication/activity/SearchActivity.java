@@ -19,7 +19,6 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,8 +54,6 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.net.Uri;
 
-import com.baidu.android.pushservice.PushConstants;
-import com.baidu.android.pushservice.PushManager;
 import com.bumptech.glide.Glide;
 import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.common.Config;
@@ -64,7 +61,6 @@ import com.example.baifan.myapplication.utils.BitmapUtils;
 import com.example.baifan.myapplication.utils.CacheUtil;
 import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.DownLoadManager;
-import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.GoodsInfo;
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.model.UpdataInfo;
@@ -118,7 +114,7 @@ public class SearchActivity extends Activity implements
     private final int UPDATA_NONEED = 0;
     private final int UPDATA_CLIENT = 1;
     private final int GET_UNDATAINFO_ERROR = 2;
-    private final int SDCARD_NOMOUNTED = 3;
+    //private final int SDCARD_NOMOUNTED = 3;
     private final int DOWN_ERROR = 4;
     private final int ADD_SUCCEESS = 5;
     private final int DISMISS = 6;
@@ -166,15 +162,14 @@ public class SearchActivity extends Activity implements
     private QBadgeView qBadgeView;
 
     private String autoLogin;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_search);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
-        PushManager.startWork(getApplicationContext(), PushConstants.LOGIN_TYPE_API_KEY,
-                "azrbHW8CGeAEMt4MyLSplNCAodv7xZwG");
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
         initUnreadCountListener();
         mDialog = DialogUtils.createLoadingDialog(SearchActivity.this, "加载中...");
         Intent intent = getIntent();
@@ -1006,7 +1001,7 @@ public class SearchActivity extends Activity implements
             isback=false;
             // 结束所有Activity
             RongIM.getInstance().removeUnReadMessageCountChangedObserver(mCountListener);
-            ExitApplication.getInstance().exit();
+            App.getInstance().exit();
         }else{
             Toast.makeText(SearchActivity.this, "再按一次退出应用", Toast.LENGTH_SHORT).show();
             isback=true;
@@ -1120,7 +1115,6 @@ public class SearchActivity extends Activity implements
 
 
     private boolean parserXml(String xmlData) {
-
         try {
             XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
             XmlPullParser parse = factory.newPullParser(); // 生成解析器

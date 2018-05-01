@@ -2,7 +2,6 @@ package com.example.baifan.myapplication.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -16,17 +15,14 @@ import android.content.Intent;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.support.v4.content.FileProvider;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.Window;
 import android.widget.Toast;
 
 import com.example.baifan.myapplication.R;
 import com.example.baifan.myapplication.application.App;
-import com.example.baifan.myapplication.application.ExitApplication;
 import com.example.baifan.myapplication.model.UpdataInfo;
 import com.example.baifan.myapplication.utils.AddMessageUtils;
-import com.example.baifan.myapplication.utils.DialogUtils;
 import com.example.baifan.myapplication.utils.DownLoadManager;
 import com.example.baifan.myapplication.utils.HttpUtils;
 import com.example.baifan.myapplication.utils.UpdataInfoParser;
@@ -62,7 +58,7 @@ public class WelcomeActivity extends Activity {
     private final int UPDATA_NONEED = 0;
     private final int UPDATA_CLIENT = 1;
     private final int GET_UNDATAINFO_ERROR = 2;
-    private final int SDCARD_NOMOUNTED = 3;
+   // private final int SDCARD_NOMOUNTED = 3;
     private final int DOWN_ERROR = 4;
     private final int LOGIN = 5;
     private SharedPreferences pref;
@@ -71,8 +67,9 @@ public class WelcomeActivity extends Activity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_welcome);
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
+
         RongIM.setUserInfoProvider(new RongIM.UserInfoProvider() {
             @Override
             public io.rong.imlib.model.UserInfo getUserInfo(String arg0) {
@@ -201,12 +198,10 @@ public class WelcomeActivity extends Activity {
                         RongIM.connect(usertoken, new RongIMClient.ConnectCallback() {
                             @Override
                             public void onTokenIncorrect() {
-                                Log.e("MainActivity", "--onTokenIncorrect");
                             }
 
                             @Override
                             public void onSuccess(String userid) {
-                                Log.d("MainActivity", "--onSuccess--" + userid);
                                 if(0 == flag) {
                                     Toast.makeText(WelcomeActivity.this, "登录成功,用户：" + userid, Toast.LENGTH_SHORT).show();
                                     RongIM.getInstance().setCurrentUserInfo(new io.rong.imlib.model.UserInfo(userid, userid, Uri.parse(headurl)));
@@ -220,6 +215,7 @@ public class WelcomeActivity extends Activity {
                                     intent.putExtra("headurl",headurl);
                                     intent.putExtra("autologin","true");   //自动登陆传递一个参数给主页面
                                     startActivity(intent);
+                                    finish();
                                 } else {
                                     Toast.makeText(WelcomeActivity.this, "管理员，您好！" , Toast.LENGTH_SHORT).show();
                                     //服务器连接成功，跳转
@@ -229,13 +225,13 @@ public class WelcomeActivity extends Activity {
                                     intent.putExtra("headurl",headurl);
                                     intent.putExtra("autologin","true");   //自动登陆传递一个参数给主页面
                                     startActivity(intent);
+                                    finish();
                                 }
                             }
 
                             @Override
                             public void onError(RongIMClient.ErrorCode errorCode) {
                                 Toast.makeText(WelcomeActivity.this, errorCode.toString(), Toast.LENGTH_SHORT).show();
-                                Log.e("MainActivity", "--onError");
                             }
                         });
                     }
@@ -340,12 +336,6 @@ public class WelcomeActivity extends Activity {
 
     //安装apk
     protected void installApk(File file) {
-/*        Intent intent = new Intent();
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse("file://"+file),"application/vnd.android.package-archive");
-        startActivity(intent);*/
-
         Intent installApkIntent = new Intent();
         installApkIntent.setAction(Intent.ACTION_VIEW);
         installApkIntent.addCategory(Intent.CATEGORY_DEFAULT);
@@ -391,9 +381,6 @@ public class WelcomeActivity extends Activity {
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
-
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
@@ -403,19 +390,16 @@ public class WelcomeActivity extends Activity {
                             flag = Integer.parseInt(flagStr);
                         }
                         if ("token".equals(nodeName)) {
-                            String tokenStr = parse.nextText();
-                            usertoken = tokenStr;
+                            usertoken = parse.nextText();
                         }
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
                         }
                         if ("headurl".equals(nodeName)) {
-                            String headurlStr = parse.nextText();
-                            headurl = headurlStr;
+                            headurl = parse.nextText();
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
                         break;
                     default:
                         break;
@@ -427,4 +411,11 @@ public class WelcomeActivity extends Activity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        if(handler!=null){
+            handler.removeCallbacksAndMessages(null);
+        }
+        super.onDestroy();
+    }
 }

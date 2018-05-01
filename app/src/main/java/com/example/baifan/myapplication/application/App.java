@@ -1,5 +1,6 @@
 package com.example.baifan.myapplication.application;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlertDialog;
 import android.app.Application;
@@ -14,12 +15,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.example.baifan.myapplication.R;
-import com.example.baifan.myapplication.activity.AccountManagementActivity;
 import com.example.baifan.myapplication.activity.MainActivity;
 import com.example.baifan.myapplication.common.Config;
 import com.example.baifan.myapplication.utils.AppFrontBackHelper;
@@ -28,6 +27,7 @@ import com.example.baifan.myapplication.utils.NetBroadcastReceiver;
 import com.example.baifan.myapplication.utils.NetUtil;
 import com.tencent.smtt.sdk.QbSdk;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import io.rong.imkit.RongIM;
@@ -40,7 +40,10 @@ public class App extends Application implements NetBroadcastReceiver.NetChangeLi
     private static Context mContext;
     public static NetBroadcastReceiver.NetChangeListener listener;
     private AlertDialog dialog = null;
-    private NetBroadcastReceiver netBroadcastReceiver;;
+    private NetBroadcastReceiver netBroadcastReceiver;
+    private List<Activity> activityList = new LinkedList<Activity>();
+    private static App instance;
+
     /**
      * 网络类型
      */
@@ -53,6 +56,32 @@ public class App extends Application implements NetBroadcastReceiver.NetChangeLi
     public static int getNetType() {
         return netType;
     }
+
+    public App() {
+
+    }
+
+    // 单例模式中获取唯一的ExitApplication实例
+    public static App getInstance() {
+        if (null == instance) {
+            instance = new App();
+        }
+        return instance;
+    }
+
+    // 将Activity添加到容器中
+    public void addActivity(Activity activity) {
+        activityList.add(activity);
+    }
+
+    // 当要退出Activity时，遍历所有Activity 并finish
+    public void exit() {
+        for (Activity activity : activityList) {
+            activity.finish();
+        }
+        System.exit(0);
+    }
+
 
     @Override
     public void onCreate() {

@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.example.baifan.myapplication.application.ExitApplication;
+import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.R;
 
 /**
@@ -30,6 +30,8 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_pic_popup_window);
+        //将该Activity添加到App实例中，
+        App.getInstance().addActivity(this);
 
         WindowManager m = getWindowManager();
         Display d = m.getDefaultDisplay(); // 为获取屏幕宽、高
@@ -37,8 +39,6 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
         p.width = (int) (d.getWidth() * 1.0); // 宽度设置为屏幕的1.0
         getWindow().setAttributes(p);
 
-        //将该Activity添加到ExitApplication实例中，
-        ExitApplication.getInstance().addActivity(this);
         intent = getIntent();
         btn_take_photo = (Button) this.findViewById(R.id.btn_take_photo); //拍照
         btn_pick_photo = (Button) this.findViewById(R.id.btn_pick_photo);  //从相册选择
@@ -86,8 +86,6 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.btn_take_photo:     //拍照
                 try {
-                    //拍照我们用Action为MediaStore.ACTION_IMAGE_CAPTURE，
-                    //有些人使用其他的Action但我发现在有些机子中会出问题，所以优先选择这个
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                     intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
                     startActivityForResult(intent, 1);
@@ -97,12 +95,6 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
                 break;
             case R.id.btn_pick_photo:    // 选择图片
                 try {
-                    //选择照片的时候也一样，我们用Action为Intent.ACTION_GET_CONTENT，
-                    //有些人使用其他的Action但我发现在有些机子中会出问题，所以优先选择这个
-                    //Intent intent = new Intent();
-                    //intent.setType("image/*");
-                    //intent.setAction(Intent.ACTION_GET_CONTENT);
-                    //startActivityForResult(intent, 2);
                     Intent intent = new Intent(Intent.ACTION_PICK, null);
                     intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
                     startActivityForResult(intent, 2);
@@ -110,7 +102,7 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
                 catch (ActivityNotFoundException e) {
                 }
                 break;
-            case R.id.btn_cancel:
+            case R.id.btn_cancel:   //取消
                 finish();
                 break;
             default:
