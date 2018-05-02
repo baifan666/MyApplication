@@ -4,8 +4,13 @@ package com.example.baifan.myapplication.activity;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,6 +22,10 @@ import android.widget.Toast;
 import com.example.baifan.myapplication.application.App;
 import com.example.baifan.myapplication.R;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by baifan on 2018/1/8.
  */
@@ -25,7 +34,10 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
     private Button btn_take_photo, btn_pick_photo, btn_cancel;
     private LinearLayout layout;
     private Intent intent;
-
+    private String photoPath = Environment.getExternalStorageDirectory() +
+            File.separator + Environment.DIRECTORY_DCIM + File.separator;;//拍照照片保存路径
+    private String fileName;  //拍照照片保存名称
+    private Uri photoUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,10 +85,31 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
             return;
         }
         //选择完或者拍完照后会在这里处理，然后我们继续使用setResult返回Intent以便可以传递数据和调用
-        if (data.getExtras() != null)
-            intent.putExtras(data.getExtras());   //拍照得到的图片
-        if (data.getData()!= null)
+//        if (data.getExtras() != null) {
+////            Bitmap bm = BitmapFactory.decodeFile(photoPath + fileName);
+////            //使用过后记得释放掉bitmap,节省内存
+////            bm.recycle();
+//            intent.putExtras(data.getExtras());   //拍照得到的图片
+//        }
+        if (requestCode == 1) {
+            Log.e("SelectPicPopupWindow", "开始回调");
+            Uri uri = null;
+            if (data != null && data.getData() != null) {
+                uri = data.getData();
+            }
+            if (uri == null) {
+                if (photoUri != null) {
+                    uri = photoUri;
+                }
+            }
+            intent.putExtra("uri",photoPath + fileName);   //拍照得到的图片
+            //intent.putExtras(data.getExtras());   //拍照得到的图片
+        }
+
+        if (requestCode == 2) {
+            Log.e("SelectPicPopupWindow", "开始回调2");
             intent.setData(data.getData());   //选择图片得到的数据, 里面有uri
+        }
         setResult(RESULT_OK, intent);     // 返回到下面的, MainActivity
         finish();
 
@@ -87,7 +120,9 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
             case R.id.btn_take_photo:     //拍照
                 try {
                     Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    intent.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+                    fileName = getPhotoFileName() + ".jpg";
+                    photoUri = Uri.fromFile(new File(photoPath + fileName));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri);
                     startActivityForResult(intent, 1);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -111,5 +146,10 @@ public class SelectPicPopupWindow extends Activity implements View.OnClickListen
 
     }
 
+    private String getPhotoFileName() {
+        Date date = new Date(System.currentTimeMillis());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        return "IMG_" + dateFormat.format(date);
+    }
 
 }

@@ -1051,24 +1051,27 @@ public class SearchActivity extends Activity implements
                         photoPath = cursor.getString(column_index);
                     }
                     else {
-                        Bundle extras = data.getExtras(); //拍照没有uri
-                        if (extras != null) {
-                            //这里是有些拍照后的图片是直接存放到Bundle中的所以我们可以从这里面获取Bitmap图片
-                            Bitmap bitmap = (Bitmap) extras.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
-                            if (bitmap != null) {
-                                Uri uri2=Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null,null));
-                                if(uri2 !=null) {
-                                    // 这里开始的第二部分，获取图片的路径：
-                                    String[] proj = {MediaStore.Images.Media.DATA};
-                                    Cursor cursor = getContentResolver().query(uri2, proj, null, null, null);
-                                    // 按我个人理解 这个是获得用户选择的图片的索引值
-                                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-                                    cursor.moveToFirst();
-                                    // 最后根据索引值获取图片路径
-                                    photoPath = cursor.getString(column_index);
-                                }
-                            }
-                        }
+//                        Bundle extras = data.getExtras(); //拍照没有uri
+//                        Log.e("111111",extras.toString());
+//                        if (extras != null) {
+//                            //这里是有些拍照后的图片是直接存放到Bundle中的所以我们可以从这里面获取Bitmap图片
+//                            Bitmap bitmap = (Bitmap) extras.get("data");// 获取相机返回的数据，并转换为Bitmap图片格式
+//                            if (bitmap != null) {
+//                                Uri uri2=Uri.parse(MediaStore.Images.Media.insertImage(getContentResolver(), bitmap, null,null));
+//                                if(uri2 !=null) {
+//                                    // 这里开始的第二部分，获取图片的路径：
+//                                    String[] proj = {MediaStore.Images.Media.DATA};
+//                                    Cursor cursor = getContentResolver().query(uri2, proj, null, null, null);
+//                                    // 按我个人理解 这个是获得用户选择的图片的索引值
+//                                    int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+//                                    cursor.moveToFirst();
+//                                    // 最后根据索引值获取图片路径
+//                                    photoPath = cursor.getString(column_index);
+//                                }
+//                            }
+//                        }
+
+                        photoPath = data.getStringExtra("uri");
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1239,9 +1242,6 @@ public class SearchActivity extends Activity implements
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
-
             String id = "";
             String username = "";
             String publish_time = "";
@@ -1302,8 +1302,6 @@ public class SearchActivity extends Activity implements
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        result += " \n ";
-                        Log.d("end_tag", "节点结束");
                         // 添加数据
                         GoodsInfo info = new GoodsInfo(id, username, title, publish_time, content, price, mobile, location, path1, path2);
                         goodsdata.add(info);
@@ -1316,7 +1314,6 @@ public class SearchActivity extends Activity implements
         } catch (Exception ex) {
             ex.printStackTrace();
         }
-        Log.d("resultStr", result);
     }
 
     private void parserXml1(String xmlData) {
@@ -1325,8 +1322,6 @@ public class SearchActivity extends Activity implements
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
@@ -1338,11 +1333,9 @@ public class SearchActivity extends Activity implements
                         }
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
-                            Log.d("result", result);
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
                         break;
                     default:
                         break;
@@ -1360,8 +1353,6 @@ public class SearchActivity extends Activity implements
             XmlPullParser parse = factory.newPullParser(); // 生成解析器
             parse.setInput(new StringReader(xmlData)); // 添加xml数据
             int eventType = parse.getEventType();
-            String str = String.format(" type = %d, str = %s\n", eventType, parse.getName());
-            Log.d("xmlStr", str);
             while (eventType != XmlPullParser.END_DOCUMENT) {
                 String nodeName = parse.getName();
                 switch (eventType) {
@@ -1373,11 +1364,9 @@ public class SearchActivity extends Activity implements
                         }
                         if ("result".equals(nodeName)) {
                             result = parse.nextText();
-                            Log.d("result", result);
                         }
                         break;
                     case XmlPullParser.END_TAG:
-                        Log.d("end_tag", "节点结束");
                         break;
                     default:
                         break;
